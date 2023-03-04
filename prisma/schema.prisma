@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Workspace {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  boards      Boards[]
+  folders     Folders[]
+}
+
+model Folders {
+  id          String     @id @default(uuid())
+  name        String
+  boards      Boards[]
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  workspaceId String?
+}
+
+model Boards {
+  id          String     @id @default(uuid())
+  name        String
+  users       Users[]
+  groups      Groups[]
+  items       Item[]
+  Folders     Folders?   @relation(fields: [foldersId], references: [id])
+  foldersId   String?
+  Workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  workspaceId String?
+}
+
+model Groups {
+  id       String  @id @default(uuid())
+  name     String
+  items    Item[]
+  Boards   Boards? @relation(fields: [boardsId], references: [id])
+  boardsId String?
+}
+
+model Users {
+  id       String  @id @default(uuid())
+  name     String
+  Boards   Boards? @relation(fields: [boardsId], references: [id])
+  boardsId String?
+}
+
+model Item {
+  id      String  @id @default(uuid())
+  name    String
+  groups  Groups? @relation(fields: [groupId], references: [id])
+  groupId String?
+  board   Boards  @relation(fields: [boardId], references: [id])
+  boardId String
+}
