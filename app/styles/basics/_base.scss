@@ -16,6 +16,13 @@ body {
   height: 100%;
 }
 
+hr {
+  margin: 10px auto;
+  width: 200px;
+  border: none;
+  border-top: 1px solid $layout-border-color;
+}
+
 h1,
 h2,
 h3,

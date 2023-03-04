@@ -1,11 +1,19 @@
 .workspace-nav {
-    border-right: 1px solid white;
-    position: relative;
+  border-right: 1px solid white;
+  position: relative;
+  width: 255px;
+  background-color: $grey-background-color;
+  padding: 12px 16px 18px 16px;
+  transition: width 100ms ease;
+  &.close {
+    width: 35px;
+    padding: 0;
+  }
   .collapse-btn {
     position: absolute;
     right: -10px;
     top: 20px;
-    background-color: transparent;
+    background-color: white;
     border: 1px solid $ui-border-color;
     border-radius: 20px;
     display: flex;
@@ -16,11 +24,24 @@
     z-index: 100;
     padding: 5px 7px 5px 5px;
     svg {
-        width: 12px;
-        height: 12px;
+      width: 12px;
+      height: 12px;
+      transition: transform 100ms ease;
+    }
+    transition: background-color 100ms ease, padding-left 100ms ease, padding-right 100ms ease, border-color 100ms ease, color 100ms ease;
+    &:hover {
+      background-color: $primary-color;
+      padding-left: 17px;
+      border-color: $primary-color;
+
+      svg {
+        color: white;
+        left: 20px;
+        transform: translateX(-100%);
+        // position: absolute;
+        // padding-left: 2px;
+      }
     }
   }
-  width: 255px;
-  background-color: $grey-background-color;
-  padding: 12px 16px 18px 16px;
+
 }
