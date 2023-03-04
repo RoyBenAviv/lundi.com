@@ -1,5 +1,5 @@
 import Link from "next/link"
-const { Board } = require("monday-ui-react-core/icons");
+const { Board, NavigationChevronLeft } = require("monday-ui-react-core/icons");
 
 interface WorkspaceNav {
  boards: any
@@ -9,6 +9,9 @@ export default function WorkspaceNav({boards}: WorkspaceNav) {
 
     return (
         <nav className="workspace-nav">
+            <button className="collapse-btn">
+                <NavigationChevronLeft />
+            </button>
             <ul>
         
             {boards.map((board: any) => (
