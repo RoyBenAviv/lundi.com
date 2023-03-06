@@ -1,0 +1,16 @@
+@mixin content-editable {
+    position: relative;
+    > * {
+        position: absolute;
+    }
+    input {
+        background-color: transparent;
+
+        // height: 100%;
+        // padding: 10px 0;
+        border: 1px solid $basic_blue;
+        border-radius: 5px;
+        outline: none;
+        padding-left: 13px;
+    }
+  }

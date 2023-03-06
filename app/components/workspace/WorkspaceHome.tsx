@@ -1,18 +1,20 @@
 'use client'
 
+import { useUpdateWorkspaceName } from '@/app/hooks/useQuery'
 import { Button } from 'monday-ui-react-core'
-import Image from 'next/image'
-import Link from 'next/link'
 import { FocusEvent, useState } from 'react'
 const { Edit } = require('monday-ui-react-core/icons')
-export default function WorkspaceHome({ currentWorkspace }: any) {
-  const [workspaceName, setWorkspaceName] = useState(currentWorkspace.name)
 
+export default function WorkspaceHome({ currentWorkspace }: any) {
+
+  const { mutate: updateMutate } = useUpdateWorkspaceName()
 
 const handleChange = (event: FocusEvent<HTMLHeadingElement, Element>, type: string) => {
+    event.preventDefault()
     switch (type) {
         case 'title':
-            
+            if(event.target.innerText === currentWorkspace.name) return
+            updateMutate({workspaceId: currentWorkspace.id, name: event.target.innerText})
             break;
     
         default:
@@ -32,9 +34,9 @@ const handleChange = (event: FocusEvent<HTMLHeadingElement, Element>, type: stri
         <div className="workspace-icon"></div>
         <div className="workspace-info">
           <h3 contentEditable={true} onBlur={(event) => handleChange(event, 'title')}>
-            {workspaceName}
+            {currentWorkspace.name}
           </h3>
-          <span contentEditable={true}>{currentWorkspace.description}</span>
+          <span >{currentWorkspace.description}</span>
         </div>
       </section>
     </main>

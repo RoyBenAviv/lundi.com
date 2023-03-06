@@ -12,3 +12,16 @@ export async function GET(request: Request, { params }: { params: Params }) {
   })
   return NextResponse.json(workspace)
 }
+export async function PUT(request: Request, { params }: { params: Params }) {
+  const {name} = await request.json()
+  console.log('file: route.ts:17 -> name:', name)
+  const updatedWorkspace = await prisma.workspace.update({
+    where: { id: params.id }, // specify the object to update by its ID
+    data: {
+      name // update the value of the key property
+    }
+  });
+
+  return updatedWorkspace
+}
+

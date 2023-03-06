@@ -7,7 +7,6 @@
         background-position: center;
         background-size: contain;
         position: relative;
-        z-index: -1;
         button {
             opacity: 0;
             pointer-events: none;
@@ -17,6 +16,7 @@
             height: 17%;
             display: flex;
             gap: 5px;
+            z-index: 10000;
             svg {
                 width: 18px;
                 height: 18px;
@@ -31,6 +31,7 @@
         }
     }
     .workspace-details {
+        position: relative;
         margin-top: -65px;
         margin-left: 100px;
         display: flex;
@@ -39,8 +40,21 @@
         .workspace-info {
             margin-top: 60px;
             h3 {
+    
+                width: 100%;
                 font-size: 32px;
-                padding: 10px 0;
+                margin: 10px 0;
+                transition: border-color 200ms;
+                border: 1px solid transparent;
+                &:read-write:focus {
+                    outline: 1px solid $basic_blue;
+                    border-radius: 5px;
+                    border: 1px solid transparent;
+                }
+                &:hover {
+                    border: 1px solid $ui-border-color;
+                    border-radius: 5px;
+                }
             }
             span {
             }
