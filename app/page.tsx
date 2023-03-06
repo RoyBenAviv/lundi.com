@@ -1,7 +1,7 @@
 import axios from 'axios'
 import Link from 'next/link'
 
-async function getWorkspaces() {
+const getWorkspaces = async() => {
     try {
       const workspaces = await axios.get(`${process.env.BASE_URL}/api/workspaces`)
       return workspaces.data

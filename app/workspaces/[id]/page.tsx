@@ -1,10 +1,6 @@
-'use client'
-
-import { useGetWorkspace } from '@/app/hooks/useQuery'
-import {useState} from 'react'
 import WorkspaceNav from '../../components/workspace/WorkspaceNav'
-const Dropdown = require("monday-ui-react-core/dist/Dropdown");
-
+import WorkspaceHome from '../../components/workspace/WorkspaceHome'
+import axios from 'axios'
 type URL = {
   params: {
     id: string
@@ -12,22 +8,22 @@ type URL = {
   searchParams: string
 }
 
-export default function Workspace(url: URL) {
-  const { isLoading, data: workspace, isError } = useGetWorkspace(url.params.id)
-  const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
-
-  const onCollapseNav = () => {
-    setIsCollapseNav(isCollapseNav => !isCollapseNav)
+const getWorkspace = async (workspaceId: string) => {
+  try {
+    const currentWorkspace = await axios.get(`http://localhost:3000/api/workspaces/${workspaceId}`)
+    return currentWorkspace.data
+  } catch (err) {
+    console.log('file: page.tsx:16 -> err:', err)
   }
+}
 
-  if (isLoading) return <></>
+export default async function Workspace(url: URL) {
+  const currentWorkspace = await getWorkspace(url.params.id)
+
   return (
     <>
-    <WorkspaceNav workspace={workspace!.data} onCollapseNav={onCollapseNav} isCollapseNav={isCollapseNav}/>
-    <section>
-
-
-    </section>
+      <WorkspaceNav currentWorkspace={currentWorkspace} />
+      <WorkspaceHome currentWorkspace={currentWorkspace}/>
     </>
   )
 }

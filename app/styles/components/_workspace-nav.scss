@@ -1,7 +1,9 @@
 .workspace-nav {
-  border-right: 1px solid white;
+  outline: 1px solid $layout-border-color;
+  outline-offset: -2px;
   position: relative;
-  width: 255px;
+  width: 300px;
+
   background-color: $grey-background-color;
   padding: 12px 16px 18px 16px;
   transition: width 100ms ease;

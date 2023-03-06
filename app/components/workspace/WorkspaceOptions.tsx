@@ -1,5 +1,4 @@
 "use client"
-const {Dropdown} = require("monday-ui-react-core");
 
 // const optionsAvatar = [
 //     {
@@ -25,7 +24,6 @@ export default function WorkspaceNav({workspace}: any) {
         <br/>
         <p>workspace</p>
         
-        <Dropdown value={{label: workspace.name, value: workspace.id}}/>
       </div>
     )
   }

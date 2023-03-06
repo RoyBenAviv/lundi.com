@@ -1,14 +1,17 @@
+'use client'
+
 import Link from 'next/link'
+import { useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
 const { Board, NavigationChevronLeft, NavigationChevronRight } = require('monday-ui-react-core/icons')
 
-interface WorkspaceNav {
-workspace: any
-  onCollapseNav: any
-  isCollapseNav: boolean
-}
+export default function WorkspaceNav({ currentWorkspace }: any) {
+  const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
 
-export default function WorkspaceNav({ workspace, onCollapseNav, isCollapseNav }: WorkspaceNav) {
+  const onCollapseNav = () => {
+    setIsCollapseNav((isCollapseNav) => !isCollapseNav)
+  }
+
   return (
     <nav className={`workspace-nav ${isCollapseNav ? 'close' : 'open'}`}>
       <button onClick={() => onCollapseNav()} className="collapse-btn">
@@ -16,18 +19,18 @@ export default function WorkspaceNav({ workspace, onCollapseNav, isCollapseNav }
       </button>
       {!isCollapseNav && (
         <>
-        <WorkspaceOptions workspace={workspace}/>
-        <hr/>
-        <ul>
-          {workspace.boards.map((board: any) => (
+          <WorkspaceOptions workspace={currentWorkspace} />
+          <hr />
+          <ul>
+            {currentWorkspace.boards.map((board: any) => (
               <li key={board.id}>
-              <Link href="">
-                {<Board />} {board.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-          </>
+                <Link href="">
+                  {<Board/>} {board.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </nav>
   )

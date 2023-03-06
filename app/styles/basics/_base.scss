@@ -17,8 +17,7 @@ body {
 }
 
 hr {
-  margin: 10px auto;
-  width: 200px;
+  width: 100%;
   border: none;
   border-top: 1px solid $layout-border-color;
 }
@@ -31,7 +30,7 @@ h5,
 h6 {
   font-weight: 400;
   margin: 0;
-  font-family: poppins-bold;
+  font-family: poppins-bold, sans-serif;
 }
 
 h1 {
@@ -40,6 +39,10 @@ h1 {
 
 h2 {
   font-size: 24px;
+}
+
+h3 {
+  font-family: poppins-normal, sans-serif;
 }
 
 h4 {
@@ -55,6 +58,10 @@ p {
   margin: 0;
 }
 
+span {
+  color: $secondary-text-color;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -68,6 +75,8 @@ img {
 button {
   font-family: inherit;
   cursor: pointer;
+  font-family: figtree-normal, sans-serif !important;
+  font-size: 14px !important;
 }
 
 input {
