@@ -18,13 +18,15 @@
 //     },
 //   ]
 
-export default function WorkspaceNav({workspace}: any) {
+export default function WorkspaceNav({currentWorkspace}: any) {
     return (
+      <aside>
+
       <div >
-        <br/>
-        <p>workspace</p>
         
+      
       </div>
+      </aside>
     )
   }
   

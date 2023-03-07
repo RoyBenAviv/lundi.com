@@ -1,11 +1,77 @@
 .workspace-nav {
+  header {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 10px 20px 0;
+    .options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      svg {
+        cursor: pointer;
+      }
+    }
+    .workspace-chose {
+      position: relative;
+
+      .workspace-combobox {
+        position: absolute;
+        top: 45px;
+        left: 0;
+        background-color: white;
+        z-index: 22;
+        width: 280px;
+        height: 350px;
+        box-shadow: $box-shadow-small;
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 14px;
+        input {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          &::placeholder {
+            font-size: 14px;
+          }
+        }
+      }
+      cursor: pointer;
+      margin-top: 10px;
+      border: 1px solid $icon-color;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 0 8px 10px;
+      font-size:15px;
+      font-family: figtree-normal;
+      font-weight: 600;
+      .workspace-icon {
+        color: white;
+        border-radius: 6px;
+        font-size: 14px;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 500;
+      }
+      svg {
+        width: 12px;
+        height: 12px;
+        margin-left: 30px;
+      }
+    }
+  }
+
   outline: 1px solid $layout-border-color;
   outline-offset: -2px;
   position: relative;
   width: 300px;
 
   background-color: $grey-background-color;
-  padding: 12px 16px 18px 16px;
+  padding: 12px 8px 18px 12px;
   transition: width 100ms ease;
   &.close {
     width: 35px;

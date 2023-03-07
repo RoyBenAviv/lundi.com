@@ -4,19 +4,20 @@ import { useUpdateWorkspaceName } from '@/app/hooks/useQuery'
 import { Button, Tab, TabList, TabPanel, TabPanels, TabsContext } from 'monday-ui-react-core'
 import Link from 'next/link'
 import { FocusEvent, useState } from 'react'
-const { Edit, Favorites, Board } = require('monday-ui-react-core/icons')
+const { Edit, Favorite, Board } = require('monday-ui-react-core/icons')
 export default function WorkspaceHome({ currentWorkspace }: any) {
   const { mutate: updateMutate } = useUpdateWorkspaceName()
 
   const handleChange = (event: FocusEvent<HTMLHeadingElement, Element>, key: string) => {
-    updateMutate({ workspaceId: currentWorkspace.id, value: event.target.innerText, key })
+    const value = event.target.innerText
+    if(value === currentWorkspace[key]) return
+    updateMutate({ workspaceId: currentWorkspace.id, value, key })
   }
 
   return (
     <main className="workspace-home">
       <header className="cover-image">
         <Button>
-          {' '}
           <Edit /> Change Cover
         </Button>
       </header>
@@ -43,13 +44,16 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
             <Tab>Members</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel>
+            <TabPanel className='recent-boards'>
             {currentWorkspace.boards.map((board: any) => (
+              <>
               <p key={board.id}>
-                <Link href="">
-                  {<Board/>} {board.name}
+              <Link href={`/boards/${board.id}`}>
+                  <span>{<Board/>} {board.name}</span> {<Favorite/>}
                 </Link>
               </p>
+                <hr/>
+              </>
             ))}
           </TabPanel>
             <TabPanel>Second slide</TabPanel>

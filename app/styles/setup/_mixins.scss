@@ -14,3 +14,7 @@
         padding-left: 13px;
     }
   }
+
+  @mixin hover-btn {
+    background-color: $primary-background-hover-color;
+  }
