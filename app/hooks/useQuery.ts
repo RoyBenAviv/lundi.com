@@ -13,6 +13,7 @@ export const useUpdateWorkspaceName = () => {
     },
     {
       onSuccess: ({ data }) => {
+        console.log('file: useQuery.ts:16 -> data:', data)
         queryClient.invalidateQueries(['workspace'])
         queryClient.setQueryData(['workspace'], data)
       },

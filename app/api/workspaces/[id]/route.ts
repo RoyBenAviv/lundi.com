@@ -23,6 +23,6 @@ export async function PUT(request: Request, { params }: { params: Params }) {
     }
   });
 
-  return updatedWorkspace
+  return NextResponse.json(updatedWorkspace)
 }
 

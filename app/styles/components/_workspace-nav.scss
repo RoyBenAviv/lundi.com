@@ -11,7 +11,7 @@
         cursor: pointer;
       }
     }
-    .workspace-chose {
+    .workspace-choose {
       position: relative;
 
       .workspace-combobox {
@@ -36,7 +36,7 @@
         }
       }
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 25px;
       border: 1px solid $icon-color;
       border-radius: 5px;
       display: flex;
@@ -57,10 +57,10 @@
         align-items: center;
         font-weight: 500;
       }
-      svg {
+      .arrow {
         width: 12px;
         height: 12px;
-        margin-left: 30px;
+        margin-left: 40px;
       }
     }
   }

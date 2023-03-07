@@ -97,12 +97,49 @@
         background-color: rgba(255, 255, 255, 0.795);
         border-radius: 20px;
         overflow: hidden;
-        color: $basic_blue;
         font-size: 16px;
+        color: $basic_blue;
       }
       &:hover {
         span {
           opacity: 1;
+        }
+      }
+    }
+    .edit-workspace-icon {
+      position: absolute;
+      background-color: white;
+      box-shadow: $box-shadow-medium;
+      top: 130px;
+      left: 0;
+      width: 280px;
+      height: 200px;
+      z-index: 1;
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      div {
+        display: flex;
+        gap: 10px;
+        .color-option {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          cursor: pointer;
+          &:hover {
+            outline: 4px solid;
+            outline-color: $primary-background-hover-color;
+          }
+          svg {
+            color: white;
+            width: 16px;
+            height: 16px;
+          }
         }
       }
     }

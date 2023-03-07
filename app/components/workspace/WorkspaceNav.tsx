@@ -35,14 +35,14 @@ export default function WorkspaceNav({ currentWorkspace }: any) {
             <div className="options">
               <p className="mini-paragraph">Workspace</p> <Menu />
             </div>
-            <div className="workspace-chose">
+            {/* <div className="workspace-choose">
               <div className="workspace-icon" style={{ backgroundColor: currentWorkspace.color }}>
                 {currentWorkspace.name[0]}
               </div>
               {currentWorkspace.name}
-                < NavigationChevronDown />
+                < NavigationChevronDown className="arrow"/>
               <Combobox placeholder="Search for a workspace" options={options} className="workspace-combobox"/>
-            </div>
+            </div> */}
           </header>
           <hr />
           <ul>
