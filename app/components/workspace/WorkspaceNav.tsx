@@ -24,7 +24,7 @@ export default function WorkspaceNav({ currentWorkspace }: any) {
           <ul>
             {currentWorkspace.boards.map((board: any) => (
               <li key={board.id}>
-                <Link href="">
+                <Link href={`/boards/${board.id}`}>
                   {<Board/>} {board.name}
                 </Link>
               </li>

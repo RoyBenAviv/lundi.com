@@ -14,6 +14,7 @@ model Workspace {
   id          String    @id @default(uuid())
   name        String
   description String?
+  color       String?
   boards      Boards[]
   folders     Folders[]
 }
@@ -32,9 +33,9 @@ model Boards {
   users       Users[]
   groups      Groups[]
   items       Item[]
-  Folders     Folders?   @relation(fields: [foldersId], references: [id])
+  folders     Folders?   @relation(fields: [foldersId], references: [id])
   foldersId   String?
-  Workspace   Workspace? @relation(fields: [workspaceId], references: [id])
+  workspace   Workspace? @relation(fields: [workspaceId], references: [id])
   workspaceId String?
 }
 
@@ -42,14 +43,14 @@ model Groups {
   id       String  @id @default(uuid())
   name     String
   items    Item[]
-  Boards   Boards? @relation(fields: [boardsId], references: [id])
+  boards   Boards? @relation(fields: [boardsId], references: [id])
   boardsId String?
 }
 
 model Users {
   id       String  @id @default(uuid())
   name     String
-  Boards   Boards? @relation(fields: [boardsId], references: [id])
+  boards   Boards? @relation(fields: [boardsId], references: [id])
   boardsId String?
 }
 

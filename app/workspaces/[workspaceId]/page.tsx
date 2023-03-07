@@ -3,7 +3,7 @@ import WorkspaceHome from '../../components/workspace/WorkspaceHome'
 import axios from 'axios'
 type URL = {
   params: {
-    id: string
+    workspaceId: string
   }
   searchParams: string
 }
@@ -17,8 +17,8 @@ const getWorkspace = async (workspaceId: string) => {
   }
 }
 
-export default async function Workspace(url: URL) {
-  const currentWorkspace = await getWorkspace(url.params.id)
+export default async function Workspaces(url: URL) {
+  const currentWorkspace = await getWorkspace(url.params.workspaceId)
 
   return (
     <>

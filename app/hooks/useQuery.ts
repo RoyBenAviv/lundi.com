@@ -8,8 +8,8 @@ export const useGetWorkspace = (workspaceId: string) => {
 export const useUpdateWorkspaceName = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({workspaceId, name}: {workspaceId: string, name: string}) => {
-      return axios.put(`http://localhost:3000/api/workspaces/${workspaceId}`, {name})
+    ({workspaceId, value, key}: {workspaceId: string, value: string, key: string}) => {
+      return axios.put(`http://localhost:3000/api/workspaces/${workspaceId}`, {value, key})
     },
     {
       onSuccess: ({ data }) => {
