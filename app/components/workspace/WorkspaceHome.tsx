@@ -10,7 +10,7 @@ const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff'
 export default function WorkspaceHome({ currentWorkspace }: any) {
   const { mutate: updateMutate } = useUpdateWorkspaceName()
 
-  const [currWorkspaceIcon, setCurrWorkspaceIcon] = useState(colors.find(color => color === currentWorkspace.icon))
+  const [currWorkspaceColor, setCurrWorkspaceColor] = useState(colors.find(color => color === currentWorkspace.color))
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const handleChange = (event: FocusEvent<HTMLHeadingElement, Element>, key: string) => {
@@ -20,7 +20,7 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
   }
 
   const handleChangeColor = (value: string, key: string) => {
-    setCurrWorkspaceIcon(value)
+    // setCurrWorkspaceColor(value)
     updateMutate({ workspaceId: currentWorkspace.id, value, key })
   }
 
@@ -32,7 +32,7 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
         </Button>
       </header>
       <section className="workspace-details">
-        <div onClick={() => setIsOpenEditIcon((isOpenEditIcon) => !isOpenEditIcon)} className="workspace-icon" style={{ backgroundColor: currWorkspaceIcon }}>
+        <div onClick={() => setIsOpenEditIcon((isOpenEditIcon) => !isOpenEditIcon)} className="workspace-icon" style={{ backgroundColor: currentWorkspace.color }}>
           {currentWorkspace.name[0]}
           <span>
             <Edit />
@@ -45,17 +45,17 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
             <div>
               {colors.map((color) => (
                 <div onClick={() => handleChangeColor(color, 'color')} style={{ backgroundColor: color }} className="color-option" key={color}>
-                  {color === currWorkspaceIcon && <Check />}
+                  {color === currentWorkspace.color && <Check />}
                 </div>
               ))}
             </div>
           </div>
         )}
         <div className="workspace-info">
-          <h3 onBlur={(event) => handleChange(event, 'name')}>
+          <h3  onBlur={(event) => handleChange(event, 'name')}>
             {currentWorkspace.name}
           </h3>
-          <p className="mini-paragraph" onBlur={(event) => handleChange(event, 'description')}>
+          <p  className="mini-paragraph" onBlur={(event) => handleChange(event, 'description')}>
             {currentWorkspace.description}
           </p>
         </div>
@@ -69,8 +69,8 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
           <TabPanels>
             <TabPanel className="recent-boards">
               {currentWorkspace.boards.map((board: any) => (
-                <>
-                  <p key={board.id}>
+                <div key={board.id}>
+                  <p >
                     <Link href={`/boards/${board.id}`}>
                       <span>
                         {<Board />} {board.name}
@@ -79,7 +79,7 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
                     </Link>
                   </p>
                   <hr />
-                </>
+                </div>
               ))}
             </TabPanel>
             <TabPanel>Second slide</TabPanel>

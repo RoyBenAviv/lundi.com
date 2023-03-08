@@ -1,15 +1,9 @@
 import axios from 'axios'
 import Link from 'next/link'
+import MyWorkspaces from './components/workspace/MyWorkspaces'
+import { getWorkspaces } from './services/appService'
 
-const getWorkspaces = async() => {
-    try {
-      const workspaces = await axios.get(`${process.env.BASE_URL}/api/workspaces`)
-      return workspaces.data
-    } catch(err) {
-      console.log('file: page.tsx:6 -> err:', err)
-      
-    }
-}
+
 
 export default async function Home() {
   const workspaces = await getWorkspaces()
@@ -21,11 +15,7 @@ export default async function Home() {
       <section>Inbox</section>
       <section>
         My workspaces
-        <ul>
-        {workspaces.map((workspace: any) => (
-          <li key={workspace.id}><Link href={`/workspaces/${workspace.id}`}>{workspace.name}</Link></li>
-        ))}
-        </ul>
+        <MyWorkspaces workspaces={workspaces} />
       </section>
       <nav>
         <ul>
