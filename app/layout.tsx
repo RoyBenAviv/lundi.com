@@ -1,4 +1,4 @@
-import QueryWrapper from './hooks/QueryWrapper'
+import QueryWrapper from './util/QueryWrapper'
 import 'monday-ui-react-core/dist/main.css'
 import './styles/style.scss'
 import SurfaceControlNav from './components/SurfaceControlNav'

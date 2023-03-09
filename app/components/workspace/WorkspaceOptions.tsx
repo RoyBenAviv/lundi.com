@@ -18,7 +18,7 @@
 //     },
 //   ]
 
-export default function WorkspaceNav({currentWorkspace}: any) {
+export default function WorkspaceNav({currentWorkspace}: {currentWorkspace: Workspace}) {
     return (
       <aside>
 

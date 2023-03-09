@@ -1,26 +1,21 @@
 'use client'
 
-import { useUpdateWorkspaceName } from '@/app/hooks/useQuery'
+import { useGetWorkspace, useUpdateWorkspace } from '@/app/hooks/useQuery'
 import { Button, Tab, TabList, TabPanel, TabPanels, TabsContext } from 'monday-ui-react-core'
 import Link from 'next/link'
 import { FocusEvent, useState } from 'react'
 const { Edit, Favorite, Board, Check } = require('monday-ui-react-core/icons')
 
 const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
-export default function WorkspaceHome({ currentWorkspace }: any) {
-  const { mutate: updateMutate } = useUpdateWorkspaceName()
+export default function WorkspaceHome({workspaceId}: {workspaceId: string}) {
 
-  const [currWorkspaceColor, setCurrWorkspaceColor] = useState(colors.find(color => color === currentWorkspace.color))
+  const {data: currentWorkspace} = useGetWorkspace(workspaceId, null)
+  const { mutate: updateMutate } = useUpdateWorkspace()
+
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
-  const handleChange = (event: FocusEvent<HTMLHeadingElement, Element>, key: string) => {
-    const value = event.target.innerText
+  const handleChange = (value: string, key: string) => {
     if (value === currentWorkspace[key]) return
-    updateMutate({ workspaceId: currentWorkspace.id, value, key })
-  }
-
-  const handleChangeColor = (value: string, key: string) => {
-    // setCurrWorkspaceColor(value)
     updateMutate({ workspaceId: currentWorkspace.id, value, key })
   }
 
@@ -44,7 +39,7 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
             <p className="mini-paragraph">Background color</p>
             <div>
               {colors.map((color) => (
-                <div onClick={() => handleChangeColor(color, 'color')} style={{ backgroundColor: color }} className="color-option" key={color}>
+                <div onClick={() => handleChange(color, 'color')} style={{ backgroundColor: color }} className="color-option" key={color}>
                   {color === currentWorkspace.color && <Check />}
                 </div>
               ))}
@@ -52,10 +47,10 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
           </div>
         )}
         <div className="workspace-info">
-          <h3  onBlur={(event) => handleChange(event, 'name')}>
+          <h3  onBlur={(event) => handleChange(event.target.innerText, 'name')}>
             {currentWorkspace.name}
           </h3>
-          <p  className="mini-paragraph" onBlur={(event) => handleChange(event, 'description')}>
+          <p  className="mini-paragraph" onBlur={(event) => handleChange(event.target.innerText, 'description')}>
             {currentWorkspace.description}
           </p>
         </div>
@@ -68,7 +63,7 @@ export default function WorkspaceHome({ currentWorkspace }: any) {
           </TabList>
           <TabPanels>
             <TabPanel className="recent-boards">
-              {currentWorkspace.boards.map((board: any) => (
+              {currentWorkspace.boards.map((board: Board) => (
                 <div key={board.id}>
                   <p >
                     <Link href={`/boards/${board.id}`}>

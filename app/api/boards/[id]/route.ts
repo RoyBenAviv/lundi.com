@@ -11,13 +11,16 @@ export async function GET(request: Request, { params }: { params: Params }) {
       Workspace: {
         include: {
           boards: {
-            include: { items: true },
+            include: {
+              groups: {
+                include: { items: true },
+              },
+            },
           },
         },
       },
     },
   })
-  console.log('file: route.ts:13 -> board:', board)
 
   return NextResponse.json(board)
 }

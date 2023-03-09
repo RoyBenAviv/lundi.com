@@ -57,7 +57,7 @@ model Users {
 model Item {
   id      String  @id @default(uuid())
   name    String
-  groups  Groups? @relation(fields: [groupId], references: [id])
+  group  Groups? @relation(fields: [groupId], references: [id])
   groupId String?
   board   Boards  @relation(fields: [boardId], references: [id])
   boardId String

@@ -1,11 +1,17 @@
 'use client'
 
+import { useGetWorkspace } from '@/app/hooks/useQuery'
 import Link from 'next/link'
 import { useCallback, useState } from 'react'
 const { Combobox } = require('monday-ui-react-core')
 const { Board, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 
-export default function WorkspaceNav({ currentWorkspace }: any) {
+export default function WorkspaceNav({workspaceId, initialData}: {workspaceId: string, initialData?: Workspace | null}) {
+console.log('file: WorkspaceNav.tsx:10 -> workspaceId:', workspaceId)
+
+  const {data: currentWorkspace, isLoading} = useGetWorkspace(workspaceId, initialData!)
+  console.log('file: WorkspaceNav.tsx:12 -> currentWorkspace:', currentWorkspace)
+
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
   const [isComboBoxOpen, setIsComboBoxOpen] = useState<boolean>(false)
 
@@ -54,7 +60,7 @@ export default function WorkspaceNav({ currentWorkspace }: any) {
           </header>
           <hr />
           <ul>
-            {currentWorkspace.boards.map((board: any) => (
+            {currentWorkspace.boards.map((board: Board) => (
               <li key={board.id}>
                 <Link href={`/boards/${board.id}`}>
                   {<Board />} {board.name}
