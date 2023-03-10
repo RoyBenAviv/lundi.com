@@ -7,16 +7,18 @@ import { ChangeEvent, useCallback, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
 import { v4 as uuidv4 } from 'uuid'
 const { Modal, Input } = require('monday-ui-react-core')
-const { Board, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
+const { Board, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
+const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
 
 export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId: string; initialData?: Workspace | null }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspaceId, initialData!)
 
-
+  const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
   const [isComboBoxOpen, setIsComboBoxOpen] = useState<boolean>(false)
   const [isOpenAddNewWorkspace, setIsOpenAddNewWorkspace] = useState<boolean>(false)
-  const [newWorkspaceName, setNewWorkspaceName] = useState<string>('')
+  const [newWorkspaceName, setNewWorkspaceName] = useState<string>('New workspace')
+  const [newWorkspaceColor, setNewWorkspaceColor] = useState<string>('#00ca72')
   const { mutate: addWorkspaceMutate, isLoading: isLoadingNewWorkspace } = useAddWorkspace()
   const onOpenAddNewWorkspace = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -35,7 +37,7 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
     const newWorkspace: Workspace = {
       name: newWorkspaceName,
       description: '',
-      color: 'red',
+      color: newWorkspaceColor,
     }
     addWorkspaceMutate(newWorkspace)
   }
@@ -78,6 +80,25 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
       <Modal id="add-new-workspace" title="Add new workspace" show={isOpenAddNewWorkspace} onClose={() => setIsOpenAddNewWorkspace(false)}>
         <ModalContent>
           <div className="new-workspace-content">
+            <div onClick={() => setIsOpenEditIcon((isOpenEditIcon) => !isOpenEditIcon)} style={{ backgroundColor: newWorkspaceColor }} className="workspace-icon">
+              {newWorkspaceName[0]}
+              <span>
+                <Edit />
+                Edit
+              </span>
+            </div>
+            {isOpenEditIcon && (
+              <div className="edit-workspace-icon">
+                <p className="mini-paragraph">Background color</p>
+                <div>
+                  {colors.map((color) => (
+                    <div onClick={() => setNewWorkspaceColor(color)} style={{ backgroundColor: color }} className="color-option" key={color}>
+                      {color === newWorkspaceColor && <Check />}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <p className="mini-paragraph">Workspace name</p>
             <input value={newWorkspaceName} onChange={(event: ChangeEvent<HTMLInputElement>) => setNewWorkspaceName(event.target?.value)} placeholder="Choose a name for your workspace" className="new-workspace-name-input" type="text" />
             <Flex justify={Flex.justify?.END} gap={12}>

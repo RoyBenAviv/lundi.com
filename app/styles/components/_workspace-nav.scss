@@ -129,6 +129,14 @@
 
 #add-new-workspace {
   .new-workspace-content {
+    .workspace-icon {
+      @include workspace-icon;
+      margin: auto;
+    }
+    .edit-workspace-icon {
+      top: 175px;
+      left: 25%;
+    }
     display: flex;
     flex-direction: column;
     gap: 10px;
