@@ -7,7 +7,7 @@ import { ChangeEvent, useCallback, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
 import { v4 as uuidv4 } from 'uuid'
 const { Modal, Input } = require('monday-ui-react-core')
-const { Board, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
+const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
 
 export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId: string; initialData?: Workspace | null }) {
@@ -63,17 +63,37 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
               {isComboBoxOpen ? <NavigationChevronUp className="arrow" /> : <NavigationChevronDown className="arrow" />}
               {isComboBoxOpen && <WorkspaceOptions currentWorkspaceId={currentWorkspace.id} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />}
             </section>
+            <section className="board-actions">
+              <ul>
+                <li>
+                  <Add /> <button>Add</button>
+                </li>
+                <li>
+                <Search /><button>Search</button>
+                </li>
+              </ul>
+            </section>
           </header>
           <hr />
-          <ul>
-            {currentWorkspace.boards.map((board: Board) => (
-              <li key={board.id}>
-                <Link href={`/boards/${board.id}`}>
-                  {<Board />} {board.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="boards-list-container">
+            {currentWorkspace.boards.length ? (
+              <ul>
+                {currentWorkspace.boards.map((board: Board) => (
+                  <li key={board.id}>
+                    <Link href={`/boards/${board.id}`}>
+                      {<Board />} {board.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="no-boards">
+                This workspace is empty.
+                <br />
+                Get started by adding boards.
+              </p>
+            )}
+          </div>
         </>
       )}
 

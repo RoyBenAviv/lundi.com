@@ -1,8 +1,35 @@
 .workspace-nav {
   header {
+    .board-actions {
+      ul {
+        margin-top: 15px;
+        li {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          padding: 5px;
+          button {
+            all:unset;
+          }
+          height: 35px;
+          width: 100%;
+          border-radius: 5px;
+          cursor: pointer;
+          &:hover {
+            background-color: $primary-background-hover-on-secondary-color;
+          }
+          a {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          }
+        }
+      }
+    }
+
     display: flex;
     flex-direction: column;
-    margin: 10px 10px 20px 0;
+    margin: 10px 10px 10px 0;
     .options {
       display: flex;
       justify-content: space-between;
@@ -77,6 +104,30 @@
         width: 12px;
         height: 12px;
       }
+    }
+  }
+  .boards-list-container {
+    padding-top: 16px;
+    ul {
+      li {
+        padding: 8px;
+        width: 100%;
+        border-radius: 5px;
+        cursor: pointer;
+        &:hover {
+          background-color: $primary-background-hover-on-secondary-color;
+        }
+        a {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+        }
+      }
+    }
+    .no-boards {
+      padding-top: 16px;
+      font-size: 14px;
+      text-align: center;
     }
   }
   outline: 1px solid $layout-border-color;

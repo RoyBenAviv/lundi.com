@@ -24,8 +24,8 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
   }
 
   return (
-    <section className="workspace-combobox">
-      <Combobox onClick={(option: DropDownOption) => navigateWorkspace(option)} placeholder="Search for a workspace" loading={isLoading} categories={categories} options={workspaces ? convertToDropDownOptions(workspaces) : []} />
+    <section onClick={e => e.stopPropagation()} className="workspace-combobox">
+      <Combobox optionsListHeight={280} onClick={(option: DropDownOption) => navigateWorkspace(option)} placeholder="Search for a workspace" loading={isLoading} categories={categories} options={workspaces ? convertToDropDownOptions(workspaces) : []} />
       <hr />
       <div className="actions">
         <Button onClick={(event: React.MouseEvent) => onOpenAddNewWorkspace(event)} kind={Button.kinds?.TERTIARY} className="combobox-stories-styles_btn" leftIcon={Add}>
