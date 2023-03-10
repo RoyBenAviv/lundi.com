@@ -83,6 +83,7 @@
       border-radius: 20px;
       box-shadow: $box-shadow-small;
       position: relative;
+      text-transform: capitalize;
       span {
         transition: opacity 100ms ease-in;
         opacity: 0;

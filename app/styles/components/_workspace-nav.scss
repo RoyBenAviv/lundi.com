@@ -13,7 +13,6 @@
     }
     .workspace-choose {
       position: relative;
-
       .workspace-combobox {
         position: absolute;
         top: 45px;
@@ -23,15 +22,26 @@
         width: 280px;
         height: 350px;
         box-shadow: $box-shadow-small;
-        padding: 10px;
+        padding: 10px 10px 0 10px;
         border-radius: 10px;
         font-size: 14px;
+        display: flex;
+        flex-direction: column;
         input {
           display: flex;
           justify-content: space-between;
           align-items: center;
           &::placeholder {
             font-size: 14px;
+          }
+        }
+        .actions {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          svg {
+            width: 16px;
+            height: 16px;
           }
         }
       }
@@ -53,6 +63,7 @@
         gap: 10px;
       }
       .workspace-icon {
+        text-transform: capitalize;
         color: white;
         border-radius: 6px;
         font-size: 14px;
@@ -61,7 +72,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-
       }
       .arrow {
         width: 12px;
@@ -69,7 +79,6 @@
       }
     }
   }
-
   outline: 1px solid $layout-border-color;
   outline-offset: -2px;
   position: relative;
@@ -116,5 +125,17 @@
       }
     }
   }
+}
 
+#add-new-workspace {
+  .new-workspace-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .new-workspace-name-input{
+      border: 3px solid black;
+      @include monday-input;
+      margin-bottom: 15px;
+    }
+  }
 }

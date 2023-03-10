@@ -1,10 +1,10 @@
 interface Workspace {
-  id: string
+  id?: string
   name: string
   description: string
   color: string
-  boards: Board[]
-  foloders: Folder[]
+  boards?: Board[]
+  folders?: Folder[]
 }
 
 interface Folder {
@@ -48,4 +48,10 @@ interface Item {
   groupId: string
   board: Board
   boardId: string
+}
+
+interface DropDownOption {
+  label: string
+  value: string | number
+  workspaceId?: string
 }

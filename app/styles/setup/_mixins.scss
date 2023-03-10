@@ -18,3 +18,17 @@
   @mixin hover-btn {
     background-color: $primary-background-hover-color;
   }
+
+  @mixin monday-input {
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid $ui-border-color;
+    width: 100%;
+    padding: 8px 16px;
+    outline: 0;
+    font-size: 16px;
+    height: 42px;
+    &:focus {
+      border-color: $primary-color;
+    }
+  }

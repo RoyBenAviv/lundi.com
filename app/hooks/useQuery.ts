@@ -1,20 +1,24 @@
 import { useQuery, useMutation, useQueryClient, UseQueryResult } from '@tanstack/react-query'
 import axios from 'axios'
+import { useRouter } from 'next/navigation'
 import { getWorkspace, getWorkspaces } from '../services/appService'
 
 export const useGetWorkspace = (workspaceId: string, initialData: Workspace | null) => {
-  return useQuery(['workspace', workspaceId], async () => {
-    
-    const workspace = await getWorkspace(workspaceId)
-    console.log('file: useQuery.ts:8 -> workspace:', workspace)
-    return workspace
-  },
-  {
-    initialData: initialData || null
-  })
+
+  return useQuery(
+    ['workspace', workspaceId],
+    async () => {
+      const workspace = await getWorkspace(workspaceId)
+      console.log('file: useQuery.ts:8 -> workspace:', workspace)
+      return workspace
+    },
+    {
+      initialData: initialData || null,
+    }
+  )
 }
 
-export const useGetWorkspaces = (workspaces: Workspace[]) => {
+export const useGetWorkspaces = (workspaces?: Workspace[]) => {
   return useQuery(
     ['workspaces'],
     async () => {
@@ -43,6 +47,25 @@ export const useUpdateWorkspace = () => {
       },
       onSuccess: ({ data: currentWorkspace }) => {
         queryClient.invalidateQueries(['workspace', currentWorkspace.id])
+      },
+    }
+  )
+}
+
+export const useAddWorkspace = () => {
+  const queryClient = useQueryClient()
+
+  const router = useRouter()
+
+  return useMutation(
+    (newWorkspace: Workspace) => {
+      return axios.post('http://localhost:3000/api/workspaces', newWorkspace)
+    },
+    {
+      onSuccess: ({data}) => {
+        queryClient.invalidateQueries(['workspaces'])
+        router.push(`/workspaces/${data.id}`)
+
       },
     }
   )
