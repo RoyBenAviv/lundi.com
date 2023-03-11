@@ -4,15 +4,6 @@ interface Workspace {
   description: string
   color: string
   boards?: Board[]
-  folders?: Folder[]
-}
-
-interface Folder {
-  id: string
-  name: string
-  boards: Board[]
-  workspace: Workspace
-  workspaceId: string
 }
 
 interface Board {
@@ -21,9 +12,9 @@ interface Board {
   users: User[]
   group: Group[]
   items: Item[]
-  folders: Folder[]
   workspace: Workspace
   workspaceId: string
+  order: number
 }
 
 interface Group {

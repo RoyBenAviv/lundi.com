@@ -16,16 +16,9 @@ model Workspace {
   description String?
   color       String?
   boards      Boards[]
-  folders     Folders[]
 }
 
-model Folders {
-  id          String     @id @default(uuid())
-  name        String
-  boards      Boards[]
-  Workspace   Workspace? @relation(fields: [workspaceId], references: [id])
-  workspaceId String?
-}
+
 
 model Boards {
   id          String     @id @default(uuid())
@@ -33,8 +26,7 @@ model Boards {
   users       Users[]
   groups      Groups[]
   items       Item[]
-  folders     Folders?   @relation(fields: [foldersId], references: [id])
-  foldersId   String?
+  order       Int        @default(0)
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
   workspaceId String?
 }

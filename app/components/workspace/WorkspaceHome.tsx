@@ -1,23 +1,31 @@
 'use client'
 
+import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { useGetWorkspace, useUpdateWorkspace } from '@/app/hooks/useQuery'
 import { Button, Tab, TabList, TabPanel, TabPanels, TabsContext } from 'monday-ui-react-core'
 import Link from 'next/link'
-import { FocusEvent, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { CSSTransition } from 'react-transition-group'
 const { Edit, Favorite, Board, Check } = require('monday-ui-react-core/icons')
 
 const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
-export default function WorkspaceHome({workspaceId}: {workspaceId: string}) {
-
-  const {data: currentWorkspace} = useGetWorkspace(workspaceId, null)
+export default function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
+  const { data: currentWorkspace } = useGetWorkspace(workspaceId, null)
   const { mutate: updateMutate } = useUpdateWorkspace()
 
+  const editWorkspaceIconRef = useRef(null)
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const handleChange = (value: string, key: string) => {
     if (value === currentWorkspace[key]) return
     updateMutate({ workspaceId: currentWorkspace.id, value, key })
   }
+
+  useOnClickOutside(editWorkspaceIconRef, () => setIsOpenEditIcon(false))
+
+  useEffect(() => {
+    console.log('isOpenEditIcon', isOpenEditIcon)
+  }, [isOpenEditIcon])
 
   return (
     <main className="workspace-home">
@@ -26,31 +34,33 @@ export default function WorkspaceHome({workspaceId}: {workspaceId: string}) {
           <Edit /> Change Cover
         </Button>
       </header>
-      <section className="workspace-details">
-        <div onClick={() => setIsOpenEditIcon((isOpenEditIcon) => !isOpenEditIcon)} className="workspace-icon" style={{ backgroundColor: currentWorkspace.color }}>
+      <section ref={editWorkspaceIconRef} className="workspace-details">
+        <div onClick={() => setIsOpenEditIcon(isOpenEditIcon => !isOpenEditIcon)} className="workspace-icon" style={{ backgroundColor: currentWorkspace.color }}>
           {currentWorkspace.name[0]}
           <span>
             <Edit />
             Edit
           </span>
         </div>
-        {isOpenEditIcon && (
-          <div className="edit-workspace-icon">
-            <p className="mini-paragraph">Background color</p>
-            <div>
-              {colors.map((color) => (
-                <div onClick={() => handleChange(color, 'color')} style={{ backgroundColor: color }} className="color-option" key={color}>
-                  {color === currentWorkspace.color && <Check />}
+        <CSSTransition timeout={150} in={isOpenEditIcon} classNames="container-transition">
+          <>
+            {isOpenEditIcon && (
+              <div className="edit-workspace-icon">
+                <p className="mini-paragraph">Background color</p>
+                <div>
+                  {colors.map((color) => (
+                    <div onClick={() => handleChange(color, 'color')} style={{ backgroundColor: color }} className="color-option" key={color}>
+                      {color === currentWorkspace.color && <Check />}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+              </div>
+            )}
+          </>
+        </CSSTransition>
         <div className="workspace-info">
-          <h3  onBlur={(event) => handleChange(event.target.innerText, 'name')}>
-            {currentWorkspace.name}
-          </h3>
-          <p  className="mini-paragraph" onBlur={(event) => handleChange(event.target.innerText, 'description')}>
+          <h3 onBlur={(event) => handleChange(event.target.innerText, 'name')}>{currentWorkspace.name}</h3>
+          <p className="mini-paragraph" onBlur={(event) => handleChange(event.target.innerText, 'description')}>
             {currentWorkspace.description}
           </p>
         </div>
@@ -65,7 +75,7 @@ export default function WorkspaceHome({workspaceId}: {workspaceId: string}) {
             <TabPanel className="recent-boards">
               {currentWorkspace.boards.map((board: Board) => (
                 <div key={board.id}>
-                  <p >
+                  <p>
                     <Link href={`/boards/${board.id}`}>
                       <span>
                         {<Board />} {board.name}

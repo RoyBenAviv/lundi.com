@@ -34,7 +34,6 @@
   }
   .workspace-details {
     margin-left: 100px;
-
     position: relative;
     margin-top: -65px;
     display: flex;
@@ -73,12 +72,12 @@
     .workspace-icon {
       @include workspace-icon;
       box-shadow: $box-shadow-small;
-      
     }
     .edit-workspace-icon {
       top: 130px;
       left: 0;
     }
+
   }
   .workspace-tabs {
     margin-left: 100px;
@@ -112,3 +111,4 @@
     }
   }
 }
+

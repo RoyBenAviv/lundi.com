@@ -1,48 +1,28 @@
-import { RefObject, useEffect } from "react";
+import { useEffect } from "react";
 
-
-
-
-function useOnClickOutside<T extends HTMLElement>(
-  ref: RefObject<T>,
-  handler: (event: Event) => void
-) {
-  useEffect(() => {
-    const listener = (event: MouseEvent | TouchEvent | any) => {
-      const targetEl = ref.current;
-      if (targetEl) {
-        const clickedX = event.clientX || event.touches[0].clientX;
-        const clickedY = event.clientY || event.touches[0].clientY;
-        const rect = targetEl.getBoundingClientRect();
-        const targetElTop = rect.top;
-        const targetElBottom = rect.top + rect.height;
-        const targetElLeft = rect.left;
-        const targetElRight = rect.left + rect.width;
-
-        if (
-          // check X Coordinate
-          targetElLeft < clickedX &&
-          clickedX < targetElRight &&
-          // check Y Coordinate
-          targetElTop < clickedY &&
-          clickedY < targetElBottom
-        ) {
+export default function useOnClickOutside(ref: any, handler: any) {
+  useEffect(
+    () => {
+      const listener = (event: any) => {
+        // Do nothing if clicking ref's element or descendent elements
+        if (!ref.current || ref.current.contains(event.target)) {
           return;
         }
-
-        // trigger event when the clickedX,Y is outside of the targetEl
         handler(event);
-      }
-    };
-
-    document.addEventListener("mousedown", listener);
-    document.addEventListener("touchstart", listener);
-
-    return () => {
-      document.removeEventListener("mousedown", listener);
-      document.removeEventListener("touchstart", listener);
-    };
-  }, [ref, handler]);
+      };
+      document.addEventListener("mousedown", listener);
+      document.addEventListener("touchstart", listener);
+      return () => {
+        document.removeEventListener("mousedown", listener);
+        document.removeEventListener("touchstart", listener);
+      };
+    },
+    // Add ref and handler to effect dependencies
+    // It's worth noting that because passed in handler is a new ...
+    // ... function on every render that will cause this effect ...
+    // ... callback/cleanup to run every render. It's not a big deal ...
+    // ... but to optimize you can wrap handler in useCallback before ...
+    // ... passing it into this hook.
+    [ref, handler]
+  );
 }
-
-export default useOnClickOutside;

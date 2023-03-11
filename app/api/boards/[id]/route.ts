@@ -8,7 +8,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
   const board = await prisma.boards.findUnique({
     where: { id: params.id },
     include: {
-      Workspace: {
+      workspace: {
         include: {
           boards: {
             include: {
@@ -21,6 +21,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
       },
     },
   })
+  console.log('file: route.ts:24 -> board:', board)
 
   return NextResponse.json(board)
 }

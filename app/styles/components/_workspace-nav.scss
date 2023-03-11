@@ -1,13 +1,14 @@
 .workspace-nav {
   header {
     .board-actions {
+      width: 280px;
       ul {
         margin-top: 15px;
         li {
           display: flex;
           align-items: center;
           gap: 5px;
-          padding: 5px;
+          padding: 8px;
           button {
             all:unset;
           }
@@ -41,6 +42,9 @@
     .workspace-choose {
       position: relative;
       .workspace-combobox {
+        .combobox--wrapper {
+          min-height: 290px;
+        }
         position: absolute;
         top: 45px;
         left: 0;
@@ -107,9 +111,10 @@
     }
   }
   .boards-list-container {
+
     padding-top: 16px;
-    ul {
-      li {
+    .boards-list {
+      div {
         padding: 8px;
         width: 100%;
         border-radius: 5px;
@@ -117,7 +122,7 @@
         &:hover {
           background-color: $primary-background-hover-on-secondary-color;
         }
-        a {
+        a{
           display: flex;
           align-items: center;
           gap: 5px;
@@ -171,8 +176,6 @@
         color: white;
         left: 20px;
         transform: translateX(-100%);
-        // position: absolute;
-        // padding-left: 2px;
       }
     }
   }
@@ -197,4 +200,21 @@
       margin-bottom: 15px;
     }
   }
+}
+
+.drag-ghost {
+  background: white !important;
+  border-radius: 10px;
+}
+
+.custom-placeholder {
+  border: 1px dashed $basic_blue;
+  background-color: lightgray;
+  opacity: 0.5;
+}
+
+.custom-dragged-element {
+  background-color: #f0f0f0;
+  box-shadow: 0 0 10px #ccc;
+  background-color: red;
 }

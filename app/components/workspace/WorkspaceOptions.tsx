@@ -24,7 +24,7 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
   }
 
   return (
-    <section onClick={e => e.stopPropagation()} className="workspace-combobox">
+    <>
       <Combobox optionsListHeight={280} onClick={(option: DropDownOption) => navigateWorkspace(option)} placeholder="Search for a workspace" loading={isLoading} categories={categories} options={workspaces ? convertToDropDownOptions(workspaces) : []} />
       <hr />
       <div className="actions">
@@ -32,6 +32,6 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
           Add workspace
         </Button>
       </div>
-    </section>
+    </>
   )
 }

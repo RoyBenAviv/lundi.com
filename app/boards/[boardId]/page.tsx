@@ -36,7 +36,7 @@ export default async function Boards(url: URL) {
   return (
     <>
     {/* <Hydrate state={dehydratedStateWorkspace}> */}
-      <WorkspaceNav workspaceId={currentBoard.workspaceId} initialData={currentBoard.Workspace}/>
+      <WorkspaceNav workspaceId={currentBoard.workspaceId} initialData={currentBoard.workspace}/>
     {/* </Hydrate> */}
       {boardId}
     </>

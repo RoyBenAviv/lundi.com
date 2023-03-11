@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation'
 import { getWorkspace, getWorkspaces } from '../services/appService'
 
 export const useGetWorkspace = (workspaceId: string, initialData: Workspace | null) => {
-
   return useQuery(
     ['workspace', workspaceId],
     async () => {
@@ -62,10 +61,24 @@ export const useAddWorkspace = () => {
       return axios.post('http://localhost:3000/api/workspaces', newWorkspace)
     },
     {
-      onSuccess: ({data}) => {
+      onSuccess: ({ data }) => {
         queryClient.invalidateQueries(['workspaces'])
         router.push(`/workspaces/${data.id}`)
+      },
+    }
+  )
+}
 
+
+export const useSortBoards = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    (workspaceBoards: any[]) => {
+      return axios.put('http://localhost:3000/api/boards', workspaceBoards)
+    },
+    {
+      onSuccess: ({data}) => {
+        queryClient.invalidateQueries(['boards'])
       },
     }
   )

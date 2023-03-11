@@ -1,15 +1,17 @@
 'use client'
 
-import { useAddWorkspace, useGetWorkspace } from '@/app/hooks/useQuery'
-import { Button, Flex, ModalContent } from 'monday-ui-react-core'
+import { useAddWorkspace, useGetWorkspace, useSortBoards } from '@/app/hooks/useQuery'
+import { Button, Flex, ModalContent, useClickOutside } from 'monday-ui-react-core'
 import Link from 'next/link'
-import { ChangeEvent, useCallback, useState } from 'react'
+import { ChangeEvent, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
-import { v4 as uuidv4 } from 'uuid'
+import { ReactSortable } from 'react-sortablejs'
+import useOnClickOutside from '@/app/hooks/useOnClickOutside'
+import { CSSTransition } from 'react-transition-group'
+
 const { Modal, Input } = require('monday-ui-react-core')
 const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
-
 export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId: string; initialData?: Workspace | null }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspaceId, initialData!)
 
@@ -19,7 +21,14 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
   const [isOpenAddNewWorkspace, setIsOpenAddNewWorkspace] = useState<boolean>(false)
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>('New workspace')
   const [newWorkspaceColor, setNewWorkspaceColor] = useState<string>('#00ca72')
+  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(currentWorkspace.boards.sort((board1: Board, board2: Board) => board1.order - board2.order))
+
+  const { mutate: sortBoards } = useSortBoards()
   const { mutate: addWorkspaceMutate, isLoading: isLoadingNewWorkspace } = useAddWorkspace()
+
+  const workspaceOptionsRef = useRef(null)
+  useOnClickOutside(workspaceOptionsRef, () => setIsComboBoxOpen(false))
+
   const onOpenAddNewWorkspace = (event: React.MouseEvent) => {
     event.stopPropagation()
 
@@ -42,6 +51,41 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
     addWorkspaceMutate(newWorkspace)
   }
 
+  const onSaveBoardsList = () => {
+    console.log('workspaceBoards', workspaceBoards)
+    const sortedBoards = workspaceBoards.map((board: Board, index: number) => ({
+      ...board,
+      order: index,
+    }))
+    console.log('file: WorkspaceNav.tsx:58 -> sortedBoards:', sortedBoards)
+
+    // setWorkspaceBoards(sortedBoards)
+    // sortBoards(sortedBoards)
+  }
+  const [timeoutId, setTimeoutId] = useState<any>(null)
+
+  useEffect(() => {
+    if (timeoutId) clearTimeout(timeoutId)
+
+    const id = setTimeout(() => {
+      onSortBoards(workspaceBoards)
+    }, 2000)
+    setTimeoutId(id)
+    return () => clearTimeout(timeoutId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceBoards])
+
+  const onSortBoards = (workspaceBoards: any) => {
+    console.log('workspaceBoards', workspaceBoards)
+    const sortedBoards = workspaceBoards.map((board: Board, index: number) => ({
+      id: board.id,
+      order: index,
+    }))
+    console.log('file: WorkspaceNav.tsx:58 -> sortedBoards:', sortedBoards)
+
+    sortBoards(sortedBoards)
+  }
+
   return (
     <nav onMouseEnter={() => openNavOnEnter()} className={`workspace-nav ${isCollapseNav ? 'close' : 'open'}`}>
       <button onClick={() => setIsCollapseNav((isCollapseNav) => !isCollapseNav)} className="collapse-btn">
@@ -53,7 +97,7 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
             <div className="options">
               <p className="mini-paragraph">Workspace</p> <Menu />
             </div>
-            <section onClick={() => setIsComboBoxOpen((isComboBoxOpen) => !isComboBoxOpen)} className="workspace-choose" style={isComboBoxOpen ? { borderColor: '#0073ea' } : {}}>
+            <section ref={workspaceOptionsRef} onClick={() => setIsComboBoxOpen((isComboBoxOpen) => !isComboBoxOpen)} className="workspace-choose" style={isComboBoxOpen ? { borderColor: '#0073ea' } : {}}>
               <div className="workspace-icon-name">
                 <div className="workspace-icon" style={{ backgroundColor: currentWorkspace.color }}>
                   {currentWorkspace.name[0]}
@@ -61,7 +105,15 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
                 {currentWorkspace.name}
               </div>
               {isComboBoxOpen ? <NavigationChevronUp className="arrow" /> : <NavigationChevronDown className="arrow" />}
-              {isComboBoxOpen && <WorkspaceOptions currentWorkspaceId={currentWorkspace.id} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />}
+              <CSSTransition timeout={150} in={isComboBoxOpen} classNames="container-transition">
+                <>
+              {isComboBoxOpen && (
+                <section onClick={(e) => e.stopPropagation()} className="workspace-combobox">
+                    <WorkspaceOptions currentWorkspaceId={currentWorkspace.id} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />
+                  </section>
+              )}
+              </>
+              </CSSTransition>
             </section>
             <section className="board-actions">
               <ul>
@@ -69,7 +121,8 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
                   <Add /> <button>Add</button>
                 </li>
                 <li>
-                <Search /><button>Search</button>
+                  <Search />
+                  <button>Search</button>
                 </li>
               </ul>
             </section>
@@ -77,15 +130,15 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
           <hr />
           <div className="boards-list-container">
             {currentWorkspace.boards.length ? (
-              <ul>
-                {currentWorkspace.boards.map((board: Board) => (
-                  <li key={board.id}>
+              <ReactSortable onEnd={() => onSaveBoardsList()} list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
+                {workspaceBoards.map((board: Board) => (
+                  <div key={board.id}>
                     <Link href={`/boards/${board.id}`}>
                       {<Board />} {board.name}
                     </Link>
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </ReactSortable>
             ) : (
               <p className="no-boards">
                 This workspace is empty.
