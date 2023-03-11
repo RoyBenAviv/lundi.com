@@ -8,11 +8,22 @@ interface Params {
 export async function GET(request: Request, { params }: { params: Params }) {
   const workspace = await prisma.workspace.findUnique({
     where: { id: params.id },
-    include: { boards: {
-      include: {groups: {
-        include: {items: true}
-      }}
-    } },
+    include: {
+      boards: {
+        include: {
+          columns: true,
+          groups: {
+            include: {
+              items: {
+                include: {
+                  columnValues: true,
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   })
   return NextResponse.json(workspace)
 }

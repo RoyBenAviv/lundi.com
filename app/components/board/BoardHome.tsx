@@ -1,6 +1,3 @@
-'use client'
-
-import { Button, Tab, TabList, TabPanel, TabPanels, TabsContext } from 'monday-ui-react-core'
 import Group from '../Group/Group'
 const { Home } = require('monday-ui-react-core/icons')
 export default function BoardHome({ board }: { board: Board }) {
@@ -11,23 +8,40 @@ export default function BoardHome({ board }: { board: Board }) {
         <h2>{board.name}</h2>
       </header>
       <section>
-        <TabsContext>
-          <TabList>
-            <Tab>
-              <div>
-                <Home /> Main table
-              </div>
-            </Tab>
-            <></>
-          </TabList>
-          <TabPanels>
-            <TabPanel className="recent-boards">
+        {/* <table border={1}>
+          <tr>
+            <th>Name</th>
+            {board.columns.map((column: any) => (
+              <th key={column.id}>{column.name}</th>
+            ))}
+          </tr>
+              {
+                board.groups[0].items.map((item: any) => (
+                          <>
+                  <tr key={item.id}>
+                          <td>{item.name}</td>
+                  {
+                    item.columnValues.map((columnValue: any) => (
+                      <tr key={columnValue.id}>
+                         <td> {columnValue.value}</td>
+                      </tr>
+                    ))
+                  }
+
+                  </tr>
+                  <>
+                  </>
+                  </>
+                ))
+              }
+        </table> */}
+
+
+
+
               {board.groups.map((group: Group) => (
-                <Group key={group.id} group={group} />
+                <Group key={group.id} group={group} columns={board.columns} />
               ))}
-            </TabPanel>
-          </TabPanels>
-        </TabsContext>
         <pre>{JSON.stringify(board, null, 2)}</pre>
       </section>
     </main>

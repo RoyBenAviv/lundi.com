@@ -92,3 +92,19 @@ a {
   text-decoration: none;
   color: inherit;
 }
+
+
+.board-data-table {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  .columns {
+    display: flex;
+    gap: 50px;
+    text-decoration: underline;
+  }
+  .test2 {
+    gap: 50px;
+    display: flex;
+  }
+}

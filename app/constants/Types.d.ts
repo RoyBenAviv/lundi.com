@@ -15,6 +15,7 @@ interface Board {
   workspace: Workspace
   workspaceId: string
   order: number
+  columns: Column[]
 }
 
 interface Group {
@@ -45,10 +46,12 @@ interface Item {
 interface Column {
   id: string
   name: string
-  columnType: string
-  itemId: string
+  type: string
   value: JSON
+  boards: Board[]
+  boardsId: string
   item: Item[]
+  itemId: string
 }
 
 interface DropDownOption {

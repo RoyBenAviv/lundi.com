@@ -23,6 +23,7 @@ model Boards {
   name        String
   users       Users[]
   groups      Groups[]
+  columns     Column[]
   items       Item[]
   order       Int        @default(0)
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
@@ -46,20 +47,29 @@ model Users {
 }
 
 model Item {
-  id      String   @id @default(uuid())
-  name    String
-  group   Groups?  @relation(fields: [groupId], references: [id])
-  groupId String?
-  board   Boards   @relation(fields: [boardId], references: [id])
-  boardId String
-  columns Column[]
+  id           String        @id @default(uuid())
+  name         String
+  group        Groups?       @relation(fields: [groupId], references: [id])
+  groupId      String?
+  board        Boards        @relation(fields: [boardId], references: [id])
+  boardId      String
+  columnValues ColumnValue[]
 }
 
 model Column {
-  id     String  @id @default(uuid())
-  name   String
-  Item   Item?   @relation(fields: [itemId], references: [id])
-  itemId String?
-  columnType   String
-  value  Json
+  id         String  @id @default(uuid())
+  name       String
+  columnType String
+  boards     Boards? @relation(fields: [boardsId], references: [id])
+  boardsId   String?
+  ColumnValue ColumnValue[]
+}
+
+model ColumnValue {
+  id       String  @id @default(uuid())
+  value    String
+  item     Item?   @relation(fields: [itemId], references: [id])
+  itemId   String?
+  column   Column? @relation(fields: [columnId], references: [id])
+  columnId String?
 }
