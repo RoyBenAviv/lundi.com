@@ -3,9 +3,15 @@ export function convertToDropDownOptions(arr: any[]) {
     return {
       value: item.id! || item.display_id!,
       label: item.title! || item.name! || item.value,
-      leftIcon: () => <div className="workspace-icon" style={{backgroundColor: item.color, marginRight: '10px'}}>{item.name[0]}</div>,
-      categoryId: "workspaces",
-      workspaceId: item.id
+      leftIcon: () => (
+        <div className="workspace-icon" style={{ backgroundColor: item.color, marginRight: '10px' }}>
+          {item.name[0]}
+        </div>
+      ),
+      categoryId: 'workspaces',
+      workspaceId: item.id,
     }
   })
 }
+
+export const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff', '#fdab3d', '#ffcb00', '#009aff', '#f65f7c', '#ff158a', '#579bfc', '#bb3354', '#037f4c']

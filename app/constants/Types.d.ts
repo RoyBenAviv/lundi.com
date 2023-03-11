@@ -10,7 +10,7 @@ interface Board {
   id: string
   name: string
   users: User[]
-  group: Group[]
+  groups: Group[]
   items: Item[]
   workspace: Workspace
   workspaceId: string
@@ -39,6 +39,16 @@ interface Item {
   groupId: string
   board: Board
   boardId: string
+  columns: Column[]
+}
+
+interface Column {
+  id: string
+  name: string
+  columnType: string
+  itemId: string
+  value: JSON
+  item: Item[]
 }
 
 interface DropDownOption {

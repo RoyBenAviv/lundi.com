@@ -115,17 +115,23 @@
     padding-top: 16px;
     .boards-list {
       div {
-        padding: 8px;
         width: 100%;
         border-radius: 5px;
         cursor: pointer;
-        &:hover {
+        &.active {
+          background-color: $primary-selected-color;
+        }
+        &:not(.active):hover {
           background-color: $primary-background-hover-on-secondary-color;
         }
         a{
+        padding: 8px;
+
           display: flex;
           align-items: center;
           gap: 5px;
+          width: 100%;
+          height: 100%;
         }
       }
     }
@@ -181,8 +187,25 @@
   }
 }
 
-#add-new-workspace {
-  .new-workspace-content {
+#add-new-workspace, #add-new-board {
+  .new-workspace-content, .new-board-content {
+ &> div {
+  p {
+    margin: 10px 0;
+  }
+  .board-management {
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px 0;
+
+    .radio-container {
+      width: 144px;
+      margin: 5px 0;
+    }
+  }
+ }
+
     .workspace-icon {
       @include workspace-icon;
       margin: auto;
@@ -194,7 +217,7 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    .new-workspace-name-input{
+    .new-workspace-name-input, .new-board-name-input{
       border: 3px solid black;
       @include monday-input;
       margin-bottom: 15px;
@@ -210,11 +233,11 @@
 .custom-placeholder {
   border: 1px dashed $basic_blue;
   background-color: lightgray;
-  opacity: 0.5;
+  opacity: 0.8;
+  color: transparent;
 }
 
 .custom-dragged-element {
   background-color: #f0f0f0;
   box-shadow: 0 0 10px #ccc;
-  background-color: red;
 }

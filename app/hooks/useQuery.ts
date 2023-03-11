@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient, UseQueryResult } from '@tanstack/react-query'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
-import { getWorkspace, getWorkspaces } from '../services/appService'
+import { getBoard, getWorkspace, getWorkspaces } from '../services/appService'
 
 export const useGetWorkspace = (workspaceId: string, initialData: Workspace | null) => {
   return useQuery(
@@ -80,6 +80,20 @@ export const useSortBoards = () => {
       onSuccess: ({data}) => {
         queryClient.invalidateQueries(['boards'])
       },
+    }
+  )
+}
+
+export const useGetBoard = (currentBoard: Board) => {
+  return useQuery(
+    ['board', currentBoard.id],
+    async () => {
+      const board = await getBoard(currentBoard.id)
+      console.log('file: useQuery.ts:24 -> board:', board)
+      return board
+    },
+    {
+      initialData: currentBoard
     }
   )
 }

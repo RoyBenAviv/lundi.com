@@ -2,13 +2,13 @@
 
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { useGetWorkspace, useUpdateWorkspace } from '@/app/hooks/useQuery'
+import { colors } from '@/app/services/utilService'
 import { Button, Tab, TabList, TabPanel, TabPanels, TabsContext } from 'monday-ui-react-core'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 const { Edit, Favorite, Board, Check } = require('monday-ui-react-core/icons')
 
-const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
 export default function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
   const { data: currentWorkspace } = useGetWorkspace(workspaceId, null)
   const { mutate: updateMutate } = useUpdateWorkspace()
@@ -48,7 +48,7 @@ export default function WorkspaceHome({ workspaceId }: { workspaceId: string }) 
               <div className="edit-workspace-icon">
                 <p className="mini-paragraph">Background color</p>
                 <div>
-                  {colors.map((color) => (
+                  {colors.map((color: string) => (
                     <div onClick={() => handleChange(color, 'color')} style={{ backgroundColor: color }} className="color-option" key={color}>
                       {color === currentWorkspace.color && <Check />}
                     </div>

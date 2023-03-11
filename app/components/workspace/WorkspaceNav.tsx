@@ -1,27 +1,32 @@
 'use client'
 
 import { useAddWorkspace, useGetWorkspace, useSortBoards } from '@/app/hooks/useQuery'
-import { Button, Flex, ModalContent, useClickOutside } from 'monday-ui-react-core'
+import { Button, Flex, ModalContent, RadioButton } from 'monday-ui-react-core'
 import Link from 'next/link'
-import { ChangeEvent, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
 import { ReactSortable } from 'react-sortablejs'
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { CSSTransition } from 'react-transition-group'
+import { colors } from '@/app/services/utilService'
 
 const { Modal, Input } = require('monday-ui-react-core')
 const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
-const colors = ['#fb275d', '#00ca72', '#a358d0', '#595ad4', '#1c1f3b', '#66ccff']
-export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId: string; initialData?: Workspace | null }) {
+export default function WorkspaceNav({ workspaceId, initialData, boardId }: { workspaceId: string; initialData?: Workspace | null, boardId?: string }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspaceId, initialData!)
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
   const [isComboBoxOpen, setIsComboBoxOpen] = useState<boolean>(false)
+
+  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(currentWorkspace.boards.sort((board1: Board, board2: Board) => board1.order - board2.order))
   const [isOpenAddNewWorkspace, setIsOpenAddNewWorkspace] = useState<boolean>(false)
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>('New workspace')
   const [newWorkspaceColor, setNewWorkspaceColor] = useState<string>('#00ca72')
-  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(currentWorkspace.boards.sort((board1: Board, board2: Board) => board1.order - board2.order))
+  
+  const [isOpenAddNewBoard, setIsOpenAddNewBoard] = useState<boolean>(false)
+  const [newBoardName, setNewBoardName] = useState<string>('New Board')
+  const [newBoardType,setNewBoardType] = useState<string>('Item')
 
   const { mutate: sortBoards } = useSortBoards()
   const { mutate: addWorkspaceMutate, isLoading: isLoadingNewWorkspace } = useAddWorkspace()
@@ -51,27 +56,21 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
     addWorkspaceMutate(newWorkspace)
   }
 
-  const onSaveBoardsList = () => {
-    console.log('workspaceBoards', workspaceBoards)
-    const sortedBoards = workspaceBoards.map((board: Board, index: number) => ({
-      ...board,
-      order: index,
-    }))
-    console.log('file: WorkspaceNav.tsx:58 -> sortedBoards:', sortedBoards)
+  const onAddNewBoard = () => {}
 
-    // setWorkspaceBoards(sortedBoards)
-    // sortBoards(sortedBoards)
-  }
+
   const [timeoutId, setTimeoutId] = useState<any>(null)
 
   useEffect(() => {
-    if (timeoutId) clearTimeout(timeoutId)
+    if(workspaceBoards) {
+      if (timeoutId) clearTimeout(timeoutId)
 
-    const id = setTimeout(() => {
-      onSortBoards(workspaceBoards)
-    }, 2000)
-    setTimeoutId(id)
-    return () => clearTimeout(timeoutId)
+      const id = setTimeout(() => {
+        onSortBoards(workspaceBoards)
+      }, 1500)
+      setTimeoutId(id)
+      return () => clearTimeout(id)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceBoards])
 
@@ -85,7 +84,7 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
 
     sortBoards(sortedBoards)
   }
-
+  
   return (
     <nav onMouseEnter={() => openNavOnEnter()} className={`workspace-nav ${isCollapseNav ? 'close' : 'open'}`}>
       <button onClick={() => setIsCollapseNav((isCollapseNav) => !isCollapseNav)} className="collapse-btn">
@@ -107,17 +106,17 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
               {isComboBoxOpen ? <NavigationChevronUp className="arrow" /> : <NavigationChevronDown className="arrow" />}
               <CSSTransition timeout={150} in={isComboBoxOpen} classNames="container-transition">
                 <>
-              {isComboBoxOpen && (
-                <section onClick={(e) => e.stopPropagation()} className="workspace-combobox">
-                    <WorkspaceOptions currentWorkspaceId={currentWorkspace.id} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />
-                  </section>
-              )}
-              </>
+                  {isComboBoxOpen && (
+                    <section onClick={(e) => e.stopPropagation()} className="workspace-combobox">
+                      <WorkspaceOptions currentWorkspaceId={currentWorkspace.id} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />
+                    </section>
+                  )}
+                </>
               </CSSTransition>
             </section>
             <section className="board-actions">
               <ul>
-                <li>
+                <li onClick={() => setIsOpenAddNewBoard(true)}>
                   <Add /> <button>Add</button>
                 </li>
                 <li>
@@ -130,10 +129,10 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
           <hr />
           <div className="boards-list-container">
             {currentWorkspace.boards.length ? (
-              <ReactSortable onEnd={() => onSaveBoardsList()} list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
+              <ReactSortable list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
                 {workspaceBoards.map((board: Board) => (
-                  <div key={board.id}>
-                    <Link href={`/boards/${board.id}`}>
+                  <div className={boardId === board.id ? 'active' :''} key={board.id}>
+                    <Link href={`/workspaces/${currentWorkspace.id}/boards/${board.id}`}>
                       {<Board />} {board.name}
                     </Link>
                   </div>
@@ -164,7 +163,7 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
               <div className="edit-workspace-icon">
                 <p className="mini-paragraph">Background color</p>
                 <div>
-                  {colors.map((color) => (
+                  {colors.map((color: string) => (
                     <div onClick={() => setNewWorkspaceColor(color)} style={{ backgroundColor: color }} className="color-option" key={color}>
                       {color === newWorkspaceColor && <Check />}
                     </div>
@@ -178,6 +177,55 @@ export default function WorkspaceNav({ workspaceId, initialData }: { workspaceId
               <Button kind={Button.kinds?.TERTIARY}>Cancel</Button>
               <Button loading={isLoadingNewWorkspace} disabled={!newWorkspaceName} onClick={() => onAddNewWorkspace()}>
                 Add workspace
+              </Button>
+            </Flex>
+          </div>
+        </ModalContent>
+      </Modal>
+      <Modal id="add-new-board" title="Create board" show={isOpenAddNewBoard} onClose={() => setIsOpenAddNewBoard(false)}>
+        <ModalContent>
+          <div className="new-board-content">
+            <p className="mini-paragraph">Board name</p>
+            <input value={newBoardName} onChange={(event: ChangeEvent<HTMLInputElement>) => setNewBoardName(event.target?.value)} placeholder="New Board Name" className="new-board-name-input" type="text" />
+            <hr />
+            <div>
+              <p>{"Select what you're managing in this board"}</p>
+
+              <div className="board-management">
+                <div className="radio-container">
+                  <RadioButton defaultChecked value="Item" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Item" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Budgets" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Budgets" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Employees" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Employees" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Campaigns" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Campaigns" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Leads" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Leads" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Projects" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Projects" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Creatives" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Creatives" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Clients" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Clients" />
+                </div>
+                <div className="radio-container">
+                  <RadioButton value="Tasks" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Tasks" />
+                </div>
+              </div>
+            </div>
+
+            <Flex justify={Flex.justify?.END} gap={12}>
+              <Button kind={Button.kinds?.TERTIARY}>Cancel</Button>
+              <Button loading={isLoadingNewWorkspace} disabled={!newBoardName} onClick={() => onAddNewBoard()}>
+                Create Board
               </Button>
             </Flex>
           </div>

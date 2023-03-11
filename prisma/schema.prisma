@@ -11,14 +11,12 @@ datasource db {
 }
 
 model Workspace {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String?
   color       String?
   boards      Boards[]
 }
-
-
 
 model Boards {
   id          String     @id @default(uuid())
@@ -35,6 +33,7 @@ model Groups {
   id       String  @id @default(uuid())
   name     String
   items    Item[]
+  color    String?
   boards   Boards? @relation(fields: [boardsId], references: [id])
   boardsId String?
 }
@@ -47,10 +46,20 @@ model Users {
 }
 
 model Item {
-  id      String  @id @default(uuid())
+  id      String   @id @default(uuid())
   name    String
-  group  Groups? @relation(fields: [groupId], references: [id])
+  group   Groups?  @relation(fields: [groupId], references: [id])
   groupId String?
-  board   Boards  @relation(fields: [boardId], references: [id])
+  board   Boards   @relation(fields: [boardId], references: [id])
   boardId String
+  columns Column[]
+}
+
+model Column {
+  id     String  @id @default(uuid())
+  name   String
+  Item   Item?   @relation(fields: [itemId], references: [id])
+  itemId String?
+  columnType   String
+  value  Json
 }
