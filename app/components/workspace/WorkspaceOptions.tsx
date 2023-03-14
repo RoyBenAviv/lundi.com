@@ -14,7 +14,7 @@ const categories = {
   },
 }
 
-export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorkspace }: { currentWorkspaceId: string, onOpenAddNewWorkspace: any }) {
+export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorkspace }: { currentWorkspaceId: string, onOpenAddNewWorkspace: Function }) {
   const { data: workspaces, isLoading } = useGetWorkspaces()
 
   const router = useRouter()
@@ -28,7 +28,7 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
       <Combobox optionsListHeight={280} onClick={(option: DropDownOption) => navigateWorkspace(option)} placeholder="Search for a workspace" loading={isLoading} categories={categories} options={workspaces ? convertToDropDownOptions(workspaces) : []} />
       <hr />
       <div className="actions">
-        <Button onClick={(event: React.MouseEvent) => onOpenAddNewWorkspace(event)} kind={Button.kinds?.TERTIARY} className="combobox-stories-styles_btn" leftIcon={Add}>
+        <Button disabled={isLoading} onClick={(event: React.MouseEvent) => onOpenAddNewWorkspace(event)} kind={Button.kinds?.TERTIARY} className="combobox-stories-styles_btn" leftIcon={Add}>
           Add workspace
         </Button>
       </div>

@@ -61,6 +61,13 @@ export const useAddWorkspace = () => {
       return axios.post('http://localhost:3000/api/workspaces', newWorkspace)
     },
     {
+      onMutate: async (newWorkspace: Workspace) => {
+        await queryClient.cancelQueries({ queryKey: ['workspaces'] })
+        const previousWorkspaces: Workspace[] | undefined = queryClient.getQueryData<Workspace[]>(['workspaces'])
+        const updatedWorkspaces = [...previousWorkspaces!, newWorkspace]
+        queryClient.setQueryData(['workspaces'], updatedWorkspaces)
+        return { updatedWorkspaces }
+      },
       onSuccess: ({ data }) => {
         queryClient.invalidateQueries(['workspaces'])
         router.push(`/workspaces/${data.id}`)
@@ -69,6 +76,36 @@ export const useAddWorkspace = () => {
   )
 }
 
+export const useAddBoard = () => {
+  const queryClient = useQueryClient()
+
+  const router = useRouter()
+
+  return useMutation(
+    (newBoard: any) => {
+      return axios.post('http://localhost:3000/api/boards', newBoard)
+    },
+    {
+      onMutate: async (newBoard: any) => {
+        await queryClient.cancelQueries({ queryKey: ['boards'] })
+        const previousBoards = queryClient.getQueryData<Board[]>(['boards'])
+        console.log('file: useQuery.ts:92 -> previousBoards:', previousBoards)
+        const updatedBoards = [...previousBoards!, newBoard]
+        queryClient.setQueryData(['boards'], updatedBoards)
+
+        return { updatedBoards }
+      },
+      onSuccess: ({ data }) => {
+        console.log('file: useQuery.ts:99 -> data:', data)
+        queryClient.invalidateQueries(['boards'])
+        router.push(`/workspaces/${data.workspaceId}/boards/${data.id}`)
+      },
+      onError: () => {
+        console.log('err?')
+      }
+    }
+  )
+}
 
 export const useSortBoards = () => {
   const queryClient = useQueryClient()
@@ -77,7 +114,7 @@ export const useSortBoards = () => {
       return axios.put('http://localhost:3000/api/boards', workspaceBoards)
     },
     {
-      onSuccess: ({data}) => {
+      onSuccess: ({ data }) => {
         queryClient.invalidateQueries(['boards'])
       },
     }
@@ -93,7 +130,7 @@ export const useGetBoard = (currentBoard: Board) => {
       return board
     },
     {
-      initialData: currentBoard
+      initialData: currentBoard,
     }
   )
 }
