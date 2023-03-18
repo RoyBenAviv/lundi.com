@@ -86,12 +86,44 @@ export const useAddBoard = () => {
       return axios.post('http://localhost:3000/api/boards', newBoard)
     },
     {
-      onSuccess: ({data}) => {
+      onSuccess: ({ data }) => {
         queryClient.invalidateQueries(['board', data.id])
         router.push(`/workspaces/${data.workspaceId}/boards/${data.id}`)
       },
       onError: () => {
         console.log('err?')
+      },
+    }
+  )
+}
+
+interface NewItem {
+  name: string
+  groupId: string
+  boardId: string
+}
+
+export const useAddItem = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    ({ newItem, workspaceId }: { newItem: NewItem; workspaceId: string }) => {
+      return axios.post(`http://localhost:3000/api/items`, newItem)
+    },
+
+    {
+      onMutate: async ({ newItem, workspaceId }) => {
+        console.log('file: useQuery.ts:109 -> newItem:', newItem)
+        // await queryClient.cancelQueries({ queryKey: ['workspace', workspaceId] })
+        await queryClient.cancelQueries({ queryKey: ['board', newItem.boardId] })
+        const previousBoard = queryClient.getQueryData<Board>(['board', newItem.boardId])!
+        console.log('file: useQuery.ts:119 -> previousBoard:', previousBoard)
+        const groupIdx = previousBoard.groups.findIndex(group => group.id === newItem.groupId)
+
+        previousBoard.groups[groupIdx].items.push(newItem)
+
+
+        queryClient.setQueryData(['board', newItem.boardId], previousBoard)
+        return { previousBoard }
       }
     }
   )

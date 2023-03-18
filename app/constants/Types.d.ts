@@ -36,14 +36,11 @@ interface Users {
 }
 
 interface Item {
-  id: string
+  id?: string
   name: string
-  groups: Group[]
   groupId: string
-  board: Board
   boardId: string
-  columns: Column[]
-  columnValues: any[]
+  columnValues?: any[]
 }
 
 interface Column {
