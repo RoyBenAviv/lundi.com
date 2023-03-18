@@ -10,6 +10,7 @@ import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { CSSTransition } from 'react-transition-group'
 import { colors } from '@/app/services/utilService'
 import { useQueryClient } from '@tanstack/react-query'
+import { v4 as uuidv4 } from 'uuid';
 const { Modal, Input } = require('monday-ui-react-core')
 const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 
@@ -19,7 +20,6 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
   
   
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspaceId, initialData!)
-  queryClient.setQueryData(['boards'], currentWorkspace.boards)
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
@@ -56,6 +56,7 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
 
   const onAddNewWorkspace = () => {
     const newWorkspace: Workspace = {
+      id: uuidv4(),
       name: newWorkspaceName,
       description: '',
       color: newWorkspaceColor,
@@ -65,7 +66,9 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
 
   const onAddNewBoard = () => {
     const newBoard = {
+      id: uuidv4(),
       name: newBoardName,
+      boardItemsType: newBoardType,
       workspaceId,
       columns: [
         { name: 'Text Column 1', columnType: 'text' },

@@ -16,6 +16,7 @@ interface Board {
   workspaceId: string
   order: number
   columns: Column[]
+  boardItemsType: string
 }
 
 interface Group {
@@ -24,6 +25,7 @@ interface Group {
   items: Item[]
   boards: Board[]
   boardsId: string
+  color: string
 }
 
 interface Users {
@@ -41,6 +43,7 @@ interface Item {
   board: Board
   boardId: string
   columns: Column[]
+  columnValues: any[]
 }
 
 interface Column {

@@ -4,6 +4,7 @@ import { useGetWorkspaces } from '@/app/hooks/useQuery'
 import { convertToDropDownOptions } from '@/app/services/utilService'
 import { Button, DialogContentContainer } from 'monday-ui-react-core'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 const { Combobox } = require('monday-ui-react-core')
 const { Add, Workspace } = require('monday-ui-react-core/icons')
 
@@ -22,6 +23,11 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
   const navigateWorkspace = (option: DropDownOption) => {
     router.push(`/workspaces/${option.workspaceId}`)
   }
+
+  useEffect(() => {
+    const searchEl: HTMLInputElement = document.querySelector('.combobox--wrapper-search')!
+    searchEl.focus()
+  }, [])
 
   return (
     <>

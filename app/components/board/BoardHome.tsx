@@ -8,39 +8,8 @@ export default function BoardHome({ board }: { board: Board }) {
         <h2>{board.name}</h2>
       </header>
       <section>
-        {/* <table border={1}>
-          <tr>
-            <th>Name</th>
-            {board.columns.map((column: any) => (
-              <th key={column.id}>{column.name}</th>
-            ))}
-          </tr>
-              {
-                board.groups[0].items.map((item: any) => (
-                          <>
-                  <tr key={item.id}>
-                          <td>{item.name}</td>
-                  {
-                    item.columnValues.map((columnValue: any) => (
-                      <tr key={columnValue.id}>
-                         <td> {columnValue.value}</td>
-                      </tr>
-                    ))
-                  }
-
-                  </tr>
-                  <>
-                  </>
-                  </>
-                ))
-              }
-        </table> */}
-
-
-
-
               {board.groups.map((group: Group) => (
-                <Group key={group.id} group={group} columns={board.columns} />
+                <Group key={group.id} group={group} columns={board.columns} boardItemsType={board.boardItemsType}/>
               ))}
         <pre>{JSON.stringify(board, null, 2)}</pre>
       </section>

@@ -66,11 +66,11 @@ export const useAddWorkspace = () => {
         const previousWorkspaces: Workspace[] | undefined = queryClient.getQueryData<Workspace[]>(['workspaces'])
         const updatedWorkspaces = [...previousWorkspaces!, newWorkspace]
         queryClient.setQueryData(['workspaces'], updatedWorkspaces)
+        router.push(`/workspaces/${newWorkspace.id}`)
         return { updatedWorkspaces }
       },
-      onSuccess: ({ data }) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(['workspaces'])
-        router.push(`/workspaces/${data.id}`)
       },
     }
   )
@@ -86,18 +86,8 @@ export const useAddBoard = () => {
       return axios.post('http://localhost:3000/api/boards', newBoard)
     },
     {
-      onMutate: async (newBoard: any) => {
-        await queryClient.cancelQueries({ queryKey: ['boards'] })
-        const previousBoards = queryClient.getQueryData<Board[]>(['boards'])
-        console.log('file: useQuery.ts:92 -> previousBoards:', previousBoards)
-        const updatedBoards = [...previousBoards!, newBoard]
-        queryClient.setQueryData(['boards'], updatedBoards)
-
-        return { updatedBoards }
-      },
-      onSuccess: ({ data }) => {
-        console.log('file: useQuery.ts:99 -> data:', data)
-        queryClient.invalidateQueries(['boards'])
+      onSuccess: ({data}) => {
+        queryClient.invalidateQueries(['board', data.id])
         router.push(`/workspaces/${data.workspaceId}/boards/${data.id}`)
       },
       onError: () => {
@@ -114,7 +104,7 @@ export const useSortBoards = () => {
       return axios.put('http://localhost:3000/api/boards', workspaceBoards)
     },
     {
-      onSuccess: ({ data }) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(['boards'])
       },
     }
@@ -126,7 +116,6 @@ export const useGetBoard = (currentBoard: Board) => {
     ['board', currentBoard.id],
     async () => {
       const board = await getBoard(currentBoard.id)
-      console.log('file: useQuery.ts:24 -> board:', board)
       return board
     },
     {

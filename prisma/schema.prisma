@@ -28,6 +28,7 @@ model Boards {
   order       Int        @default(0)
   workspace   Workspace? @relation(fields: [workspaceId], references: [id])
   workspaceId String?
+  boardItemsType String @default("Item")
 }
 
 model Groups {
