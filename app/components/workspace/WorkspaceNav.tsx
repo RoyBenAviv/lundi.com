@@ -75,8 +75,8 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
         { name: 'Text Column 2', columnType: 'text' },
       ],
       groups: [
-        { name: 'Group 1', color: '#facc33', items: [{ name: `${newBoardType} 1` }, { name: `${newBoardType} 2` }] },
-        { name: 'Group 2', color: '#facc33', items: [{ name: `${newBoardType} 3` }, { name: `${newBoardType} 4` }] },
+        { name: 'Group 1', color: '#facc33', items: [{ name: `${newBoardType} 1`, order: 1 }, { name: `${newBoardType} 2`, order: 2 }] },
+        { name: 'Group 2', color: '#facc33', items: [{ name: `${newBoardType} 3`, order: 3 }, { name: `${newBoardType} 4`, order: 4 }] },
       ],
     }
 

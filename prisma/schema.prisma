@@ -55,6 +55,7 @@ model Item {
   groupId      String?
   board        Boards?       @relation(fields: [boardId], references: [id])
   boardId      String?
+  order       Int        @default(0)
   columnValues ColumnValue[]
 }
 

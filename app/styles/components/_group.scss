@@ -84,25 +84,6 @@
         &:focus-within {
           background-color: $highlight_blue;
         }
-        .add-item-input {
-          background-color: transparent;
-          border: 1px solid transparent;
-          outline: none;
-          padding: 2px 0 3px 16px;
-          margin: 6px 10px;
-          border-radius: 3px;
-          &::placeholder {
-            color: $placeholder-color;
-            font-size: 14px;
-          }
-          &:focus {
-            border: 1px solid $basic_blue;
-            background-color: white;
-          }
-          &:hover {
-            outline: 1px solid $layout-border-color;
-          }
-        }
         height: 36px;
         display: flex;
         align-items: center;
@@ -130,25 +111,77 @@
             border-right: none;
           }
           &.item-name {
+            position: relative;
+            &:hover{ 
+              .open {
+                display: block;
+              }
+            }
             min-width: 180px;
             border-right: 1px solid $layout-border-color;
             display: flex;
             align-items: center;
             justify-content: center;
-            span {
+            
+            .name {
               cursor: initial;
-              padding: 0px 5px;
+              padding: 2px 5px;
               border-radius: 3px;
               &:hover {
                 outline: 1px solid $layout-border-color;
               }
             }
+            .open {
+              position: absolute;
+              right: 10px;
+              display: none;
+              color: $icon-color;
+            }
           }
           span {
             padding: 0px 5px;
           }
+          &.text {
+            span {
+              cursor: text;
+              width: 90%;
+              height: 80%;
+              &:hover {
+                border: 1px solid $layout-border-color;
+              }
+            }
+          }
         }
       }
     }
+  }
+}
+
+.edit-input {
+  &.name {
+    width: 40%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &.new-item {
+    padding: 2px 0 3px 16px;
+    margin: 6px 10px;
+
+  }
+  background-color: transparent;
+  border: 1px solid transparent;
+  outline: none;
+  border-radius: 3px;
+  &::placeholder {
+    color: $placeholder-color;
+    font-size: 14px;
+  }
+  &:focus {
+    border: 1px solid $basic_blue;
+    background-color: white;
+  }
+  &:hover {
+    outline: 1px solid $layout-border-color;
   }
 }

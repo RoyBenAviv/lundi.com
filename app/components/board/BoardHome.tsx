@@ -1,7 +1,7 @@
 "use client"
 
 import { useQuery } from '@tanstack/react-query'
-import Group from '../Group/Group'
+import Group from './Group'
 const { Home } = require('monday-ui-react-core/icons')
 export default function BoardHome({ board }: { board: Board }) {
   console.log('file: BoardHome.tsx:7 -> board:', board)

@@ -50,6 +50,26 @@ export const useUpdateWorkspace = () => {
     }
   )
 }
+export const useUpdateItem = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    ({ itemId, value, key }: { itemId: string ; value: string; key: string }) => {
+      return axios.put(`http://localhost:3000/api/items/${itemId}`, { value, key })
+    },
+    {
+      // onMutate: async ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
+      //   await queryClient.cancelQueries({ queryKey: ['workspace', itemId] })
+      //   const previousWorkspace: Workspace | undefined = queryClient.getQueryData(['workspace', itemId])
+      //   const updatedWorkspace = { ...previousWorkspace, [key]: value }
+      //   queryClient.setQueryData(['workspace', workspaceId], updatedWorkspace)
+      //   return { updatedWorkspace }
+      // },
+      // onSuccess: ({ data: currentWorkspace }) => {
+      //   queryClient.invalidateQueries(['workspace', currentWorkspace.id])
+      // },
+    }
+  )
+}
 
 export const useAddWorkspace = () => {
   const queryClient = useQueryClient()
@@ -101,17 +121,18 @@ interface NewItem {
   name: string
   groupId: string
   boardId: string
+  order: number
 }
 
 export const useAddItem = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({ newItem, workspaceId }: { newItem: NewItem; workspaceId: string }) => {
+    ( newItem: NewItem ) => {
       return axios.post(`http://localhost:3000/api/items`, newItem)
     },
 
     {
-      onMutate: async ({ newItem, workspaceId }) => {
+      onMutate: async (newItem) => {
         console.log('file: useQuery.ts:109 -> newItem:', newItem)
         // await queryClient.cancelQueries({ queryKey: ['workspace', workspaceId] })
         await queryClient.cancelQueries({ queryKey: ['board', newItem.boardId] })

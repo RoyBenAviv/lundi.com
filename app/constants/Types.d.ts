@@ -41,17 +41,19 @@ interface Item {
   groupId: string
   boardId: string
   columnValues?: any[]
+  order: number
 }
 
 interface Column {
   id: string
   name: string
-  type: string
+  columnType: string
   value: JSON
   boards: Board[]
   boardsId: string
   item: Item[]
   itemId: string
+  
 }
 
 interface DropDownOption {
