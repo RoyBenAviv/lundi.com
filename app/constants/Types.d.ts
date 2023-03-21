@@ -61,3 +61,14 @@ interface DropDownOption {
   value: string | number
   workspaceId?: string
 }
+
+
+
+interface NewBoard {
+  id: string
+  name: string
+  boardItemsType: string
+  workspaceId: string
+  columns: { name: string; columnType: string; }[]
+  groups: any[]
+}

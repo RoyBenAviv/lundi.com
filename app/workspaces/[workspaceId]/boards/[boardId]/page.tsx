@@ -3,7 +3,7 @@ import WorkspaceNav from "@/app/components/workspace/WorkspaceNav"
 import { getWorkspace } from "@/app/services/appService"
 import getQueryClient from "@/app/util/getQueryClient"
 import Hydrate from "@/app/util/HydrateClient"
-import { dehydrate } from "@tanstack/query-core"
+import { dehydrate, DehydratedState } from "@tanstack/query-core"
 
 type URL = {
   params: {
@@ -20,14 +20,13 @@ export default async function Boards(url: URL) {
   const workspaceId = url.params.workspaceId
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(['workspace', workspaceId], async () => await getWorkspace(workspaceId))
-  const dehydratedState = dehydrate(queryClient)
-  console.log('file: page.tsx:27 -> dehydratedState:', dehydratedState)
+  const dehydratedState: DehydratedState = dehydrate(queryClient)
 
 
-    const workspace: any = dehydratedState.queries[0].state.data
+    const workspace = dehydratedState.queries[0].state.data as Workspace
     console.log('file: page.tsx:28 -> test:', workspace)
 
-    const currentBoard = workspace.boards.find((board: Board) => board.id === boardId)
+    const currentBoard = workspace.boards!.find((board: Board) => board.id === boardId)
 
 
   return (
@@ -35,7 +34,7 @@ export default async function Boards(url: URL) {
     <Hydrate state={dehydratedState}>
       <WorkspaceNav workspaceId={workspaceId} boardId={boardId}/>
     </Hydrate>
-     <BoardHome board={currentBoard}/>
+     <BoardHome board={currentBoard!}/>
     </>
       
   )

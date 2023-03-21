@@ -43,10 +43,10 @@ export default function Group({ group, columns, boardItemsType, workspaceId, boa
       </header>
       <section className="board-data-table">
         <div className="table-header">
-          <div className="column column-title">
+          <div  style={{ width: '100%', maxWidth: '100%', resize: 'horizontal', overflowX: 'auto', cursor: 'ew-resize' }} className="column column-title">
             <span>{boardItemsType}</span>
           </div>
-          {columns.map((column: any) => (
+          {columns.map((column: Column) => (
             <div className="column" key={column.id}>
               <span>{column.name}</span>
             </div>

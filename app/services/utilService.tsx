@@ -1,4 +1,4 @@
-export function convertToDropDownOptions(arr: any[]) {
+export function convertToDropDownOptions(arr: {value: string, name: string, color: string, id: string, display_id: string, title: string}[]) {
   return arr.map((item) => {
     return {
       value: item.id! || item.display_id!,

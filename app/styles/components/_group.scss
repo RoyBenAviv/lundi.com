@@ -27,7 +27,12 @@
       height: 36px;
       .column {
         display: flex;
-
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        &::-webkit-resizer {
+          // display: none;
+        }
         border-left: 1px solid $layout-border-color;
         &:nth-last-child(1) {
           border-right: none;

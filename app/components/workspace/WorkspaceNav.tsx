@@ -65,7 +65,7 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
   }
 
   const onAddNewBoard = () => {
-    const newBoard = {
+    const newBoard: NewBoard = {
       id: uuidv4(),
       name: newBoardName,
       boardItemsType: newBoardType,
@@ -98,7 +98,7 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceBoards])
 
-  const onSortBoards = (workspaceBoards: any) => {
+  const onSortBoards = (workspaceBoards: Board[]) => {
     console.log('workspaceBoards', workspaceBoards)
     const sortedBoards = workspaceBoards.map((board: Board, index: number) => ({
       id: board.id,

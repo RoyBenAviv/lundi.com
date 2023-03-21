@@ -102,7 +102,7 @@ export const useAddBoard = () => {
   const router = useRouter()
 
   return useMutation(
-    (newBoard: any) => {
+    (newBoard: NewBoard) => {
       return axios.post('http://localhost:3000/api/boards', newBoard)
     },
     {
