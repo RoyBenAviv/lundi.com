@@ -3,29 +3,25 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { getBoard, getWorkspace, getWorkspaces } from '../services/appService'
 
-export const useGetWorkspace = (workspaceId: string, initialData: Workspace | null) => {
+export const useGetWorkspace = (workspace: Workspace) => {
   return useQuery(
-    ['workspace', workspaceId],
+    ['workspace', workspace.id],
     async () => {
-      const workspace = await getWorkspace(workspaceId)
-      console.log('file: useQuery.ts:8 -> workspace:', workspace)
-      return workspace
+      const currentWorkspace: Workspace = await getWorkspace(workspace.id!)
+      return currentWorkspace
     },
     {
-      initialData: initialData || null,
+      initialData: workspace,
     }
   )
 }
 
-export const useGetWorkspaces = (workspaces?: Workspace[]) => {
+export const useGetWorkspaces = () => {
   return useQuery(
     ['workspaces'],
     async () => {
       const workspaces = await getWorkspaces()
       return workspaces
-    },
-    {
-      initialData: workspaces,
     }
   )
 }
@@ -64,12 +60,37 @@ export const useUpdateItem = () => {
       //   queryClient.setQueryData(['workspace', workspaceId], updatedWorkspace)
       //   return { updatedWorkspace }
       // },
-      // onSuccess: ({ data: currentWorkspace }) => {
-      //   queryClient.invalidateQueries(['workspace', currentWorkspace.id])
-      // },
+      onError:(err) =>  {
+          console.log('err222', err)
+      },
+      onSuccess: ({ data: item }) => {
+        // const previousWorkspace: Workspace | undefined = queryClient.getQueryData(['item', item.id])
+        // console.log('file: useQuery.ts:66 -> previousWorkspace:', previousWorkspace)
+        // console.log('file: useQuery.ts:66 -> previousWorkspace:', previousWorkspace)
+        console.log('item.boardId',item.boardId);
+        queryClient.invalidateQueries(['board', item.boardId])
+        // queryClient.refetchQueries(['item', item.id])
+      },
     }
   )
 }
+
+export const useUpdateColumnValue = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    ({ columnValueId, value, key }: { columnValueId: string; value: string; key: string }) => {
+      return axios.put(`http://localhost:3000/api/columnValues/${columnValueId}`, { value, key })
+    },
+    {
+      onSuccess: ({ data: item }) => {
+        // queryClient.invalidateQueries(['board', item.boardId])
+        // queryClient.refetchQueries(['board', item.boardId])
+      },
+    }
+  )
+}
+
+
 
 export const useAddWorkspace = () => {
   const queryClient = useQueryClient()
@@ -102,9 +123,10 @@ export const useAddBoard = () => {
   const router = useRouter()
 
   return useMutation(
-    (newBoard: NewBoard) => {
+    (newBoard: any) => {
       return axios.post('http://localhost:3000/api/boards', newBoard)
     },
+    
     {
       onSuccess: ({ data }) => {
         queryClient.invalidateQueries(['board', data.id])
@@ -124,7 +146,8 @@ interface NewItem {
   order: number
 }
 
-export const useAddItem = () => {
+export const useAddItem = (itemPosition: string) => {
+  console.log('file: useQuery.ts:150 -> itemPosition:', itemPosition)
   const queryClient = useQueryClient()
   return useMutation(
     ( newItem: NewItem ) => {
@@ -133,18 +156,23 @@ export const useAddItem = () => {
 
     {
       onMutate: async (newItem) => {
-        console.log('file: useQuery.ts:109 -> newItem:', newItem)
-        // await queryClient.cancelQueries({ queryKey: ['workspace', workspaceId] })
+        console.log('here? 222')
+
+
         await queryClient.cancelQueries({ queryKey: ['board', newItem.boardId] })
         const previousBoard = queryClient.getQueryData<Board>(['board', newItem.boardId])!
-        console.log('file: useQuery.ts:119 -> previousBoard:', previousBoard)
         const groupIdx = previousBoard.groups.findIndex(group => group.id === newItem.groupId)
 
-        previousBoard.groups[groupIdx].items.push(newItem)
+        itemPosition === 'bottom' ? previousBoard.groups[groupIdx].items.push(newItem) : previousBoard.groups[groupIdx].items.unshift(newItem)
 
 
         queryClient.setQueryData(['board', newItem.boardId], previousBoard)
         return { previousBoard }
+      }, 
+      onSuccess: ({data: newItem}) => {
+        console.log('file: useQuery.ts:173 -> newItem:', newItem)
+        console.log('success')
+        queryClient.invalidateQueries(['board', newItem.boardId])
       }
     }
   )

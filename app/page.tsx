@@ -1,13 +1,21 @@
-import axios from 'axios'
-import Link from 'next/link'
 import MyWorkspaces from './components/workspace/MyWorkspaces'
-import { getWorkspaces } from './services/appService'
+import getQueryClient from '@/app/util/getQueryClient'
+import { dehydrate } from '@tanstack/query-core'
+import Hydrate from '@/app/util/HydrateClient'
 
-
+async function getWorkspaces() {
+  try {
+  const res = await fetch(`http://localhost:3000/api/workspaces`)
+  return res.json()
+} catch (err) {
+  console.log('file: page.tsx:6 -> err:', err)
+}
+}
 
 export default async function Home() {
-  const workspaces = await getWorkspaces()
-
+  const queryClient = getQueryClient()
+  await queryClient.prefetchQuery(['workspaces'], async () => await getWorkspaces())
+  const dehydratedState = dehydrate(queryClient)
   return (
     <section>
       <header>Good evening, Roy! Quickly access your recent boards, Inbox and workspaces</header>
@@ -15,7 +23,9 @@ export default async function Home() {
       <section>Inbox</section>
       <section>
         My workspaces
-        <MyWorkspaces workspaces={workspaces} />
+        <Hydrate state={dehydratedState}>
+        <MyWorkspaces />
+        </Hydrate>
       </section>
       <nav>
         <ul>

@@ -1,3 +1,6 @@
+
+declare module 'monday-ui-react-core/dist/EditableHeading';
+
 interface Workspace {
   id?: string
   name: string
@@ -69,6 +72,6 @@ interface NewBoard {
   name: string
   boardItemsType: string
   workspaceId: string
-  columns: { name: string; columnType: string; }[]
+  columns: { name: string; columnType: string; id: string}[]
   groups: any[]
 }

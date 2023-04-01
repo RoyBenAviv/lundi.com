@@ -15,7 +15,6 @@ export async function GET(request: Request, { params }: { params: Params }) {
       }
     },
   })
-  console.log('file: route.ts:24 -> board:', board)
 
   return NextResponse.json(board)
 }

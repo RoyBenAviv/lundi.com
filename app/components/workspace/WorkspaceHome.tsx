@@ -3,29 +3,26 @@
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { useGetWorkspace, useUpdateWorkspace } from '@/app/hooks/useQuery'
 import { colors } from '@/app/services/utilService'
-import { Button, Tab, TabList, TabPanel, TabPanels, TabsContext } from 'monday-ui-react-core'
+const { Button, TabList, TabPanel, TabPanels, TabsContext, Tab } = require('monday-ui-react-core')
 import Link from 'next/link'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 const { Edit, Favorite, Board, Check } = require('monday-ui-react-core/icons')
 
-export default function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
-  const { data: currentWorkspace } = useGetWorkspace(workspaceId, null)
+export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
+  const { data: currentWorkspace } = useGetWorkspace(workspace)
   const { mutate: updateMutate } = useUpdateWorkspace()
 
   const editWorkspaceIconRef = useRef(null)
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const handleChange = (value: string, key: string) => {
-    if (value === currentWorkspace[key]) return
-    updateMutate({ workspaceId: currentWorkspace.id, value, key })
+    if (value === currentWorkspace[key as keyof Workspace]) return
+    updateMutate({ workspaceId: currentWorkspace.id!, value, key })
   }
 
   useOnClickOutside(editWorkspaceIconRef, () => setIsOpenEditIcon(false))
 
-  useEffect(() => {
-    console.log('isOpenEditIcon', isOpenEditIcon)
-  }, [isOpenEditIcon])
 
   return (
     <main className="workspace-home">
@@ -73,7 +70,7 @@ export default function WorkspaceHome({ workspaceId }: { workspaceId: string }) 
           </TabList>
           <TabPanels>
             <TabPanel className="recent-boards">
-              {currentWorkspace.boards.map((board: Board) => (
+              {currentWorkspace.boards?.map((board: Board) => (
                 <div key={board.id}>
                   <p>
                     <Link href={`/boards/${board.id}`}>

@@ -18,10 +18,14 @@ export async function PUT(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const newBoard  = await request.json()
+    const newBoard = await request.json()
     console.log('file: route.ts:22 -> newBoard:', newBoard)
+
     const board = await prisma.boards.create({
       data: {
+        columns: {
+          create: newBoard.columns,
+        },
         name: newBoard.name,
         workspaceId: newBoard.workspaceId,
         groups: {
@@ -30,20 +34,45 @@ export async function POST(request: Request) {
               name: newBoard.groups[0].name,
               color: newBoard.groups[0].color,
               items: {
-                create: newBoard.groups[0].items,
+                create: newBoard.groups[0].items.map((item: any) => ({
+                  ...item,
+                  columnValues: {
+                    create: [
+                      { 
+                        value: '',
+                        column: { connect: { id: newBoard.columns[0].id } },
+                      },
+                      {
+                        value: '',
+                        column: { connect: { id: newBoard.columns[1].id } },
+                      },
+                    ],
+                  },
+                })),
               },
             },
             {
               name: newBoard.groups[1].name,
               color: newBoard.groups[1].color,
               items: {
-                create: newBoard.groups[1].items,
+                create: newBoard.groups[1].items.map((item: any) => ({
+                  ...item,
+                  columnValues: {
+                    create: [
+                      {
+                        value: '',
+                        column: { connect: { id: newBoard.columns[0].id } },
+                      },
+                      {
+                        value: '',
+                        column: { connect: { id: newBoard.columns[1].id } },
+                      },
+                    ],
+                  },
+                })),
               },
             },
           ],
-        },
-        columns: {
-          create: newBoard.columns,
         },
       },
     })

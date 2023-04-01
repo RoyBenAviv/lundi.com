@@ -8,7 +8,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const newWorkspace = await request.json()
-  console.log('file: route.ts:11 -> newWorkspace:', newWorkspace)
   const workspace = await prisma.workspace.create({ data: newWorkspace })
   return NextResponse.json(workspace)
 }

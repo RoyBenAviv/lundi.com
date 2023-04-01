@@ -20,8 +20,10 @@
     "eslint-config-next": "13.2.1",
     "monday-ui-react-core": "^1.97.1",
     "next": "13.2.1",
+    "re-resizable": "^6.9.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-resize-detector": "^8.0.4",
     "react-sortablejs": "^6.1.4",
     "react-transition-group": "^4.4.5",
     "sass": "^1.58.3",
@@ -29,6 +31,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@tanstack/react-query-devtools": "^4.28.0",
     "@types/react-transition-group": "^4.4.5",
     "@types/uuid": "^9.0.1",
     "prisma": "^4.10.1"

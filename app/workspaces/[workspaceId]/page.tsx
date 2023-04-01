@@ -1,9 +1,8 @@
 import WorkspaceHome from '@/app/components/workspace/WorkspaceHome'
 import WorkspaceNav from '@/app/components/workspace/WorkspaceNav'
-import { getWorkspace } from '@/app/services/appService'
-import getQueryClient from '@/app/util/getQueryClient'
-import { dehydrate } from '@tanstack/query-core'
-import Hydrate from '@/app/util/HydrateClient'
+import Loading from './Loading'
+import { Suspense } from 'react'
+import axios from 'axios'
 
 type URL = {
   params: {
@@ -12,16 +11,25 @@ type URL = {
   searchParams: string
 }
 
+const getWorkspace = async (workspaceId: string) => {
+  try {
+    const currentWorkspace = await axios.get(`http://localhost:3000/api/workspaces/${workspaceId}`)
+    console.log('file: page.tsx:17 -> currentWorkspace:', currentWorkspace)
+    return currentWorkspace.data
+  } catch (err) {
+    console.log('file: page.tsx:16 -> err:', err)
+  }
+}
+
 export default async function WorkspaceMain(url: URL) {
   const workspaceId = url.params.workspaceId
-  // const currentWorkspace = await getWorkspace(url.params.workspaceId)
-  const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(['workspace', workspaceId], async () => await getWorkspace(workspaceId))
-  const dehydratedState = dehydrate(queryClient)
+  const currentWorkspace = await getWorkspace(workspaceId)
+  console.log('file: page.tsx:25 -> currentWorkspace:', currentWorkspace)
+
   return (
-    <Hydrate state={dehydratedState}>
-      <WorkspaceNav workspaceId={workspaceId} />
-      <WorkspaceHome workspaceId={workspaceId} />
-    </Hydrate>
+    <Suspense fallback={<Loading />}>
+      <WorkspaceNav workspace={currentWorkspace} />
+      <WorkspaceHome workspace={currentWorkspace} />
+    </Suspense>
   )
 }

@@ -2,11 +2,10 @@
 
 import { useGetWorkspaces } from '@/app/hooks/useQuery'
 import { convertToDropDownOptions } from '@/app/services/utilService'
-import { Button, DialogContentContainer } from 'monday-ui-react-core'
+import { Button } from 'monday-ui-react-core'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 const { Combobox } = require('monday-ui-react-core')
-const { Add, Workspace } = require('monday-ui-react-core/icons')
+const { Add } = require('monday-ui-react-core/icons')
 
 const categories = {
   workspaces: {
@@ -24,14 +23,9 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
     router.push(`/workspaces/${option.workspaceId}`)
   }
 
-  useEffect(() => {
-    const searchEl: HTMLInputElement = document.querySelector('.combobox--wrapper-search')!
-    searchEl.focus()
-  }, [])
-
   return (
     <>
-      <Combobox optionsListHeight={280} onClick={(option: DropDownOption) => navigateWorkspace(option)} placeholder="Search for a workspace" loading={isLoading} categories={categories} options={workspaces ? convertToDropDownOptions(workspaces) : []} />
+      <Combobox autoFocus optionsListHeight={280} onClick={(option: DropDownOption) => navigateWorkspace(option)} placeholder="Search for a workspace" loading={isLoading} categories={categories} options={workspaces ? convertToDropDownOptions(workspaces) : []} />
       <hr />
       <div className="actions">
         <Button disabled={isLoading} onClick={(event: React.MouseEvent) => onOpenAddNewWorkspace(event)} kind={Button.kinds?.TERTIARY} className="combobox-stories-styles_btn" leftIcon={Add}>

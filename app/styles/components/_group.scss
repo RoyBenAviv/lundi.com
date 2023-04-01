@@ -1,3 +1,14 @@
+.custom-handle {
+  background-color: $basic_blue;
+  opacity: 0;
+  width: 6px !important;
+  border-radius: 2px;
+  position: absolute;
+  right: -2px !important;
+  &:hover {
+    opacity: 1;
+  }
+}
 .group-container {
   margin-bottom: 40px;
   h4 {
@@ -26,12 +37,16 @@
       }
       height: 36px;
       .column {
+        height: 100%;
         display: flex;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
         &::-webkit-resizer {
-          // display: none;
+          border-width: 111px;
+          border-style: solid;
+          border-color: transparent orangered orangered transparent;
+          height: 100px;
         }
         border-left: 1px solid $layout-border-color;
         &:nth-last-child(1) {
@@ -43,8 +58,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 105px;
+        width: 120px;
         padding: 0 8px;
+
         &.column-title {
           min-width: 180px;
         }
@@ -104,7 +120,7 @@
           cursor: pointer;
           box-sizing: content-box;
           height: 100%;
-          width: 104px;
+          width: 119px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -117,7 +133,7 @@
           }
           &.item-name {
             position: relative;
-            &:hover{ 
+            &:hover {
               .open {
                 display: block;
               }
@@ -127,7 +143,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            
+
             .name {
               cursor: initial;
               padding: 2px 5px;
@@ -147,13 +163,13 @@
             padding: 0px 5px;
           }
           &.text {
-            span {
-              cursor: text;
+            &:focus-within {
+              outline: 1px solid $basic_blue;
+              outline-offset: -1px;
+            }
+            .cell-value {
               width: 90%;
-              height: 80%;
-              &:hover {
-                border: 1px solid $layout-border-color;
-              }
+              height: 70%;
             }
           }
         }
@@ -163,6 +179,16 @@
 }
 
 .edit-input {
+  border: 1px solid transparent;
+
+  background-color: transparent;
+  outline: none;
+
+  &:focus {
+    border: 1px solid $basic_blue;
+    background-color: white;
+  }
+
   &.name {
     width: 40%;
     white-space: nowrap;
@@ -172,21 +198,27 @@
   &.new-item {
     padding: 2px 0 3px 16px;
     margin: 6px 10px;
+  }
+  &.new-item,
+  &.name {
+    border-radius: 3px;
 
+    &:hover {
+      outline: 1px solid $layout-border-color;
+    }
+    &::placeholder {
+      color: $placeholder-color;
+      font-size: 14px;
+    }
   }
-  background-color: transparent;
-  border: 1px solid transparent;
-  outline: none;
-  border-radius: 3px;
-  &::placeholder {
-    color: $placeholder-color;
-    font-size: 14px;
-  }
-  &:focus {
-    border: 1px solid $basic_blue;
-    background-color: white;
-  }
-  &:hover {
-    outline: 1px solid $layout-border-color;
+  &.new-value {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    &:hover {
+      outline: 1px solid $layout-border-color;
+    }
   }
 }

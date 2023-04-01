@@ -24,7 +24,7 @@ export default async function Boards(url: URL) {
 
 
     const workspace = dehydratedState.queries[0].state.data as Workspace
-    console.log('file: page.tsx:28 -> test:', workspace)
+    console.log('file: page.tsx:27 -> workspace:', workspace)
 
     const currentBoard = workspace.boards!.find((board: Board) => board.id === boardId)
 
@@ -32,7 +32,7 @@ export default async function Boards(url: URL) {
   return (
     <>
     <Hydrate state={dehydratedState}>
-      <WorkspaceNav workspaceId={workspaceId} boardId={boardId}/>
+      <WorkspaceNav workspace={workspace} boardId={boardId}/>
     </Hydrate>
      <BoardHome board={currentBoard!}/>
     </>

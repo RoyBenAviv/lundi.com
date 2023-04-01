@@ -3,9 +3,11 @@
 import { useGetWorkspaces } from '@/app/hooks/useQuery'
 import Link from 'next/link'
 
-export default function MyWorkspaces({ workspaces }: { workspaces: Workspace[] }) {
-  const { data } = useGetWorkspaces(workspaces)
+export default function MyWorkspaces() {
+  const { data, isLoading } = useGetWorkspaces()
 
+
+  if(isLoading) return <div>LOADING</div>
   return (
     <ul>
       {data.map((workspace: Workspace) => (

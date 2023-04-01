@@ -72,7 +72,7 @@ model ColumnValue {
   id       String  @id @default(uuid())
   value    String
   item     Item?   @relation(fields: [itemId], references: [id])
-  itemId   String?
+  itemId   String
   column   Column? @relation(fields: [columnId], references: [id])
-  columnId String?
+  columnId String
 }

@@ -9,23 +9,18 @@ import { ReactSortable } from 'react-sortablejs'
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { CSSTransition } from 'react-transition-group'
 import { colors } from '@/app/services/utilService'
-import { useQueryClient } from '@tanstack/react-query'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 const { Modal, Input } = require('monday-ui-react-core')
 const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 
-
-export default function WorkspaceNav({ workspaceId, initialData, boardId }: { workspaceId: string; initialData?: Workspace | null; boardId?: string }) {
-  const queryClient = useQueryClient();
-  
-  
-  const { data: currentWorkspace, isLoading } = useGetWorkspace(workspaceId, initialData!)
+export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
+  const { data: currentWorkspace, isLoading } = useGetWorkspace(workspace)
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
   const [isComboBoxOpen, setIsComboBoxOpen] = useState<boolean>(false)
 
-  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(currentWorkspace.boards.sort((board1: Board, board2: Board) => board1.order - board2.order))
+  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(currentWorkspace.boards!.sort((board1: Board, board2: Board) => board1.order - board2.order))
   const [isOpenAddNewWorkspace, setIsOpenAddNewWorkspace] = useState<boolean>(false)
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>('New workspace')
   const [newWorkspaceColor, setNewWorkspaceColor] = useState<string>('#00ca72')
@@ -69,18 +64,33 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
       id: uuidv4(),
       name: newBoardName,
       boardItemsType: newBoardType,
-      workspaceId,
+      workspaceId: currentWorkspace.id!,
       columns: [
-        { name: 'Text Column 1', columnType: 'text' },
-        { name: 'Text Column 2', columnType: 'text' },
+        { id: uuidv4(), name: 'Text Column 1', columnType: 'text' },
+        { id: uuidv4(), name: 'Text Column 2', columnType: 'text' },
       ],
       groups: [
-        { name: 'Group 1', color: '#facc33', items: [{ name: `${newBoardType} 1`, order: 1 }, { name: `${newBoardType} 2`, order: 2 }] },
-        { name: 'Group 2', color: '#facc33', items: [{ name: `${newBoardType} 3`, order: 3 }, { name: `${newBoardType} 4`, order: 4 }] },
+        {
+          name: 'Group 1',
+          color: '#facc33',
+          items: [
+            { id: uuidv4(), name: `${newBoardType} 1`, order: 1 },
+            { id: uuidv4(), name: `${newBoardType} 2`, order: 2 },
+          ],
+        },
+        {
+          name: 'Group 2',
+          color: '#facc33',
+          items: [
+            { id: uuidv4(), name: `${newBoardType} 3`, order: 3 },
+            { id: uuidv4(), name: `${newBoardType} 4`, order: 4 },
+          ],
+        },
       ],
     }
+    console.log('file: WorkspaceNav.tsx:91 -> newBoard:', newBoard)
 
-    addBoardMutate( newBoard )
+    addBoardMutate(newBoard)
   }
 
   const [timeoutId, setTimeoutId] = useState<any>(null)
@@ -99,12 +109,10 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
   }, [workspaceBoards])
 
   const onSortBoards = (workspaceBoards: Board[]) => {
-    console.log('workspaceBoards', workspaceBoards)
     const sortedBoards = workspaceBoards.map((board: Board, index: number) => ({
       id: board.id,
       order: index,
     }))
-    console.log('file: WorkspaceNav.tsx:58 -> sortedBoards:', sortedBoards)
 
     sortBoards(sortedBoards)
   }
@@ -132,7 +140,7 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
                 <>
                   {isComboBoxOpen && (
                     <section onClick={(e) => e.stopPropagation()} className="workspace-combobox">
-                      <WorkspaceOptions currentWorkspaceId={currentWorkspace.id} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />
+                      <WorkspaceOptions currentWorkspaceId={currentWorkspace.id!} onOpenAddNewWorkspace={onOpenAddNewWorkspace} />
                     </section>
                   )}
                 </>
@@ -152,7 +160,7 @@ export default function WorkspaceNav({ workspaceId, initialData, boardId }: { wo
           </header>
           <hr />
           <div className="boards-list-container">
-            {currentWorkspace.boards.length ? (
+            {currentWorkspace.boards!.length ? (
               <ReactSortable list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
                 {workspaceBoards.map((board: Board) => (
                   <div className={boardId === board.id ? 'active' : ''} key={board.id}>
