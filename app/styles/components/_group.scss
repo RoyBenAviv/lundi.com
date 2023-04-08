@@ -9,16 +9,53 @@
     opacity: 1;
   }
 }
+
+.check-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-right: 1px solid $layout-border-color;
+  width: 40px;
+  height: 100%;
+  padding-left: 13px;
+  &.disabled {
+    opacity: 0.5;
+  }
+  .check-left-color {
+    position: absolute;
+    width: 5px;
+    height: 100%;
+    left: 0;
+  }
+}
+
 .group-container {
   margin-bottom: 40px;
-  h4 {
-    font-weight: bold;
-    font-family: poppins-normal;
+  .header-title {
     display: flex;
     align-items: center;
+    gap: 10px;
     margin-bottom: 9px;
     margin-left: 9px;
-    gap: 9px;
+    &:hover {
+      .mini-paragraph {
+        opacity: 1;;
+      }
+      h4 {
+        // border: 1px solid $layout-border-color;
+      }
+    }
+    h4 {
+      font-weight: bold;
+      font-family: poppins-normal;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+  }
+  .mini-paragraph {
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
     svg {
       width: 14px;
       height: 14px;
@@ -29,6 +66,9 @@
     border: 1px solid $layout-border-color;
     border-radius: 5px;
     width: max-content;
+
+
+
     .table-header {
       display: flex;
       border-bottom: 1px solid $layout-border-color;
@@ -37,6 +77,14 @@
       }
       height: 36px;
       .column {
+        &:hover {
+          &~div {
+            .custom-handle {
+              background-color: $ui-border-color;
+              opacity: 1;
+            }
+          }
+        }
         height: 100%;
         display: flex;
         width: 100%;
@@ -63,6 +111,7 @@
 
         &.column-title {
           min-width: 180px;
+
         }
         &.add-column {
           width: 500px;
@@ -97,6 +146,12 @@
       }
     }
     .table-body {
+      .item-row {
+        height: 36px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #d0d4e4;
+      }
       .table-row {
         &:hover {
           background-color: $border_light_gray;
@@ -146,6 +201,8 @@
 
             .name {
               cursor: initial;
+              width: 50%;
+              text-align: center;
               padding: 2px 5px;
               border-radius: 3px;
               &:hover {

@@ -1,28 +1,23 @@
 'use client'
 
 import { useAddItem } from '@/app/hooks/useQuery'
-import { useEffect, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import Item from './Item'
 const { NavigationChevronDown, Add } = require('monday-ui-react-core/icons')
-import { useResizeDetector } from 'react-resize-detector'
 import { Resizable } from 're-resizable'
-
-export default function Group({ group, columns, boardItemsType, workspaceId, boardId, width, setWidth }: { group: Group; columns: Column[]; boardItemsType: string; workspaceId: string; boardId: string; width: number; setWidth: React.Dispatch<React.SetStateAction<number>> }) {
+import Checkbox from 'monday-ui-react-core/dist/Checkbox'
+export default function Group({ group, columns, boardItemsType, workspaceId, boardId, width, setWidth, onOpenItemsAction, toggleItemsToEdit, itemsToAction }: { group: Group; columns: Column[]; boardItemsType: string; workspaceId: string; boardId: string; width: number; setWidth: Dispatch<SetStateAction<number>>, onOpenItemsAction: (itemsId: (string | undefined)[]) => void, toggleItemsToEdit: Function, itemsToAction: (string | undefined)[]}) {
   const [newItemName, setNewItemName] = useState<string>('')
-  const [items, setItems] = useState<Item[]>(group.items.sort((item1: Item, item2: Item) => item1.order - item2.order))
-
-  const newItemRef = useRef<any>()
+  const items: Item[] = group.items.sort((item1: Item, item2: Item) => item1.order - item2.order)
   const { mutate: addItem } = useAddItem('bottom')
 
 
-  
-  
   const onAddNewItem = () => {
     const columnValues = []
-    for(let i = 0; i < columns.length; i++) {
+    for (let i = 0; i < columns.length; i++) {
       const id = uuidv4()
-        columnValues.push({columnId: columns[i].id, id})
+      columnValues.push({ columnId: columns[i].id, id })
     }
     if (!newItemName) return
     const newItem = {
@@ -31,31 +26,45 @@ export default function Group({ group, columns, boardItemsType, workspaceId, boa
       groupId: group.id,
       boardId,
       order: group.items[group.items.length - 1].order + 1,
-      columnValues
+      columnValues,
     }
     addItem(newItem)
     setNewItemName('')
   }
 
+
+
   return (
     <section className="group-container">
       <header>
-        <h4 style={{ color: group.color }}>
-          <NavigationChevronDown /> {group.name}
-        </h4>
+        <div className="header-title">
+          <h4 style={{ color: group.color }}>
+            <NavigationChevronDown /> {group.name}
+          </h4>
+          <p className="mini-paragraph">
+            {group.items.length} {boardItemsType}
+            {group.items.length !== 1 && 's'}{' '}
+          </p>
+        </div>
       </header>
       <section className="board-data-table">
         <div className="table-header">
-          <Resizable enable={{ right: true }} minWidth={180} onResizeStop={(e, direction, ref, d) => setWidth((width) => width + d.width)} handleClasses={{ right: 'custom-handle' }}>
-            <div style={{ width: width + 'px' }} className="column column-title">
-              <span>{boardItemsType}</span>
-            </div>
-          </Resizable>
-          {columns.map((column: Column) => (
-            <div className="column" key={column.id}>
-              <span>{column.name}</span>
-            </div>
-          ))}
+          <div className="check-item">
+            <div className="check-left-color" style={{ backgroundColor: group.color }}></div>
+            <Checkbox checked={group.items.every(item => itemsToAction.includes(item.id)) && group.items.length} onChange={() => toggleItemsToEdit(group.id, null)} />
+          </div>
+          <div className="table-header">
+            <Resizable enable={{ right: true }} minWidth={180} onResizeStop={(e, direction, ref, d) => setWidth((width) => width + d.width)} handleClasses={{ right: 'custom-handle' }}>
+              <div style={{ width: width + 'px' }} className="column column-title">
+                <span>{boardItemsType}</span>
+              </div>
+            </Resizable>
+            {columns.map((column: Column) => (
+              <div className="column" key={column.id}>
+                <span>{column.name}</span>
+              </div>
+            ))}
+          </div>
           <div className="column add-column">
             <span>
               <Add />
@@ -64,9 +73,19 @@ export default function Group({ group, columns, boardItemsType, workspaceId, boa
         </div>
         <div className="table-body">
           {items.map((item: Item) => (
-            <Item key={item.id} item={item} columns={columns} width={width} />
+            <div key={item.id} className="table-row">
+              <div className="check-item">
+                <div className="check-left-color" style={{ backgroundColor: group.color }}></div>
+                <Checkbox checked={itemsToAction.includes(item.id)} onChange={() => toggleItemsToEdit(group.id, item.id!)} />
+              </div>
+              <Item item={item} columns={columns} width={width} />
+            </div>
           ))}
           <div className="table-row add-item-row">
+            <div className="check-item disabled">
+              <div className="check-left-color disabled" style={{ backgroundColor: group.color }}></div>
+              <Checkbox disabled={true} />
+            </div>
             <input
               onBlur={() => onAddNewItem()}
               value={newItemName}

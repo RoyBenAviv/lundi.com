@@ -17,13 +17,10 @@ export const useGetWorkspace = (workspace: Workspace) => {
 }
 
 export const useGetWorkspaces = () => {
-  return useQuery(
-    ['workspaces'],
-    async () => {
-      const workspaces = await getWorkspaces()
-      return workspaces
-    }
-  )
+  return useQuery(['workspaces'], async () => {
+    const workspaces = await getWorkspaces()
+    return workspaces
+  })
 }
 
 export const useUpdateWorkspace = () => {
@@ -49,7 +46,7 @@ export const useUpdateWorkspace = () => {
 export const useUpdateItem = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({ itemId, value, key }: { itemId: string ; value: string; key: string }) => {
+    ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
       return axios.put(`http://localhost:3000/api/items/${itemId}`, { value, key })
     },
     {
@@ -60,14 +57,14 @@ export const useUpdateItem = () => {
       //   queryClient.setQueryData(['workspace', workspaceId], updatedWorkspace)
       //   return { updatedWorkspace }
       // },
-      onError:(err) =>  {
-          console.log('err222', err)
+      onError: (err) => {
+        console.log('err222', err)
       },
       onSuccess: ({ data: item }) => {
         // const previousWorkspace: Workspace | undefined = queryClient.getQueryData(['item', item.id])
         // console.log('file: useQuery.ts:66 -> previousWorkspace:', previousWorkspace)
         // console.log('file: useQuery.ts:66 -> previousWorkspace:', previousWorkspace)
-        console.log('item.boardId',item.boardId);
+        console.log('item.boardId', item.boardId)
         queryClient.invalidateQueries(['board', item.boardId])
         // queryClient.refetchQueries(['item', item.id])
       },
@@ -89,8 +86,6 @@ export const useUpdateColumnValue = () => {
     }
   )
 }
-
-
 
 export const useAddWorkspace = () => {
   const queryClient = useQueryClient()
@@ -126,7 +121,7 @@ export const useAddBoard = () => {
     (newBoard: any) => {
       return axios.post('http://localhost:3000/api/boards', newBoard)
     },
-    
+
     {
       onSuccess: ({ data }) => {
         queryClient.invalidateQueries(['board', data.id])
@@ -139,41 +134,81 @@ export const useAddBoard = () => {
   )
 }
 
-interface NewItem {
-  name: string
-  groupId: string
-  boardId: string
-  order: number
-}
 
 export const useAddItem = (itemPosition: string) => {
-  console.log('file: useQuery.ts:150 -> itemPosition:', itemPosition)
   const queryClient = useQueryClient()
   return useMutation(
-    ( newItem: NewItem ) => {
-      return axios.post(`http://localhost:3000/api/items`, newItem)
+    (newItem: NewItem) => {
+      return axios.post(`http://localhost:3000/api/items`, {newItem, isMany: false})
     },
 
     {
       onMutate: async (newItem) => {
-        console.log('here? 222')
-
-
         await queryClient.cancelQueries({ queryKey: ['board', newItem.boardId] })
         const previousBoard = queryClient.getQueryData<Board>(['board', newItem.boardId])!
-        const groupIdx = previousBoard.groups.findIndex(group => group.id === newItem.groupId)
+        const groupIdx = previousBoard.groups.findIndex((group) => group.id === newItem.groupId)
 
         itemPosition === 'bottom' ? previousBoard.groups[groupIdx].items.push(newItem) : previousBoard.groups[groupIdx].items.unshift(newItem)
 
-
         queryClient.setQueryData(['board', newItem.boardId], previousBoard)
         return { previousBoard }
-      }, 
-      onSuccess: ({data: newItem}) => {
-        console.log('file: useQuery.ts:173 -> newItem:', newItem)
+      },
+      onSuccess: ({ data: newItem }) => {
         console.log('success')
         queryClient.invalidateQueries(['board', newItem.boardId])
-      }
+      },
+    }
+  )
+}
+
+
+export const useAddManyItems = () => {
+   const queryClient = useQueryClient()
+  return useMutation(
+    (itemsToDuplicate: NewItem[]) => {
+
+      return axios.post(`http://localhost:3000/api/items`, {newItem: itemsToDuplicate, isMany: true})
+    },
+
+    {
+
+      onSuccess: (data, variables, context) => {
+      },
+    }
+  )
+
+
+}
+
+export const useDeleteItem = (currentBoardId: string) => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    (itemsId: (string | undefined)[]) => {
+      console.log('file: useQuery.ts:186 -> itemsId:', itemsId)
+
+      return axios.delete(`http://localhost:3000/api/items`, { data: itemsId })
+    },
+
+    {
+      onMutate: async (itemsId: (string | undefined)[]) => {
+        const prevBoard = queryClient.getQueryData<Board>(['board', currentBoardId])
+        console.log('file: useQuery.ts:188 -> prevBoard:', prevBoard)
+
+        const filteredBoard = {
+          ...prevBoard,
+          groups: prevBoard!.groups.map((group) => ({
+            ...group,
+            items: group.items.filter((item) => !itemsId.includes(item.id)),
+          })),
+        }
+        queryClient.setQueryData(['board', currentBoardId], filteredBoard)
+        return { filteredBoard }
+      },
+      onSuccess: (data, variables, context) => {
+        console.log('context',context);
+        const { filteredBoard } = context as { filteredBoard: Board };
+        queryClient.setQueryData(['board', currentBoardId], filteredBoard);
+      },
     }
   )
 }

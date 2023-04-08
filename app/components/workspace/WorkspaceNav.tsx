@@ -80,7 +80,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
         },
         {
           name: 'Group 2',
-          color: '#facc33',
+          color: '#0073ea',
           items: [
             { id: uuidv4(), name: `${newBoardType} 3`, order: 3 },
             { id: uuidv4(), name: `${newBoardType} 4`, order: 4 },

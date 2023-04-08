@@ -1,5 +1,14 @@
 
 declare module 'monday-ui-react-core/dist/EditableHeading';
+declare module 'monday-ui-react-core/dist/Checkbox'
+
+interface NewItem {
+  name: string
+  groupId: string
+  boardId: string
+  order: number
+}
+
 
 interface Workspace {
   id?: string

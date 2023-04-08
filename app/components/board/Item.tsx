@@ -26,7 +26,7 @@ export default function Item({ item, columns, width }: { item: Item; columns: Co
 
 
   return (
-    <section className="table-row">
+    <section className="item-row">
       <div style={{ width: width + 'px' }} className="cell item-name">
         <input
           type="text"
