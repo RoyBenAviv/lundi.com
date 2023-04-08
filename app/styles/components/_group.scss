@@ -30,35 +30,65 @@
 }
 
 .group-container {
+  position: relative;
   margin-bottom: 40px;
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 9px;
-    margin-left: 9px;
-    &:hover {
+  &.close {
+    .left-color {
+      position: absolute;
+      width: 5px;
+      height: 100%;
+      left: 0;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+    }
+    .header-title {
+      margin-left: 9px;
+      display: flex;
+      padding: 5px;
+      gap: 5px;
+      flex-direction: column;
+      justify-content: center;
       .mini-paragraph {
-        opacity: 1;;
-      }
-      h4 {
-        // border: 1px solid $layout-border-color;
+        margin-left: 20px;
       }
     }
+    border: 1px solid $ui-border-color;
+    box-shadow: $box-shadow-xs;
+    border-radius: 5px;
+  }
+  &.open {
+    .header-title {
+    gap: 10px;
+
+      margin-bottom: 9px;
+      margin-left: 9px;
+      display: flex;
+      align-items: center;
+      .mini-paragraph {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      &:hover {
+        .mini-paragraph {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .header-title {
+
+    svg {
+      width: 14px;
+      height: 14px;
+      cursor: pointer;
+    }
     h4 {
-      font-weight: bold;
+      font-weight: 600;
       font-family: poppins-normal;
       display: flex;
       align-items: center;
       gap: 9px;
-  }
-  .mini-paragraph {
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-    svg {
-      width: 14px;
-      height: 14px;
     }
   }
 
@@ -66,8 +96,6 @@
     border: 1px solid $layout-border-color;
     border-radius: 5px;
     width: max-content;
-
-
 
     .table-header {
       display: flex;
@@ -78,7 +106,7 @@
       height: 36px;
       .column {
         &:hover {
-          &~div {
+          & ~ div {
             .custom-handle {
               background-color: $ui-border-color;
               opacity: 1;
@@ -111,7 +139,6 @@
 
         &.column-title {
           min-width: 180px;
-
         }
         &.add-column {
           width: 500px;
@@ -148,9 +175,9 @@
     .table-body {
       .item-row {
         height: 36px;
-    display: flex;
-    align-items: center;
-    border-bottom: 1px solid #d0d4e4;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #d0d4e4;
       }
       .table-row {
         &:hover {

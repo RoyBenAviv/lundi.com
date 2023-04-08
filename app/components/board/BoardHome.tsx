@@ -10,6 +10,8 @@ import EditableHeading from 'monday-ui-react-core/dist/EditableHeading'
 import { useAddItem, useAddManyItems } from '@/app/hooks/useQuery'
 import ItemsToAction from './ItemsToAction'
 import { CSVDownload } from 'react-csv'
+import { ReactSortable } from 'react-sortablejs'
+
 const { Button, SplitButton, TabList, TabPanel, TabPanels, TabsContext, Tab } = require('monday-ui-react-core')
 export default function BoardHome({ board }: { board: Board }) {
   console.log('file: BoardHome.tsx:8 -> board:', board)
@@ -20,6 +22,11 @@ export default function BoardHome({ board }: { board: Board }) {
   const [width, setWidth] = useState<number>(180)
   const [itemsToAction, setItemsToAction] = useState<(string | undefined)[]>([])
   const [csvData, setCsvData] = useState<Item[] | null>(null)
+
+  const [isAllGroupsOpen, setIsAllGroupsOpen] = useState<boolean>(true)
+
+
+
   const onAddNewItem = () => {
     const columnValues = []
     for (let i = 0; i < currentBoard.columns.length; i++) {
@@ -132,9 +139,11 @@ export default function BoardHome({ board }: { board: Board }) {
         </Button>
       </nav>
       <section>
+        <ReactSortable list={currentBoard.groups} onChoose={() => setIsAllGroupsOpen(false)} onEnd={() => setIsAllGroupsOpen(true)} setList={() => {}} >
         {currentBoard?.groups.map((group: Group) => (
+
           <Group
-            key={group.id}
+          key={group.id}
             group={group}
             columns={currentBoard.columns}
             boardItemsType={currentBoard.boardItemsType}
@@ -145,8 +154,10 @@ export default function BoardHome({ board }: { board: Board }) {
             onOpenItemsAction={onOpenItemsAction}
             toggleItemsToEdit={toggleItemsToEdit}
             itemsToAction={itemsToAction}
-          />
-        ))}
+            isAllGroupsOpen={isAllGroupsOpen}
+            />
+            ))}
+            </ReactSortable>
       </section>
       {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 

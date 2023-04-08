@@ -4,14 +4,38 @@ import { useAddItem } from '@/app/hooks/useQuery'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import Item from './Item'
-const { NavigationChevronDown, Add } = require('monday-ui-react-core/icons')
+const { NavigationChevronDown, Add, NavigationChevronRight } = require('monday-ui-react-core/icons')
 import { Resizable } from 're-resizable'
 import Checkbox from 'monday-ui-react-core/dist/Checkbox'
-export default function Group({ group, columns, boardItemsType, workspaceId, boardId, width, setWidth, onOpenItemsAction, toggleItemsToEdit, itemsToAction }: { group: Group; columns: Column[]; boardItemsType: string; workspaceId: string; boardId: string; width: number; setWidth: Dispatch<SetStateAction<number>>, onOpenItemsAction: (itemsId: (string | undefined)[]) => void, toggleItemsToEdit: Function, itemsToAction: (string | undefined)[]}) {
+export default function Group({
+  group,
+  columns,
+  boardItemsType,
+  workspaceId,
+  boardId,
+  width,
+  setWidth,
+  onOpenItemsAction,
+  toggleItemsToEdit,
+  itemsToAction,
+  isAllGroupsOpen,
+}: {
+  group: Group
+  columns: Column[]
+  boardItemsType: string
+  workspaceId: string
+  boardId: string
+  width: number
+  setWidth: Dispatch<SetStateAction<number>>
+  onOpenItemsAction: (itemsId: (string | undefined)[]) => void
+  toggleItemsToEdit: Function
+  itemsToAction: (string | undefined)[]
+  isAllGroupsOpen: boolean
+}) {
   const [newItemName, setNewItemName] = useState<string>('')
+  const [isGroupOpen, setIsGroupOpen] = useState<boolean>(true)
   const items: Item[] = group.items.sort((item1: Item, item2: Item) => item1.order - item2.order)
   const { mutate: addItem } = useAddItem('bottom')
-
 
   const onAddNewItem = () => {
     const columnValues = []
@@ -32,14 +56,12 @@ export default function Group({ group, columns, boardItemsType, workspaceId, boa
     setNewItemName('')
   }
 
-
-
-  return (
-    <section className="group-container">
+  return (isGroupOpen && isAllGroupsOpen) ? (
+    <section className="group-container open">
       <header>
         <div className="header-title">
           <h4 style={{ color: group.color }}>
-            <NavigationChevronDown /> {group.name}
+            <NavigationChevronDown onClick={() => setIsGroupOpen(false)} /> {group.name}
           </h4>
           <p className="mini-paragraph">
             {group.items.length} {boardItemsType}
@@ -51,7 +73,7 @@ export default function Group({ group, columns, boardItemsType, workspaceId, boa
         <div className="table-header">
           <div className="check-item">
             <div className="check-left-color" style={{ backgroundColor: group.color }}></div>
-            <Checkbox checked={group.items.every(item => itemsToAction.includes(item.id)) && group.items.length} onChange={() => toggleItemsToEdit(group.id, null)} />
+            <Checkbox checked={group.items.every((item) => itemsToAction.includes(item.id)) && group.items.length} onChange={() => toggleItemsToEdit(group.id, null)} />
           </div>
           <div className="table-header">
             <Resizable enable={{ right: true }} minWidth={180} onResizeStop={(e, direction, ref, d) => setWidth((width) => width + d.width)} handleClasses={{ right: 'custom-handle' }}>
@@ -100,6 +122,19 @@ export default function Group({ group, columns, boardItemsType, workspaceId, boa
           </div>
         </div>
       </section>
+    </section>
+  ) : (
+    <section className="group-container close">
+       <div className="left-color" style={{ backgroundColor: group.color }}></div>
+      <header className='header-title'>
+      <h4 style={{ color: group.color }}>
+        <NavigationChevronRight onClick={() => setIsGroupOpen(true)} /> {group.name}
+      </h4>
+      <p className="mini-paragraph">
+            {group.items.length} {boardItemsType}
+            {group.items.length !== 1 && 's'}{' '}
+          </p>
+      </header>
     </section>
   )
 }

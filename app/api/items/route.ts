@@ -21,12 +21,11 @@ export async function POST(request: Request) {
 
       newItem.forEach((item: any) => delete item.columnValues)
 
-      console.log('newItem',newItem);
       const items = await prisma.item.createMany({
         data: newItem
       })
 
-      const test = await prisma.columnValue.createMany({
+      await prisma.columnValue.createMany({
         data: columnValues
       }) 
 
