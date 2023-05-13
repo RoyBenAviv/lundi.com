@@ -16,6 +16,7 @@ interface Workspace {
   description: string
   color: string
   boards?: Board[]
+  recentlyVisited?: Date
 }
 
 interface Board {
@@ -38,6 +39,8 @@ interface Group {
   boards: Board[]
   boardsId: string
   color: string
+  width: number
+  order: number
 }
 
 interface Users {

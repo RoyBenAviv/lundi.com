@@ -3,30 +3,26 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import Group from './Group'
-// const { Home } = require('monday-ui-react-core/icons')
 const { Home, Add, Search, Filter } = require('monday-ui-react-core/icons')
 import { v4 as uuidv4 } from 'uuid'
 import EditableHeading from 'monday-ui-react-core/dist/EditableHeading'
-import { useAddItem, useAddManyItems } from '@/app/hooks/useQuery'
+import { useAddItem, useAddManyItems, useUpdateGroups } from '@/app/hooks/useQuery'
 import ItemsToAction from './ItemsToAction'
 import { CSVDownload } from 'react-csv'
 import { ReactSortable } from 'react-sortablejs'
-
 const { Button, SplitButton, TabList, TabPanel, TabPanels, TabsContext, Tab } = require('monday-ui-react-core')
 export default function BoardHome({ board }: { board: Board }) {
-  console.log('file: BoardHome.tsx:8 -> board:', board)
   const queryClient = useQueryClient()
   const { mutate: addItem } = useAddItem('top')
   const { mutate: addManyItems} = useAddManyItems()
   const { data: currentBoard, isLoading } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient })
-  const [width, setWidth] = useState<number>(180)
+  const { mutateAsync: updateGroups } = useUpdateGroups(currentBoard.id)
+  const [width, setWidth] = useState<number>(currentBoard.groups[0].width)
   const [itemsToAction, setItemsToAction] = useState<(string | undefined)[]>([])
   const [csvData, setCsvData] = useState<Item[] | null>(null)
-
   const [isAllGroupsOpen, setIsAllGroupsOpen] = useState<boolean>(true)
-
-
-
+  const [boardGroups, setBoardGroups] = useState<Group[]>(currentBoard.groups.sort((group1: Group, group2: Group) => group1.order - group2.order))
+  const [disableSorting, setDisableSorting] = useState<boolean>(false)
   const onAddNewItem = () => {
     const columnValues = []
     for (let i = 0; i < currentBoard.columns.length; i++) {
@@ -44,6 +40,8 @@ export default function BoardHome({ board }: { board: Board }) {
     }
     addItem(newItem)
   }
+
+
 
   const onOpenItemsAction = (itemsId: (string | undefined)[]) => {
     console.log('file: BoardHome.tsx:40 -> itemsId:', itemsId)
@@ -115,6 +113,35 @@ export default function BoardHome({ board }: { board: Board }) {
     addManyItems(itemsToDuplicate)
   }
 
+  const onSetWidth = async(dWidth: number) => {
+    console.log('file: BoardHome.tsx:120 -> dWidth:', dWidth)
+    await updateGroups({value:  width + dWidth, key: 'width' })
+    setWidth((width) => width + dWidth)
+  }
+
+  const onSetGroupsOrder = async(boardGroups: Group[]) => {
+    setIsAllGroupsOpen(true)
+    const sortedGroups = boardGroups.map((group: Group, idx: number) => {
+      return {
+        id: group.id,
+        order: idx
+      }
+    })
+    
+    setDisableSorting(true)
+    await updateGroups({ value: sortedGroups, key: 'sorting' })
+    setDisableSorting(false)
+  }
+
+  const [timeoutId, setTimeoutId] = useState<null |  NodeJS.Timeout>(null)
+
+  useEffect(() => {
+
+  boardGroups && onSetGroupsOrder(boardGroups)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardGroups])
+
   if (isLoading) return <h1>IS LOADING</h1>
   return (
     <main className="board-home">
@@ -139,22 +166,23 @@ export default function BoardHome({ board }: { board: Board }) {
         </Button>
       </nav>
       <section>
-        <ReactSortable list={currentBoard.groups} onChoose={() => setIsAllGroupsOpen(false)} onEnd={() => setIsAllGroupsOpen(true)} setList={() => {}} >
-        {currentBoard?.groups.map((group: Group) => (
+        <ReactSortable disabled={disableSorting} handle='.handle' list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups} >
+        {currentBoard.groups.sort((group1: Group, group2: Group) => group1.order - group2.order).map((group: Group) => (
 
           <Group
-          key={group.id}
+            key={group.id}
             group={group}
             columns={currentBoard.columns}
             boardItemsType={currentBoard.boardItemsType}
             workspaceId={currentBoard.workspaceId}
             boardId={currentBoard.id}
             width={width}
-            setWidth={setWidth}
+            onSetWidth={onSetWidth}
             onOpenItemsAction={onOpenItemsAction}
             toggleItemsToEdit={toggleItemsToEdit}
             itemsToAction={itemsToAction}
             isAllGroupsOpen={isAllGroupsOpen}
+            // setBoardGroups={setBoardGroups}
             />
             ))}
             </ReactSortable>

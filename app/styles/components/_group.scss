@@ -77,7 +77,7 @@
   }
 
   .header-title {
-
+    cursor: grab;
     svg {
       width: 14px;
       height: 14px;
@@ -89,6 +89,7 @@
       display: flex;
       align-items: center;
       gap: 9px;
+      cursor: text;
     }
   }
 

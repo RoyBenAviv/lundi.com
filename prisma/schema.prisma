@@ -16,6 +16,7 @@ model Workspace {
   description String?
   color       String?
   boards      Boards[]
+  recentlyVisited DateTime?
 }
 
 model Boards {
@@ -38,6 +39,8 @@ model Groups {
   color    String?
   boards   Boards? @relation(fields: [boardsId], references: [id])
   boardsId String?
+  order       Int        @default(0)
+  width Int     @default(180)
 }
 
 model Users {
@@ -66,11 +69,12 @@ model Column {
   boards     Boards? @relation(fields: [boardsId], references: [id])
   boardsId   String?
   ColumnValue ColumnValue[]
+  width Int? @default(120)
 }
 
 model ColumnValue {
   id       String  @id @default(uuid())
-  value    String
+  value    Json
   item     Item?   @relation(fields: [itemId], references: [id])
   itemId   String
   column   Column? @relation(fields: [columnId], references: [id])

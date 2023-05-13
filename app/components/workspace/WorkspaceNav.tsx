@@ -10,7 +10,7 @@ import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { CSSTransition } from 'react-transition-group'
 import { colors } from '@/app/services/utilService'
 import { v4 as uuidv4 } from 'uuid'
-const { Modal, Input } = require('monday-ui-react-core')
+const { Modal } = require('monday-ui-react-core')
 const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 
 export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
@@ -72,6 +72,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
       groups: [
         {
           name: 'Group 1',
+          order: 0,
           color: '#facc33',
           items: [
             { id: uuidv4(), name: `${newBoardType} 1`, order: 1 },
@@ -80,6 +81,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
         },
         {
           name: 'Group 2',
+          order: 1,
           color: '#0073ea',
           items: [
             { id: uuidv4(), name: `${newBoardType} 3`, order: 3 },
@@ -93,7 +95,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     addBoardMutate(newBoard)
   }
 
-  const [timeoutId, setTimeoutId] = useState<any>(null)
+  const [timeoutId, setTimeoutId] = useState<null |  NodeJS.Timeout>(null)
 
   useEffect(() => {
     if (workspaceBoards) {
@@ -225,7 +227,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
 
               <div className="board-management">
                 <div className="radio-container">
-                  <RadioButton defaultChecked value="Item" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Item" />
+                  <RadioButton defaultChecked value="Items" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Items" />
                 </div>
                 <div className="radio-container">
                   <RadioButton value="Budgets" onSelect={(e: ChangeEvent<HTMLInputElement | null>) => setNewBoardType(e.target.value)} name="radio-buttons-group" text="Budgets" />

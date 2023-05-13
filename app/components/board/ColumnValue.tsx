@@ -8,9 +8,7 @@ const { mutate: updateColumnValue } = useUpdateColumnValue()
     const [value, setValue] = useState<string>(columnValue?.value || '')
 
     const onEditColumnValue = () => {
-
-          console.log('itemId',itemId);
-          console.log('columnValue',columnValue);
+        if(columnValue.value === value) return
         updateColumnValue({columnValueId: columnValue.id, value, key: 'value' })
     }
 

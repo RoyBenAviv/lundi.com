@@ -13,12 +13,29 @@ async function getWorkspaces() {
 }
 
 export default async function Home() {
+
+
+
+  const getCurrentTime = () => {
+    const currentTime = new Date().getHours();
+    switch (true) {
+      case (currentTime >= 6 && currentTime <= 11):
+        return  "Good morning!";
+      case (currentTime >= 18 && currentTime <= 21):
+        return  "Good evening!";
+      default:
+        return  "Good night!";
+    }
+
+  }
+
+
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(['workspaces'], async () => await getWorkspaces())
   const dehydratedState = dehydrate(queryClient)
   return (
-    <section>
-      <header>Good evening, Roy! Quickly access your recent boards, Inbox and workspaces</header>
+    <section className='main-workspaces'>
+      <header>{getCurrentTime()}, Roy! Quickly access your recent boards, Inbox and workspaces</header>
       <section>Recently visited</section>
       <section>Inbox</section>
       <section>
