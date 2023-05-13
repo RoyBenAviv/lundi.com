@@ -35,7 +35,7 @@ export default async function Home() {
   const dehydratedState = dehydrate(queryClient)
   return (
     <section className='main-workspaces'>
-      <header>{getCurrentTime()}, Roy! Quickly access your recent boards, Inbox and workspaces</header>
+      <header><p>{getCurrentTime()}, Roy!</p> Quickly access your recent boards, Inbox and workspaces</header>
       <section>Recently visited</section>
       <section>Inbox</section>
       <section>
