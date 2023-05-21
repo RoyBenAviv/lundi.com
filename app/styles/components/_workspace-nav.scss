@@ -9,6 +9,9 @@
           height: 35px;
           position: relative;
           input {
+            &:hover {
+              border-color: $primary-color;
+            }
             padding-left: 32px;
             width: 100%;
             padding-top: 10px;

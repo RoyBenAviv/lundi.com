@@ -22,7 +22,6 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
   const [isComboBoxOpen, setIsComboBoxOpen] = useState<boolean>(false)
 
-  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(currentWorkspace.boards!.sort((board1: Board, board2: Board) => board1.order - board2.order))
   const [isOpenAddNewWorkspace, setIsOpenAddNewWorkspace] = useState<boolean>(false)
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>('New workspace')
   const [newWorkspaceColor, setNewWorkspaceColor] = useState<string>('#00ca72')
@@ -31,6 +30,17 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   const [isOpenAddNewBoard, setIsOpenAddNewBoard] = useState<boolean>(false)
   const [newBoardName, setNewBoardName] = useState<string>('New Board')
   const [newBoardType, setNewBoardType] = useState<string>('Item')
+
+  const [searchBoard, setSearchBoard] = useState<string>('')
+
+  const sortedBoards = currentWorkspace.boards!.sort((board1: Board, board2: Board) => board1.order - board2.order)
+  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(sortedBoards)
+
+  useEffect(() => {
+    const filteredBoards = sortedBoards!.filter((board: Board) => board.name.toLowerCase().includes(searchBoard.toLowerCase()))
+
+    setWorkspaceBoards(filteredBoards)
+  }, [searchBoard, currentWorkspace.boards, sortedBoards])
 
   const { mutate: sortBoards } = useSortBoards()
   const { mutate: addWorkspaceMutate, isLoading: isLoadingNewWorkspace } = useAddWorkspace()
@@ -71,14 +81,6 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     router.push(`/workspaces/${board.workspaceId}/boards/${board.id}`)
     updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
   }
-
-  // useEffect(() => {
-  //   if(isOnSearch && searchTextInput.current) {
-      
-
-  //   }
-
-  // }, [isOnSearch])
 
   const onAddNewBoard = () => {
     const newBoard: NewBoard = {
@@ -176,7 +178,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
                 </li>
                 {isOnSearch ? (
                   <div ref={searchBoardRef} className="search">
-                    <TextField autoFocus={isOnSearch} ref={searchTextInput} placeholder="Search" />
+                    <TextField value={searchBoard} onChange={(value) => setSearchBoard(value)} autoFocus={isOnSearch} ref={searchTextInput} placeholder="Search" />
                     <Search />
                   </div>
                 ) : (
