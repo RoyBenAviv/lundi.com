@@ -5,7 +5,29 @@
       width: 280px;
       ul {
         margin-top: 15px;
+        .search {
+          height: 35px;
+          position: relative;
+          input {
+            padding-left: 32px;
+            width: 100%;
+            padding-top: 10px;
+            &::placeholder {
+              color: $primary-text-color;
+              font-family: figtree-normal, sans-serif
+            }
+          }
+          svg {
+            position: absolute;
+            // left: 0px;
+            bottom: 50%;
+            transform: translateY(50%);
+            left: 8px;
+            // tran
+          }
+        }
         li {
+
           display: flex;
           align-items: center;
           gap: 5px;
@@ -125,7 +147,7 @@
         &:not(.active):hover {
           background-color: $primary-background-hover-on-secondary-color;
         }
-        a{
+        .board-navigator{
         padding: 8px;
 
           display: flex;

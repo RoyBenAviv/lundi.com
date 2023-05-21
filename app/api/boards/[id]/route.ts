@@ -18,3 +18,18 @@ export async function GET(request: Request, { params }: { params: Params }) {
 
   return NextResponse.json(board)
 }
+
+
+export async function PUT(request: Request, { params }: { params: Params }) {
+  const {value, key} = await request.json()
+  console.log('file: route.ts:25 -> value, key:', value, key)
+  const updatedBoard = await prisma.boards.update({
+    where: { id: params.id },
+    data: {
+      [key]: value
+    }
+  });
+  console.log('file: route.ts:32 -> updatedBoard:', updatedBoard)
+
+  return NextResponse.json(updatedBoard)
+}

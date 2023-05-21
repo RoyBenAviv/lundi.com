@@ -1,19 +1,21 @@
 'use client'
 
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
-import { useGetWorkspace, useUpdateWorkspace } from '@/app/hooks/useQuery'
+import { useGetWorkspace, useUpdateBoard, useUpdateWorkspace } from '@/app/hooks/useQuery'
 import { colors } from '@/app/services/utilService'
 const { Button, TabList, TabPanel, TabPanels, TabsContext, Tab } = require('monday-ui-react-core')
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useMemo, useRef, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 const { Edit, Favorite, Board, Check } = require('monday-ui-react-core/icons')
 
 export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
   const { data: currentWorkspace } = useGetWorkspace(workspace)
   const { mutate: updateMutate } = useUpdateWorkspace()
-
+  const {mutate: updateMutateBoard} = useUpdateBoard()
   const editWorkspaceIconRef = useRef(null)
+  const router = useRouter()
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const handleChange = (value: string, key: string) => {
@@ -21,7 +23,24 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
     updateMutate({ workspaceId: currentWorkspace.id!, value, key })
   }
 
+
+
   useOnClickOutside(editWorkspaceIconRef, () => setIsOpenEditIcon(false))
+  
+  const onNavigateBoard = (board: Board) => {
+    router.push(`/workspaces/${board.workspaceId}/boards/${board.id}`)
+    updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
+}
+
+  const sortedBoardsByRecentlyVisited = useMemo(() => currentWorkspace.boards?.sort((board1: Board, board2: Board) => {
+    
+    const time1 = board1?.recentlyVisited ? new Date(board1?.recentlyVisited).getTime() : 0
+    console.log('file: WorkspaceHome.tsx:38 -> time1:', time1)
+    const time2 = board2?.recentlyVisited ? new Date(board2?.recentlyVisited).getTime() : 0
+    console.log('file: WorkspaceHome.tsx:40 -> time2:', time2)
+
+    return time2 - time1
+  }), [currentWorkspace.boards]);
 
 
   return (
@@ -70,19 +89,19 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
           </TabList>
           <TabPanels>
             <TabPanel className="recent-boards">
-              {currentWorkspace.boards?.map((board: Board) => (
-                <div key={board.id}>
-                  <p>
-                    <Link href={`/boards/${board.id}`}>
+              <ul>
+              {sortedBoardsByRecentlyVisited?.map((board: Board) => (
+                <>
+                    <li key={board.id} onClick={() => onNavigateBoard(board)}>
                       <span>
                         {<Board />} {board.name}
                       </span>{' '}
                       {<Favorite />}
-                    </Link>
-                  </p>
-                  <hr />
-                </div>
+                    </li>
+                    <hr/>
+                    </>
               ))}
+              </ul>
             </TabPanel>
             <TabPanel>Second slide</TabPanel>
           </TabPanels>

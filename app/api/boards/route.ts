@@ -1,6 +1,29 @@
 import { NextResponse } from 'next/server'
 import prisma from '../../../prisma/client'
 
+export async function GET(request: Request) {
+  try {
+    const boards = await prisma.boards.findMany({
+      where: {
+        recentlyVisited: {
+          not: null,
+        },
+      },
+      orderBy: {
+        recentlyVisited: 'desc',
+      },
+      include: {
+        workspace: true,
+      },
+    })
+    console.log('file: route.ts:30 -> boards:', boards)
+
+    return NextResponse.json(boards)
+  } catch (err) {
+    console.log('file: route.ts:8 -> err:', err)
+  }
+}
+
 export async function PUT(request: Request) {
   const sortedBoards = await request.json()
   console.log('file: route.ts:6 -> sortedBoards:', sortedBoards)
@@ -31,7 +54,7 @@ export async function POST(request: Request) {
         workspaceId: newBoard.workspaceId,
         groups: {
           create: [
-            { 
+            {
               name: newBoard.groups[0].name,
               color: newBoard.groups[0].color,
               order: newBoard.groups[0].order,
@@ -40,7 +63,7 @@ export async function POST(request: Request) {
                   ...item,
                   columnValues: {
                     create: [
-                      { 
+                      {
                         value: '',
                         column: { connect: { id: newBoard.columns[0].id } },
                       },

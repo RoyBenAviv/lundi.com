@@ -1,7 +1,7 @@
 'use client'
 
-import { useAddBoard, useAddWorkspace, useGetWorkspace, useSortBoards } from '@/app/hooks/useQuery'
-import { Button, Flex, ModalContent, RadioButton } from 'monday-ui-react-core'
+import { useAddBoard, useAddWorkspace, useGetWorkspace, useSortBoards, useUpdateBoard } from '@/app/hooks/useQuery'
+import { Button, Flex, ModalContent, RadioButton, TextField } from 'monday-ui-react-core'
 import Link from 'next/link'
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
@@ -10,11 +10,13 @@ import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 import { CSSTransition } from 'react-transition-group'
 import { colors } from '@/app/services/utilService'
 import { v4 as uuidv4 } from 'uuid'
+import { useRouter } from 'next/navigation'
 const { Modal } = require('monday-ui-react-core')
 const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevronRight, Menu, NavigationChevronUp, NavigationChevronDown } = require('monday-ui-react-core/icons')
 
 export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspace)
+  const { mutate: updateMutateBoard } = useUpdateBoard()
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
@@ -25,6 +27,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   const [newWorkspaceName, setNewWorkspaceName] = useState<string>('New workspace')
   const [newWorkspaceColor, setNewWorkspaceColor] = useState<string>('#00ca72')
 
+  const [isOnSearch, setIsOnSearch] = useState<boolean>(false)
   const [isOpenAddNewBoard, setIsOpenAddNewBoard] = useState<boolean>(false)
   const [newBoardName, setNewBoardName] = useState<string>('New Board')
   const [newBoardType, setNewBoardType] = useState<string>('Item')
@@ -34,7 +37,12 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   const { mutate: addBoardMutate, isLoading: isLoadingNewBoard } = useAddBoard()
 
   const workspaceOptionsRef = useRef(null)
+  const searchTextInput = useRef<HTMLInputElement>(null)
+  const searchBoardRef = useRef(null)
   useOnClickOutside(workspaceOptionsRef, () => setIsComboBoxOpen(false))
+  useOnClickOutside(searchBoardRef, () => setIsOnSearch(false))
+
+  const router = useRouter()
 
   const onOpenAddNewWorkspace = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -58,6 +66,19 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     }
     addWorkspaceMutate(newWorkspace)
   }
+
+  const onNavigateBoard = (board: Board) => {
+    router.push(`/workspaces/${board.workspaceId}/boards/${board.id}`)
+    updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
+  }
+
+  // useEffect(() => {
+  //   if(isOnSearch && searchTextInput.current) {
+      
+
+  //   }
+
+  // }, [isOnSearch])
 
   const onAddNewBoard = () => {
     const newBoard: NewBoard = {
@@ -95,7 +116,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     addBoardMutate(newBoard)
   }
 
-  const [timeoutId, setTimeoutId] = useState<null |  NodeJS.Timeout>(null)
+  const [timeoutId, setTimeoutId] = useState<null | NodeJS.Timeout>(null)
 
   useEffect(() => {
     if (workspaceBoards) {
@@ -153,10 +174,17 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
                 <li onClick={() => setIsOpenAddNewBoard(true)}>
                   <Add /> <button>Add</button>
                 </li>
-                <li>
-                  <Search />
-                  <button>Search</button>
-                </li>
+                {isOnSearch ? (
+                  <div ref={searchBoardRef} className="search">
+                    <TextField autoFocus={isOnSearch} ref={searchTextInput} placeholder="Search" />
+                    <Search />
+                  </div>
+                ) : (
+                  <li onClick={() => setIsOnSearch(true)}>
+                    <Search />
+                    <button>Search</button>
+                  </li>
+                )}
               </ul>
             </section>
           </header>
@@ -166,9 +194,9 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
               <ReactSortable list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
                 {workspaceBoards.map((board: Board) => (
                   <div className={boardId === board.id ? 'active' : ''} key={board.id}>
-                    <Link href={`/workspaces/${currentWorkspace.id}/boards/${board.id}`}>
+                    <div className="board-navigator" onClick={() => onNavigateBoard(board)}>
                       {<Board />} {board.name}
-                    </Link>
+                    </div>
                   </div>
                 ))}
               </ReactSortable>

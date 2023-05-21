@@ -26,3 +26,13 @@ export const getBoard = async (boardId: string) => {
     console.log('file: page.tsx:16 -> err:', err)
   }
 }
+
+export async function getRecentlyVisitedBoards() {
+  try {
+  const res = await axios.get(`http://localhost:3000/api/boards`)
+  console.log('file: page.tsx:240 -> res:', res)
+  return res.data
+} catch (err) {
+  console.log('file: page.tsx:6 -> err:', err)
+}
+}

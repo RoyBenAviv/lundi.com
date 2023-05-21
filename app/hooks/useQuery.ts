@@ -273,3 +273,16 @@ export const useGetBoard = (currentBoard: Board) => {
     }
   )
 }
+
+export const useUpdateBoard = () => {
+  return useMutation(
+    ({ boardId, value, key }: { boardId: string; value: string | Date; key: string }) => {
+      return axios.put(`http://localhost:3000/api/boards/${boardId}`, { value, key })
+    },
+    {
+      onSuccess: ({ data: board }) => {
+        console.log('file: useQuery.ts:286 -> board:', board)
+      },
+    }
+  )
+}

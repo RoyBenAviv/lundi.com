@@ -88,9 +88,10 @@
       line-height: 0;
     }
     .recent-boards {
-      width: 730px;
+      width: 80%;
 
-      p > a {
+      ul > li {
+        cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: space-between;

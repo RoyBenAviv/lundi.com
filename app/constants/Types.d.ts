@@ -30,6 +30,7 @@ interface Board {
   order: number
   columns: Column[]
   boardItemsType: string
+  recentlyVisited: Date
 }
 
 interface Group {
