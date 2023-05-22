@@ -5,7 +5,7 @@ export const getWorkspace = async (workspaceId: string) => {
     const currentWorkspace = await axios.get(`${process.env.BASE_URL}/api/workspaces/${workspaceId}`)
     return currentWorkspace.data
   } catch (err) {
-    console.log('file: page.tsx:16 -> err:', err)
+  console.log('file: appService.tsx:8 -> err:', err)
   }
 }
 
