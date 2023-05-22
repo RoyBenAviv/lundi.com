@@ -3,6 +3,9 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { getBoard, getWorkspace, getWorkspaces } from '../services/appService'
 
+const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://lundi-com-roybenaviv.vercel.app'
+
+
 export const useGetWorkspace = (workspace: Workspace) => {
   return useQuery(
     ['workspace', workspace.id],
@@ -27,7 +30,7 @@ export const useUpdateWorkspace = () => {
   const queryClient = useQueryClient()
   return useMutation(
     ({ workspaceId, value, key }: { workspaceId: string; value: string | Date; key: string }) => {
-      return axios.put(`${process.env.BASE_URL}/api/workspaces/${workspaceId}`, { value, key })
+      return axios.put(`${BASE_URL}/api/workspaces/${workspaceId}`, { value, key })
     },
     {
       onMutate: async ({ workspaceId, value, key }: { workspaceId: string; value: string | Date; key: string }) => {
@@ -48,7 +51,7 @@ export const useUpdateGroups = (boardId: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     ({ value, key }: { value: string | number | {id: string, order: number}[]; key: string }) => {
-      return axios.put(`${process.env.BASE_URL}/api/groups`, { boardId, value, key })
+      return axios.put(`${BASE_URL}/api/groups`, { boardId, value, key })
     },
     {
       onMutate: ({ value, key }) => {
@@ -85,7 +88,7 @@ export const useUpdateItem = () => {
   const queryClient = useQueryClient()
   return useMutation(
     ({ itemId, value, key }: { itemId: string; value: string ; key: string }) => {
-      return axios.put(`${process.env.BASE_URL}/api/items/${itemId}`, { value, key })
+      return axios.put(`${BASE_URL}/api/items/${itemId}`, { value, key })
     },
     {
       // onMutate: async ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
@@ -114,7 +117,7 @@ export const useUpdateColumnValue = () => {
   const queryClient = useQueryClient()
   return useMutation(
     ({ columnValueId, value, key }: { columnValueId: string; value: string; key: string }) => {
-      return axios.put(`${process.env.BASE_URL}/api/columnValues/${columnValueId}`, { value, key })
+      return axios.put(`${BASE_URL}/api/columnValues/${columnValueId}`, { value, key })
     },
     {
       onSuccess: ({ data: item }) => {
@@ -132,7 +135,7 @@ export const useAddWorkspace = () => {
 
   return useMutation(
     (newWorkspace: Workspace) => {
-      return axios.post('${process.env.BASE_URL}/api/workspaces', newWorkspace)
+      return axios.post('${BASE_URL}/api/workspaces', newWorkspace)
     },
     {
       onMutate: async (newWorkspace: Workspace) => {
@@ -157,7 +160,7 @@ export const useAddBoard = () => {
 
   return useMutation(
     (newBoard: any) => {
-      return axios.post('${process.env.BASE_URL}/api/boards', newBoard)
+      return axios.post('${BASE_URL}/api/boards', newBoard)
     },
 
     {
@@ -176,7 +179,7 @@ export const useAddItem = (itemPosition: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     (newItem: NewItem) => {
-      return axios.post(`${process.env.BASE_URL}/api/items`, { newItem, isMany: false })
+      return axios.post(`${BASE_URL}/api/items`, { newItem, isMany: false })
     },
 
     {
@@ -203,7 +206,7 @@ export const useAddManyItems = () => {
   const queryClient = useQueryClient()
   return useMutation(
     (itemsToDuplicate: NewItem[]) => {
-      return axios.post(`${process.env.BASE_URL}/api/items`, { newItem: itemsToDuplicate, isMany: true })
+      return axios.post(`${BASE_URL}/api/items`, { newItem: itemsToDuplicate, isMany: true })
     },
 
     {
@@ -218,7 +221,7 @@ export const useDeleteItem = (currentBoardId: string) => {
     (itemsId: (string | undefined)[]) => {
       console.log('file: useQuery.ts:186 -> itemsId:', itemsId)
 
-      return axios.delete(`${process.env.BASE_URL}/api/items`, { data: itemsId })
+      return axios.delete(`${BASE_URL}/api/items`, { data: itemsId })
     },
 
     {
@@ -251,7 +254,7 @@ export const useSortBoards = () => {
   const queryClient = useQueryClient()
   return useMutation(
     (workspaceBoards: any[]) => {
-      return axios.put('${process.env.BASE_URL}/api/boards', workspaceBoards)
+      return axios.put('${BASE_URL}/api/boards', workspaceBoards)
     },
     {
       onSuccess: () => {
@@ -277,7 +280,7 @@ export const useGetBoard = (currentBoard: Board) => {
 export const useUpdateBoard = () => {
   return useMutation(
     ({ boardId, value, key }: { boardId: string; value: string | Date; key: string }) => {
-      return axios.put(`${process.env.BASE_URL}/api/boards/${boardId}`, { value, key })
+      return axios.put(`${BASE_URL}/api/boards/${boardId}`, { value, key })
     },
     {
       onSuccess: ({ data: board }) => {

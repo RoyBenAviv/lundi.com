@@ -17,6 +17,11 @@ import { getWorkspaces } from './services/appService'
 
 
 export default async function Home() {
+  const queryClient = getQueryClient()
+  await queryClient.prefetchQuery(['workspaces'], async () => await getWorkspaces())
+  const dehydratedState = dehydrate(queryClient)
+
+
   const boards = await getRecentlyVisitedBoards()
   console.log('file: page.tsx:27 -> boards:', boards)
 
@@ -33,9 +38,7 @@ export default async function Home() {
   }
 
 
-  const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(['workspaces'], async () => await getWorkspaces())
-  const dehydratedState = dehydrate(queryClient)
+ 
 
 
   return (
