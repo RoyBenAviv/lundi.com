@@ -7,7 +7,7 @@ import { getRecentlyVisitedBoards } from './services/appService'
 
 async function getWorkspaces() {
   try {
-  const res = await fetch(`${process.env.BASE_URL}/api/workspaces`)
+  const res = await fetch(`http://localhost:3000/api/workspaces`)
   return res.json()
 } catch (err) {
   console.log('file: page.tsx:6 -> err:', err)
@@ -17,8 +17,8 @@ async function getWorkspaces() {
 
 
 export default async function Home() {
-  const boards = await getRecentlyVisitedBoards()
-  console.log('file: page.tsx:27 -> boards:', boards)
+  // const boards = await getRecentlyVisitedBoards()
+  // console.log('file: page.tsx:27 -> boards:', boards)
 
   const getCurrentTime = () => {
     const currentTime = new Date().getHours();
@@ -33,20 +33,20 @@ export default async function Home() {
   }
 
 
-  const queryClient = getQueryClient()
-  await queryClient.prefetchQuery(['workspaces'], async () => await getWorkspaces())
-  const dehydratedState = dehydrate(queryClient)
+  // const queryClient = getQueryClient()
+  // await queryClient.prefetchQuery(['workspaces'], async () => await getWorkspaces())
+  // const dehydratedState = dehydrate(queryClient)
 
 
   return (
     <main className='main-workspaces'>
-      <header><p className="welcome-name">{getCurrentTime()}, Roy!</p> <p className='welcome-message'>Quickly access your recent boards, Inbox and workspaces</p></header>
+      {/* <header><p className="welcome-name">{getCurrentTime()}, Roy!</p> <p className='welcome-message'>Quickly access your recent boards, Inbox and workspaces</p></header>
       <main className='main-workspaces-container'>
         {!!boards.length &&<RecentlyVisitedBoards boards={boards}/>}
         <Hydrate state={dehydratedState}>
         <MyWorkspaces/>
         </Hydrate>
-      </main>
+      </main> */}
     </main>
   )
 }
