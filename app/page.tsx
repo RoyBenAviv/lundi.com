@@ -7,7 +7,7 @@ import { getRecentlyVisitedBoards } from './services/appService'
 
 async function getWorkspaces() {
   try {
-  const res = await fetch(`http://localhost:3000/api/workspaces`)
+  const res = await fetch(`${process.env.BASE_URL}/api/workspaces`)
   return res.json()
 } catch (err) {
   console.log('file: page.tsx:6 -> err:', err)
