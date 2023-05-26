@@ -76,12 +76,12 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
       color: newWorkspaceColor,
     }
     addWorkspaceMutate(newWorkspace)
-    updateMutateWorkspace({ workspaceId: newWorkspace.id!, value: new Date(), key: 'recentlyVisited' })
+    // updateMutateWorkspace({ workspaceId: newWorkspace.id!, value: new Date(), key: 'recentlyVisited' })
   }
 
   const onNavigateBoard = (board: Board) => {
     router.push(`/workspaces/${board.workspaceId}/boards/${board.id}`)
-    updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
+    // updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
   }
 
   const onAddNewBoard = () => {

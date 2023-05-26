@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Column" ALTER COLUMN "width" SET DEFAULT 120;
-
--- AlterTable
-ALTER TABLE "Groups" ADD COLUMN     "width" INTEGER NOT NULL DEFAULT 180;
