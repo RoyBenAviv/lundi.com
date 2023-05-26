@@ -13,7 +13,7 @@ export default function MyWorkspaces() {
   const { mutate: updateMutate } = useUpdateWorkspace()
 
   const onNavigateWorkspace = (workspace: Workspace) => {
-    updateMutate({ workspaceId: workspace.id!, value: new Date(), key: 'recentlyVisited' })
+    // updateMutate({ workspaceId: workspace.id!, value: new Date(), key: 'recentlyVisited' })
     router.push(`/workspaces/${workspace.id}`)
   }
 

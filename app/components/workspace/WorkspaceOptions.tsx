@@ -20,7 +20,7 @@ export default function WorkspaceOptions({ currentWorkspaceId, onOpenAddNewWorks
   const router = useRouter()
 
   const onNavigateWorkspace = (option: DropDownOption) => {
-    updateMutate({ workspaceId: option.workspaceId!, value: new Date(), key: 'recentlyVisited' })
+    // updateMutate({ workspaceId: option.workspaceId!, value: new Date(), key: 'recentlyVisited' })
     router.push(`/workspaces/${option.workspaceId}`)
   }
 
