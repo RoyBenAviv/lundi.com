@@ -16,6 +16,7 @@ const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevro
 
 export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspace)
+  console.log('file: WorkspaceNav.tsx:19 -> currentWorkspace:', currentWorkspace)
   const { mutate: updateMutateBoard } = useUpdateBoard()
   const {mutate: updateMutateWorkspace } = useUpdateWorkspace()
 
