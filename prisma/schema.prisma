@@ -15,7 +15,7 @@ model Workspace {
   name        String
   description String?
   color       String?
-  background  String? @default("pink_purple.png")
+  background  String @default("pink_purple.png")
   boards      Boards[]
   recentlyVisited DateTime?
 }

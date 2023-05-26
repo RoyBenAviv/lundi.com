@@ -149,19 +149,21 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
           </TabList>
           <TabPanels>
             <TabPanel className="recent-boards">
-              <ul>
-                {sortedBoardsByRecentlyVisited?.map((board: Board) => (
-                  <>
-                    <li key={board.id} onClick={() => onNavigateBoard(board)}>
-                      <span>
-                        {<Board />} {board.name}
-                      </span>{' '}
-                      {<Favorite />}
-                    </li>
-                    <hr />
-                  </>
-                ))}
-              </ul>
+                    { !!sortedBoardsByRecentlyVisited?.length &&
+                                    <ul>
+                                    {sortedBoardsByRecentlyVisited?.map((board: Board) => (
+                                      <>
+                                        <li key={board.id} onClick={() => onNavigateBoard(board)}>
+                                          <span>
+                                            {<Board />} {board.name}
+                                          </span>{' '}
+                                          {<Favorite />}
+                                        </li>
+                                        <hr />
+                                      </>
+                                    ))}
+                                  </ul>
+                    }
             </TabPanel>
             <TabPanel>Second slide</TabPanel>
           </TabPanels>

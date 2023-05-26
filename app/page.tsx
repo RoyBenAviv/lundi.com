@@ -45,7 +45,7 @@ export default async function Home() {
     <main className='main-workspaces'>
       <header><p className="welcome-name">{getCurrentTime()}, Roy!</p> <p className='welcome-message'>Quickly access your recent boards, Inbox and workspaces</p></header>
       <main className='main-workspaces-container'>
-        {!!boards.length &&<RecentlyVisitedBoards boards={boards}/>}
+        {!!boards?.length &&<RecentlyVisitedBoards boards={boards}/>}
         <Hydrate state={dehydratedState}>
         <MyWorkspaces/>
         </Hydrate>

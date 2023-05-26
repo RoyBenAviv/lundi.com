@@ -9,7 +9,7 @@ export default function MyWorkspaces() {
 
   const router = useRouter()
 
-  const { data, isLoading } = useGetWorkspaces()
+  const { data: workspaces, isLoading } = useGetWorkspaces()
   const { mutate: updateMutate } = useUpdateWorkspace()
 
   const onNavigateWorkspace = (workspace: Workspace) => {
@@ -22,7 +22,7 @@ export default function MyWorkspaces() {
     <section className="my-workspaces">
       <h2>My Workspaces</h2>
       <ul>
-        {data.map((workspace: Workspace) => (
+        {!!workspaces?.length && workspaces.map((workspace: Workspace) => (
   
           <li onClick={() => onNavigateWorkspace(workspace)} key={workspace.id}>
             <div style={{ backgroundColor: workspace.color }} className='workspace-icon'>{workspace.name[0]}</div>
