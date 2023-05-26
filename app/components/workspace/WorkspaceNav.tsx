@@ -81,7 +81,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
 
   const onNavigateBoard = (board: Board) => {
     router.push(`/workspaces/${board.workspaceId}/boards/${board.id}`)
-    // updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
+    updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
   }
 
   const onAddNewBoard = () => {
@@ -118,7 +118,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     console.log('file: WorkspaceNav.tsx:91 -> newBoard:', newBoard)
 
     addBoardMutate(newBoard)
-    updateMutateBoard({ boardId: newBoard.id, value: new Date(), key: 'recentlyVisited' })
+    // updateMutateBoard({ boardId: newBoard.id, value: new Date(), key: 'recentlyVisited' })
   }
 
   const [timeoutId, setTimeoutId] = useState<null | NodeJS.Timeout>(null)
