@@ -34,8 +34,8 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
 
   const [searchBoard, setSearchBoard] = useState<string>('')
 
-  const sortedBoards = useMemo(() => currentWorkspace.boards!.sort((board1: Board, board2: Board) => board1.order - board2.order), [currentWorkspace.boards])
-  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(sortedBoards)
+  const sortedBoards = useMemo(() => currentWorkspace?.boards?.sort((board1: Board, board2: Board) => board1.order - board2.order), [currentWorkspace.boards])
+  const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(sortedBoards || [])
 
   useEffect(() => {
     const filteredBoards = sortedBoards!.filter((board: Board) => board.name.toLowerCase().includes(searchBoard.toLowerCase()))
@@ -195,7 +195,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           </header>
           <hr />
           <div className="boards-list-container">
-            {currentWorkspace.boards!.length ? (
+            {!!workspaceBoards.length ? (
               <ReactSortable list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
                 {workspaceBoards.map((board: Board) => (
                   <div className={boardId === board.id ? 'active' : ''} key={board.id}>
