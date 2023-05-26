@@ -7,26 +7,12 @@ const mondayLogo = require('../assets/images/monday-logo.png')
 const { Workspace, Inbox, Notifications } = require('monday-ui-react-core/icons')
 import { useState, useEffect } from 'react'
 
-const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://lundi-com-roybenaviv.vercel.app'
 
+export default function TopNavBar() {
 
-export default function TopNavBar({firstWorkspaceId}: {firstWorkspaceId: string}) {
-
-  const [workspaceNavPath, setWorkspaceNavPath] = useState<string>('')
-
+  
   const pathname = usePathname();
-
-  useEffect(() => {
-    if(pathname.includes('board') || pathname.includes('workspaces')) {
-      setWorkspaceNavPath(pathname)
-    } else {
-      setWorkspaceNavPath(`/workspaces/${firstWorkspaceId}`)
-    }
-
-  }, [pathname])
-
-  const currentLocation = window.location.href
-  console.log('file: TopNavBar.tsx:10 -> currentLocation:', currentLocation)
+  const workspaceNavPath = pathname.includes('board') || pathname.includes('workspaces') ? pathname : `/workspaces/1`
   
 
   return (
