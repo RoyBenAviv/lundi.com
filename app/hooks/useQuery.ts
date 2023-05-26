@@ -135,7 +135,7 @@ export const useAddWorkspace = () => {
 
   return useMutation(
     (newWorkspace: Workspace) => {
-      return axios.post('${BASE_URL}/api/workspaces', newWorkspace)
+      return axios.post(`${BASE_URL}/api/workspaces`, newWorkspace)
     },
     {
       onMutate: async (newWorkspace: Workspace) => {
@@ -160,7 +160,7 @@ export const useAddBoard = () => {
 
   return useMutation(
     (newBoard: any) => {
-      return axios.post('${BASE_URL}/api/boards', newBoard)
+      return axios.post(`${BASE_URL}/api/boards`, newBoard)
     },
 
     {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useAddBoard, useAddWorkspace, useGetWorkspace, useSortBoards, useUpdateBoard } from '@/app/hooks/useQuery'
+import { useAddBoard, useAddWorkspace, useGetWorkspace, useSortBoards, useUpdateBoard, useUpdateWorkspace } from '@/app/hooks/useQuery'
 import { Button, Flex, ModalContent, RadioButton, TextField } from 'monday-ui-react-core'
 import Link from 'next/link'
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
@@ -17,6 +17,7 @@ const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevro
 export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspace)
   const { mutate: updateMutateBoard } = useUpdateBoard()
+  const {mutate: updateMutateWorkspace } = useUpdateWorkspace()
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
@@ -75,6 +76,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
       color: newWorkspaceColor,
     }
     addWorkspaceMutate(newWorkspace)
+    updateMutateWorkspace({ workspaceId: newWorkspace.id!, value: new Date(), key: 'recentlyVisited' })
   }
 
   const onNavigateBoard = (board: Board) => {
@@ -116,6 +118,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     console.log('file: WorkspaceNav.tsx:91 -> newBoard:', newBoard)
 
     addBoardMutate(newBoard)
+    updateMutateBoard({ boardId: newBoard.id, value: new Date(), key: 'recentlyVisited' })
   }
 
   const [timeoutId, setTimeoutId] = useState<null | NodeJS.Timeout>(null)
