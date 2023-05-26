@@ -17,6 +17,7 @@ interface Workspace {
   color: string
   boards?: Board[]
   recentlyVisited?: Date
+  background?: string
 }
 
 interface Board {

@@ -12,6 +12,14 @@ export const getWorkspace = async (workspaceId: string) => {
   console.log('file: appService.tsx:8 -> err:', err)
   }
 }
+export const getFirstWorkspaceId = async () => {
+  try {
+    const currentWorkspace = await axios.get(`${BASE_URL}/api/workspaces/first_workspace`)
+    return currentWorkspace.data
+  } catch (err) {
+  console.log('file: appService.tsx:8 -> err:', err)
+  }
+}
 
 export const getWorkspaces = async () => {
   try {
@@ -35,7 +43,6 @@ export const getBoard = async (boardId: string) => {
 export async function getRecentlyVisitedBoards() {
   try {
   const res = await axios.get(`${BASE_URL}/api/boards`)
-  console.log('file: page.tsx:240 -> res:', res)
   return res.data
 } catch (err) {
   console.log('file: page.tsx:6 -> err:', err)

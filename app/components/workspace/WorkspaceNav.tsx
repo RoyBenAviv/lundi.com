@@ -3,7 +3,7 @@
 import { useAddBoard, useAddWorkspace, useGetWorkspace, useSortBoards, useUpdateBoard } from '@/app/hooks/useQuery'
 import { Button, Flex, ModalContent, RadioButton, TextField } from 'monday-ui-react-core'
 import Link from 'next/link'
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
 import { ReactSortable } from 'react-sortablejs'
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
@@ -33,7 +33,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
 
   const [searchBoard, setSearchBoard] = useState<string>('')
 
-  const sortedBoards = currentWorkspace.boards!.sort((board1: Board, board2: Board) => board1.order - board2.order)
+  const sortedBoards = useMemo(() => currentWorkspace.boards!.sort((board1: Board, board2: Board) => board1.order - board2.order), [currentWorkspace.boards])
   const [workspaceBoards, setWorkspaceBoards] = useState<Board[]>(sortedBoards)
 
   useEffect(() => {
@@ -126,7 +126,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
 
       const id = setTimeout(() => {
         onSortBoards(workspaceBoards)
-      }, 1500)
+      }, 1000)
       setTimeoutId(id)
       return () => clearTimeout(id)
     }
@@ -151,7 +151,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
         <>
           <header>
             <div className="options">
-              <p className="mini-paragraph">Workspace</p> <Menu />
+              <p className="mini-paragraph">Workspace</p>
             </div>
             <section ref={workspaceOptionsRef} onClick={() => setIsComboBoxOpen((isComboBoxOpen) => !isComboBoxOpen)} className="workspace-choose" style={isComboBoxOpen ? { borderColor: '#0073ea' } : {}}>
               <div className="workspace-icon-name">

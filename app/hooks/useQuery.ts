@@ -254,10 +254,11 @@ export const useSortBoards = () => {
   const queryClient = useQueryClient()
   return useMutation(
     (workspaceBoards: any[]) => {
-      return axios.put('${BASE_URL}/api/boards', workspaceBoards)
+      return axios.put(`${BASE_URL}/api/boards`, workspaceBoards)
     },
     {
       onSuccess: () => {
+        console.log('boards sorted!')
         queryClient.invalidateQueries(['boards'])
       },
     }

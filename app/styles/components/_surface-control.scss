@@ -1,6 +1,7 @@
 .surface-control {
   min-height: 100vh;
-  width: 66px;
+  min-width: 66px;
+  max-width: 66px;
   background-color: $surface;
   color: $snow_white;
   display: flex;
@@ -13,6 +14,8 @@
       display: flex;
       align-items: center;
       flex-direction: column;
+      border-radius: 10px;
+
       a {
         display: flex;
         align-items: center;
@@ -20,21 +23,23 @@
         border-radius: 8px;
         padding: 8px;
         margin-top: 4px;
-        &:hover:not(.logo a) {
-            background-color: black;
-        }
+
       }
+      &:hover:not(.active) {
+          background-color: black;
+      }
+      &.active {
+          background-color: #6a6e82;
+      }
+
     }
+
     .logo {
       a {
-        background-color: #6a6e82;
-        border-radius: 8px;
-        width: 36px;
+        width: 26px;
         height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         img {
+          padding-bottom: 5px;
           width: 40px;
           height: 40px;
         }
