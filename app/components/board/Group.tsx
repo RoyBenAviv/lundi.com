@@ -19,8 +19,8 @@ export default function Group({
   toggleItemsToEdit,
   itemsToAction,
   isAllGroupsOpen,
-  // setBoardGroups
-}: {
+}: // setBoardGroups
+{
   group: Group
   columns: Column[]
   boardItemsType: string
@@ -37,14 +37,10 @@ export default function Group({
   const [newItemName, setNewItemName] = useState<string>('')
   const [isGroupOpen, setIsGroupOpen] = useState<boolean>(true)
 
-
-  
   const items: Item[] = group.items.sort((item1: Item, item2: Item) => item1.order - item2.order)
   const { mutate: addItem } = useAddItem('bottom')
 
   const onAddNewItem = () => {
-
-
     const columnValues = []
     for (let i = 0; i < columns.length; i++) {
       const id = uuidv4()

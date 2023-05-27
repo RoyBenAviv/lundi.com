@@ -7,12 +7,12 @@ import { useRouter } from 'next/navigation'
 import { ChangeEvent, useMemo, useRef, useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 const { Edit, Favorite, Board, Check, Upload } = require('monday-ui-react-core/icons')
-import S3 from 'aws-sdk/clients/s3';
+import S3 from 'aws-sdk/clients/s3'
 
 const s3 = new S3({
-  accessKeyId: process.env.ACCESS_KEY,
-  secretAccessKey: process.env.SECRET_ACCESS_KEY,
-  region: process.env.REGION,
+  accessKeyId: 'AKIARR545QGXMGZBNQDL',
+  secretAccessKey: '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',
+  region: 'eu-west-1'
 })
 
 export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
@@ -53,14 +53,14 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
 
   const handleFileInputChange = async (event: any) => {
     const params = {
-      Bucket: process.env.S3_BUCKET!,
+      Bucket: 'lundi',
       Key: 'backgrounds/' + event.target.files[0].name,
       Body: event.target.files[0],
       ACL: 'public-read',
     }
     try {
       await s3.upload(params).promise()
-      handleChange(`https://${process.env.S3_BUCKET}.s3.amazonaws.com/backgrounds/${event.target.files[0].name}`, 'background')
+      handleChange(`https://lundi.s3.amazonaws.com/backgrounds/${event.target.files[0].name}`, 'background')
     } catch (error) {
       console.error('Error uploading image:', error)
     }
@@ -85,7 +85,7 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
                         <Button size={Button.sizes.SMALL} kind={Button.kinds.TERTIARY} leftIcon={Upload}>
                           Upload your own
                         </Button>
-                      <input accept="image/*" type="file" id="fileUpload" onChange={(e) => handleFileInputChange(e)} />
+                        <input accept="image/*" type="file" id="fileUpload" onChange={(e) => handleFileInputChange(e)} />
                       </label>
                     </div>
                   </header>
@@ -150,21 +150,21 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
           </TabList>
           <TabPanels>
             <TabPanel className="recent-boards">
-                    { !!sortedBoardsByRecentlyVisited?.length &&
-                                    <ul>
-                                    {sortedBoardsByRecentlyVisited?.map((board: Board) => (
-                                      <>
-                                        <li key={board.id} onClick={() => onNavigateBoard(board)}>
-                                          <span>
-                                            {<Board />} {board.name}
-                                          </span>{' '}
-                                          {<Favorite />}
-                                        </li>
-                                        <hr />
-                                      </>
-                                    ))}
-                                  </ul>
-                    }
+              {!!sortedBoardsByRecentlyVisited?.length && (
+                <ul>
+                  {sortedBoardsByRecentlyVisited?.map((board: Board) => (
+                    <>
+                      <li key={board.id} onClick={() => onNavigateBoard(board)}>
+                        <span>
+                          {<Board />} {board.name}
+                        </span>{' '}
+                        {<Favorite />}
+                      </li>
+                      <hr />
+                    </>
+                  ))}
+                </ul>
+              )}
             </TabPanel>
             <TabPanel>Second slide</TabPanel>
           </TabPanels>

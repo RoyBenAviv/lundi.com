@@ -5,16 +5,6 @@ import Hydrate from '@/app/util/HydrateClient'
 import RecentlyVisitedBoards from './components/board/RecentlyVisitedBoards'
 import { getRecentlyVisitedBoards } from './services/appService'
 import { getWorkspaces } from './services/appService'
-// async function getWorkspaces() {
-//   try {
-//   const res = await fetch(`${process.env.BASE_URL}/api/workspaces`)
-//   return res.json()
-// } catch (err) {
-//   console.log('file: page.tsx:6 -> err:', err)
-// }
-// }
-
-
 
 export default async function Home() {
   const queryClient = getQueryClient()

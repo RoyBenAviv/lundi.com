@@ -3,7 +3,7 @@
 import { useAddBoard, useAddWorkspace, useGetWorkspace, useSortBoards, useUpdateBoard, useUpdateWorkspace } from '@/app/hooks/useQuery'
 import { Button, Flex, ModalContent, RadioButton, TextField } from 'monday-ui-react-core'
 import Link from 'next/link'
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, MutableRefObject, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import WorkspaceOptions from './WorkspaceOptions'
 import { ReactSortable } from 'react-sortablejs'
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
@@ -16,7 +16,6 @@ const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevro
 
 export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspace)
-  console.log('file: WorkspaceNav.tsx:19 -> currentWorkspace:', currentWorkspace)
   const { mutate: updateMutateBoard } = useUpdateBoard()
   const {mutate: updateMutateWorkspace } = useUpdateWorkspace()
 
@@ -48,9 +47,9 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   const { mutate: addWorkspaceMutate, isLoading: isLoadingNewWorkspace } = useAddWorkspace()
   const { mutate: addBoardMutate, isLoading: isLoadingNewBoard } = useAddBoard()
 
-  const workspaceOptionsRef = useRef(null)
-  const searchTextInput = useRef<HTMLInputElement>(null)
+  const workspaceOptionsRef = useRef<HTMLElement | null>(null)
   const searchBoardRef = useRef(null)
+  const searchTextInput = useRef<HTMLInputElement>(null)
   useOnClickOutside(workspaceOptionsRef, () => setIsComboBoxOpen(false))
   useOnClickOutside(searchBoardRef, () => setIsOnSearch(false))
 

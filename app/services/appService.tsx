@@ -9,7 +9,7 @@ export const getWorkspace = async (workspaceId: string) => {
     const currentWorkspace = await axios.get(`${BASE_URL}/api/workspaces/${workspaceId}`)
     return currentWorkspace.data
   } catch (err) {
-  console.log('file: appService.tsx:8 -> err:', err)
+  console.log('file: appService.tsx:12 -> err:', err)
   }
 }
 export const getFirstWorkspaceId = async () => {
@@ -17,14 +17,13 @@ export const getFirstWorkspaceId = async () => {
     const currentWorkspace = await axios.get(`${BASE_URL}/api/workspaces/first_workspace`)
     return currentWorkspace.data
   } catch (err) {
-  console.log('file: appService.tsx:8 -> err:', err)
+  console.log('file: appService.tsx:20 -> err:', err)
   }
 }
 
 export const getWorkspaces = async () => {
   try {
     const workspaces = await axios.get(`${BASE_URL}/api/workspaces`)
-    console.log('file: appService.tsx:16 -> workspaces:', workspaces.data)
     return workspaces.data
   } catch (err) {
     console.log('file: page.tsx:3-> err:', err)

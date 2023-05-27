@@ -70,6 +70,7 @@ model Column {
   columnType String
   boards     Boards? @relation(fields: [boardsId], references: [id])
   boardsId   String?
+  options    Json?
   ColumnValue ColumnValue[]
   width Int? @default(120)
 }

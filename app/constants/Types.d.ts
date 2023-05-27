@@ -70,6 +70,7 @@ interface Column {
   boardsId: string
   item: Item[]
   itemId: string
+  options: Json?
   
 }
 

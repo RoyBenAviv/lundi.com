@@ -3,6 +3,7 @@ import prisma from '../../../prisma/client'
 
 export async function GET(request: Request) {
   const workspaces = await prisma.workspace.findMany({})
+  console.log('file: route.ts:6 -> workspaces:', workspaces)
   return NextResponse.json(workspaces)
 }
 

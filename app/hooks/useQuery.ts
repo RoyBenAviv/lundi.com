@@ -5,7 +5,6 @@ import { getBoard, getWorkspace, getWorkspaces } from '../services/appService'
 
 const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://lundi-com-roybenaviv.vercel.app'
 
-
 export const useGetWorkspace = (workspace: Workspace) => {
   return useQuery(
     ['workspace', workspace.id],
@@ -50,28 +49,27 @@ export const useUpdateWorkspace = () => {
 export const useUpdateGroups = (boardId: string) => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({ value, key }: { value: string | number | {id: string, order: number}[]; key: string }) => {
+    ({ value, key }: { value: string | number | { id: string; order: number }[]; key: string }) => {
       return axios.put(`${BASE_URL}/api/groups`, { boardId, value, key })
     },
     {
       onMutate: ({ value, key }) => {
-        if(key === 'sorting') {
-        queryClient.cancelQueries({ queryKey: ['board', boardId] })
-        const previousBoard = queryClient.getQueryData<Board>(['board', boardId])!
-        console.log('file: useQuery.ts:58 -> previousBoard:', previousBoard)
-         const sortedGroupsBoard = previousBoard.groups.map((group: Group) => {
-          return {
-            ...group,
-            order: Array.isArray(value) && value.find(sortedGroup => sortedGroup.id === group.id)?.order
-          }
-         })
+        if (key === 'sorting') {
+          queryClient.cancelQueries({ queryKey: ['board', boardId] })
+          const previousBoard = queryClient.getQueryData<Board>(['board', boardId])!
+          console.log('file: useQuery.ts:58 -> previousBoard:', previousBoard)
+          const sortedGroupsBoard = previousBoard.groups.map((group: Group) => {
+            return {
+              ...group,
+              order: Array.isArray(value) && value.find((sortedGroup) => sortedGroup.id === group.id)?.order,
+            }
+          })
 
-         previousBoard.groups = sortedGroupsBoard as Group[]
-         console.log('sortedGroupsBoard',sortedGroupsBoard);
-        queryClient.setQueryData(['board', boardId], previousBoard)
-        return { previousBoard }
+          previousBoard.groups = sortedGroupsBoard as Group[]
+          console.log('sortedGroupsBoard', sortedGroupsBoard)
+          queryClient.setQueryData(['board', boardId], previousBoard)
+          return { previousBoard }
         }
-
       },
       onError: (err) => {
         console.log('file: useQuery.ts:56 -> err:', err)
@@ -87,7 +85,7 @@ export const useUpdateGroups = (boardId: string) => {
 export const useUpdateItem = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({ itemId, value, key }: { itemId: string; value: string ; key: string }) => {
+    ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
       return axios.put(`${BASE_URL}/api/items/${itemId}`, { value, key })
     },
     {
@@ -120,6 +118,10 @@ export const useUpdateColumnValue = () => {
       return axios.put(`${BASE_URL}/api/columnValues/${columnValueId}`, { value, key })
     },
     {
+      onMutate: async ({ columnValueId, value, key }: { columnValueId: string; value: string; key: string }) => {
+        // await queryClient.cancelQueries({ queryKey: ['board', itemId] })
+
+      },
       onSuccess: ({ data: item }) => {
         // queryClient.invalidateQueries(['board', item.boardId])
         // queryClient.refetchQueries(['board', item.boardId])
@@ -242,9 +244,9 @@ export const useDeleteItem = (currentBoardId: string) => {
         return { filteredBoard }
       },
       onSuccess: (data, variables, context) => {
-        console.log('context',context);
-        const { filteredBoard } = context as { filteredBoard: Board };
-        queryClient.setQueryData(['board', currentBoardId], filteredBoard);
+        console.log('context', context)
+        const { filteredBoard } = context as { filteredBoard: Board }
+        queryClient.setQueryData(['board', currentBoardId], filteredBoard)
       },
     }
   )
