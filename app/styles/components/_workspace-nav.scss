@@ -39,7 +39,7 @@
             all:unset;
           }
           height: 35px;
-          width: 100%;
+          width: 224px;
           border-radius: 5px;
           cursor: pointer;
           &:hover {
@@ -144,7 +144,7 @@
     padding-top: 16px;
     .boards-list {
       div {
-        width: 100%;
+        width: 224px;
         border-radius: 5px;
         cursor: pointer;
         &.active {
