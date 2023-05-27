@@ -64,6 +64,9 @@
       svg {
         cursor: pointer;
       }
+      .mini-paragraph {
+          user-select: none;
+      }
     }
     .workspace-choose {
       position: relative;
@@ -175,7 +178,7 @@
   outline: 1px solid $layout-border-color;
   outline-offset: -2px;
   position: relative;
-  width: 300px;
+  width: 254px;
 
   background-color: $grey-background-color;
   padding: 12px 8px 18px 12px;
