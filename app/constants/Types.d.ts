@@ -87,6 +87,6 @@ interface NewBoard {
   name: string
   boardItemsType: string
   workspaceId: string
-  columns: { name: string; columnType: string; id: string}[]
+  columns: { name: string; columnType: string; id: string, options?: any}[]
   groups: any[]
 }

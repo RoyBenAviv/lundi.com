@@ -59,7 +59,7 @@ export async function POST(request: Request) {
               color: newBoard.groups[0].color,
               order: newBoard.groups[0].order,
               items: {
-                create: newBoard.groups[0].items.map((item: any) => ({
+                create: newBoard.groups[0].items.map((item: Item) => ({
                   ...item,
                   columnValues: {
                     create: [
@@ -68,7 +68,10 @@ export async function POST(request: Request) {
                         column: { connect: { id: newBoard.columns[0].id } },
                       },
                       {
-                        value: '',
+                        value: {
+                          name: 'Working on it',
+                          color: '#fdab3d',
+                        },
                         column: { connect: { id: newBoard.columns[1].id } },
                       },
                     ],
@@ -81,7 +84,7 @@ export async function POST(request: Request) {
               color: newBoard.groups[1].color,
               order: newBoard.groups[1].order,
               items: {
-                create: newBoard.groups[1].items.map((item: any) => ({
+                create: newBoard.groups[1].items.map((item: Item) => ({
                   ...item,
                   columnValues: {
                     create: [
@@ -90,7 +93,10 @@ export async function POST(request: Request) {
                         column: { connect: { id: newBoard.columns[0].id } },
                       },
                       {
-                        value: '',
+                        value: {
+                          name: 'Done',
+                          color: '#00c875',
+                        },
                         column: { connect: { id: newBoard.columns[1].id } },
                       },
                     ],

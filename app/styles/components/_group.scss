@@ -267,6 +267,7 @@
               justify-content: center;
               color: $text-color-on-primary;
               .status-options {
+                z-index: 50;
                 cursor: initial;
                 position: absolute;
                 display: flex;

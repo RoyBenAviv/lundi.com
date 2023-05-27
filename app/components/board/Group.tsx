@@ -102,7 +102,7 @@ export default function Group({
                 <div className="check-left-color" style={{ backgroundColor: group.color }}></div>
                 <Checkbox checked={itemsToAction.includes(item.id)} onChange={() => toggleItemsToEdit(group.id, item.id!)} />
               </div>
-              <Item item={item} columns={columns} width={width} />
+              <Item item={item} columns={columns} width={width} boardId={boardId} groupId={group.id}/>
             </div>
           ))}
           <div className="table-row add-item-row">

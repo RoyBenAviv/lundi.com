@@ -114,17 +114,28 @@ export const useUpdateItem = () => {
 export const useUpdateColumnValue = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({ columnValueId, value, key }: { columnValueId: string; value: string; key: string }) => {
+    ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item, groupId: string, boardId: string; value: string; key: string }) => {
       return axios.put(`${BASE_URL}/api/columnValues/${columnValueId}`, { value, key })
     },
     {
-      onMutate: async ({ columnValueId, value, key }: { columnValueId: string; value: string; key: string }) => {
-        // await queryClient.cancelQueries({ queryKey: ['board', itemId] })
+      onMutate: async ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item, groupId: string; boardId: string; value: string; key: string }) => {
+        console.log('file: useQuery.ts:122 -> columnValueId, item, groupId, boardId, value, key:', columnValueId, item, groupId, boardId, value, key)
+        await queryClient.cancelQueries({ queryKey: ['board', boardId] })
+        const previousBoard: Board | undefined = queryClient.getQueryData(['board', boardId])
+        console.log('file: useQuery.ts:124 -> previousBoard:', previousBoard)
+        const groupIdx = previousBoard?.groups.findIndex((group: Group) => group.id === groupId)!
+        const itemIdx = previousBoard?.groups[groupIdx].items.findIndex((currItem: Item) => currItem.id === item.id)!
+        const columnValue = previousBoard?.groups[groupIdx].items[itemIdx].columnValues?.find(columnValue => columnValue.id === columnValueId)
+        columnValue[key] = value
+        const updatedBoard = JSON.parse(JSON.stringify(previousBoard))
 
+
+        queryClient.setQueryData(['board', item.boardId], updatedBoard)
+        return updatedBoard
       },
-      onSuccess: ({ data: item }) => {
-        // queryClient.invalidateQueries(['board', item.boardId])
-        // queryClient.refetchQueries(['board', item.boardId])
+      onSuccess: (data, variables, context: Board | any) => {
+        console.log('file: useQuery.ts:136 -> context:', context)
+        queryClient.invalidateQueries(['board', context.id!])
       },
     }
   )

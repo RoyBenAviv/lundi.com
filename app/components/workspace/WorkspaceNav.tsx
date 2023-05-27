@@ -17,7 +17,7 @@ const { Board, Search, Add, Edit, Check, NavigationChevronLeft, NavigationChevro
 export default function WorkspaceNav({ workspace, boardId }: { workspace: Workspace; boardId?: string }) {
   const { data: currentWorkspace, isLoading } = useGetWorkspace(workspace)
   const { mutate: updateMutateBoard } = useUpdateBoard()
-  const {mutate: updateMutateWorkspace } = useUpdateWorkspace()
+  const { mutate: updateMutateWorkspace } = useUpdateWorkspace()
 
   const [isOpenEditIcon, setIsOpenEditIcon] = useState<boolean>(false)
   const [isCollapseNav, setIsCollapseNav] = useState<boolean>(false)
@@ -85,14 +85,40 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   }
 
   const onAddNewBoard = () => {
+
+    const id = uuidv4()
+
     const newBoard: NewBoard = {
-      id: uuidv4(),
+      id,
       name: newBoardName,
       boardItemsType: newBoardType,
       workspaceId: currentWorkspace.id!,
       columns: [
-        { id: uuidv4(), name: 'Text Column 1', columnType: 'text' },
-        { id: uuidv4(), name: 'Text Column 2', columnType: 'text' },
+        { id: uuidv4(), name: 'Text', columnType: 'text' },
+        {
+          id: uuidv4(),
+          name: 'Status',
+          columnType: 'status',
+          options: [
+            {
+              name: '',
+              type: 'default',
+              color: '#c4c4c4',
+            },
+            {
+              name: 'Stuck',
+              color: '#e2445c',
+            },
+            {
+              name: 'Working on it',
+              color: '#fdab3d',
+            },
+            {
+              name: 'Done',
+              color: '#00c875',
+            },
+          ],
+        },
       ],
       groups: [
         {
@@ -118,7 +144,6 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     console.log('file: WorkspaceNav.tsx:91 -> newBoard:', newBoard)
 
     addBoardMutate(newBoard)
-    // updateMutateBoard({ boardId: newBoard.id, value: new Date(), key: 'recentlyVisited' })
   }
 
   const [timeoutId, setTimeoutId] = useState<null | NodeJS.Timeout>(null)

@@ -8,7 +8,8 @@ interface StatusOption {
   color: string
 }
 
-export default function StatusColumn({ column, columnValue, updateColumnValue }: { column: Column; columnValue: any; updateColumnValue: Function }) {
+export default function StatusColumn({ column, columnValue, updateColumnValue, item, boardId, groupId }: { column: Column; columnValue: any; updateColumnValue: Function, item: Item, boardId: string, groupId: string }) {
+  console.log('file: StatusColumn.tsx:12 -> columnValue:', columnValue)
   const [isOpenStatusOptions, setIsOpenStatusOptions] = useState<boolean>(false)
 
   
@@ -16,7 +17,7 @@ export default function StatusColumn({ column, columnValue, updateColumnValue }:
   useOnClickOutside(statusOptionsRef, () => setIsOpenStatusOptions(false))
 
   const onEditColumnValue = (option: StatusOption) => {
-    updateColumnValue({ columnValueId: columnValue.id, value: option, key: 'value' })
+    updateColumnValue({ columnValueId: columnValue.id, item, boardId, groupId, value: option, key: 'value' })
     setIsOpenStatusOptions(false)
   }
 

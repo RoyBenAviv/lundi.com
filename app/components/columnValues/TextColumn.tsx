@@ -1,6 +1,6 @@
 import { useRef, useState } from "react"
 
-export default function TextColumn({column, columnValue, updateColumnValue}: {column: Column, columnValue: any, updateColumnValue: Function}) {
+export default function TextColumn({ column, columnValue, updateColumnValue, item, boardId, groupId }: { column: Column; columnValue: any; updateColumnValue: Function, item: Item, boardId: string, groupId: string }) {
 
     const [value, setValue] = useState<string>(columnValue?.value || '')
 
@@ -10,7 +10,7 @@ export default function TextColumn({column, columnValue, updateColumnValue}: {co
         if(columnValue.value === value) return
         textColumnRef?.current?.blur()
 
-        updateColumnValue({columnValueId: columnValue.id, value, key: 'value' })
+        updateColumnValue({columnValueId: columnValue.id, item, boardId, groupId, value, key: 'value' })
     }
 
 
