@@ -10,8 +10,8 @@ const { Edit, Favorite, Board, Check, Upload } = require('monday-ui-react-core/i
 import S3 from 'aws-sdk/clients/s3'
 
 const s3 = new S3({
-  accessKeyId: 'AKIARR545QGXMGZBNQDL',
-  secretAccessKey: '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',
+  accessKeyId: process.env.ACCESS_KEY,
+  secretAccessKey: process.env.SECRET_ACCESS_KEY,
   region: 'eu-west-1'
 })
 
@@ -53,14 +53,14 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
 
   const handleFileInputChange = async (event: any) => {
     const params = {
-      Bucket: 'lundi',
+      Bucket: process.env.S3_BUCKET!,
       Key: 'backgrounds/' + event.target.files[0].name,
       Body: event.target.files[0],
       ACL: 'public-read',
     }
     try {
       await s3.upload(params).promise()
-      handleChange(`https://lundi.s3.amazonaws.com/backgrounds/${event.target.files[0].name}`, 'background')
+      handleChange(`https://${process.env.S3_BUCKET}.s3.amazonaws.com/backgrounds/${event.target.files[0].name}`, 'background')
     } catch (error) {
       console.error('Error uploading image:', error)
     }
@@ -68,7 +68,7 @@ export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
 
   return (
     <main className="workspace-home">
-      <header ref={editWorkspaceBackgroundRef} style={{ backgroundImage: currentWorkspace.background?.includes('lundi') ? `url("${currentWorkspace.background}")` : `url("https://cdn.monday.com/images/workspaces_cover_photos/full/${currentWorkspace.background}")` }} className="cover-image">
+      <header ref={editWorkspaceBackgroundRef} style={{ backgroundImage: currentWorkspace.background?.includes(process.env.S3_BUCKET!) ? `url("${currentWorkspace.background}")` : `url("https://cdn.monday.com/images/workspaces_cover_photos/full/${currentWorkspace.background}")` }} className="cover-image">
         <Button className="change-cover-btn" style={isOpenEditBackground ? { opacity: 1 } : {}} onClick={() => setIsOpenEditBackground((isOpenEditBackground) => !isOpenEditBackground)}>
           <Edit /> Change Cover
         </Button>
