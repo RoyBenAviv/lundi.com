@@ -1,4 +1,7 @@
+"use client"
+
+import Lottie from "lottie-react"
+import animationData from '../../assets/monday-animation.json'
 export default function Loading() {
-    // You can add any UI inside Loading, including a Skeleton.
-    return <div>Hello</div>
+    return <section className="loading"><Lottie animationData={animationData} /></section>
   }

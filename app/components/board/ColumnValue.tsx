@@ -9,7 +9,6 @@ export default function ColumnValue({ column, columnValue, item, boardId, groupI
   const DynamicColumnValue = ({column, columnValue}: {column: Column; columnValue: any}): JSX.Element => {
     switch (column.columnType) {
       case 'text':
-        console.log('column2', column)
         return <TextColumn column={column} columnValue={columnValue} updateColumnValue={updateColumnValue} item={item} boardId={boardId} groupId={groupId}/>
       case 'status':
         return <StatusColumn column={column} columnValue={columnValue} updateColumnValue={updateColumnValue} item={item} boardId={boardId} groupId={groupId}/>

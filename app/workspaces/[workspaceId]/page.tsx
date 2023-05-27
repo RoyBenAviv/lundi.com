@@ -18,10 +18,8 @@ export default async function WorkspaceMain(url: URL) {
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(['workspace', workspaceId], async () => await getWorkspace(workspaceId))
   const dehydratedState = dehydrate(queryClient)
-  console.log('file: page.tsx:21 -> dehydratedState:', dehydratedState)
 
 const workspace = dehydratedState.queries[0].state.data as Workspace
-console.log('file: page.tsx:24 -> workspace:', workspace)
 
   return (
     <Hydrate state={dehydratedState}>

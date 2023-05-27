@@ -16,8 +16,6 @@ export async function GET(request: Request) {
         workspace: true,
       },
     })
-    console.log('file: route.ts:30 -> boards:', boards)
-
     return NextResponse.json(boards)
   } catch (err) {
     console.log('file: route.ts:8 -> err:', err)
@@ -26,7 +24,6 @@ export async function GET(request: Request) {
 
 export async function PUT(request: Request) {
   const sortedBoards = await request.json()
-  console.log('file: route.ts:6 -> sortedBoards:', sortedBoards)
   await prisma.$transaction(
     sortedBoards.map((board: Board) =>
       prisma.boards.update({
@@ -42,8 +39,6 @@ export async function PUT(request: Request) {
 export async function POST(request: Request) {
   try {
     const newBoard = await request.json()
-    console.log('file: route.ts:22 -> newBoard:', newBoard)
-
     const board = await prisma.boards.create({
       data: {
         columns: {
@@ -59,19 +54,18 @@ export async function POST(request: Request) {
               color: newBoard.groups[0].color,
               order: newBoard.groups[0].order,
               items: {
-                create: newBoard.groups[0].items.map((item: Item) => ({
-                  ...item,
+                create: newBoard.groups[0].items.map((item: any) => ({
+                  id: item.id,
+                  name: item.name,
+                  order: item.order,
                   columnValues: {
                     create: [
                       {
-                        value: '',
+                        value: item.columnValuesVal[0],
                         column: { connect: { id: newBoard.columns[0].id } },
                       },
                       {
-                        value: {
-                          name: 'Working on it',
-                          color: '#fdab3d',
-                        },
+                        value: item.columnValuesVal[1],
                         column: { connect: { id: newBoard.columns[1].id } },
                       },
                     ],
@@ -84,19 +78,20 @@ export async function POST(request: Request) {
               color: newBoard.groups[1].color,
               order: newBoard.groups[1].order,
               items: {
-                create: newBoard.groups[1].items.map((item: Item) => ({
-                  ...item,
+                create: newBoard.groups[1].items.map((item: any) => ({
+                  id: item.id,
+                  name: item.name,
+                  order: item.order,
                   columnValues: {
+
+
                     create: [
                       {
-                        value: '',
+                        value: item.columnValuesVal[0],
                         column: { connect: { id: newBoard.columns[0].id } },
                       },
                       {
-                        value: {
-                          name: 'Done',
-                          color: '#00c875',
-                        },
+                        value: item.columnValuesVal[1], 
                         column: { connect: { id: newBoard.columns[1].id } },
                       },
                     ],

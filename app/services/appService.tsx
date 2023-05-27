@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://lundi-com-roybenaviv.vercel.app'
-console.log('file: appService.tsx:4 -> BASE_URL:', BASE_URL)
 
 
 export const getWorkspace = async (workspaceId: string) => {

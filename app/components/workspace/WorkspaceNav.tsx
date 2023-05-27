@@ -85,7 +85,6 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
   }
 
   const onAddNewBoard = () => {
-
     const id = uuidv4()
 
     const newBoard: NewBoard = {
@@ -126,8 +125,30 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           order: 0,
           color: '#facc33',
           items: [
-            { id: uuidv4(), name: `${newBoardType} 1`, order: 1 },
-            { id: uuidv4(), name: `${newBoardType} 2`, order: 2 },
+            {
+              id: uuidv4(),
+              name: `${newBoardType} 1`,
+              order: 1,
+              columnValuesVal: [
+                '',
+                {
+                  name: 'Working on it',
+                  color: '#fdab3d',
+                },
+              ],
+            },
+            {
+              id: uuidv4(),
+              name: `${newBoardType} 2`,
+              order: 2,
+              columnValuesVal: [
+                '',
+                {
+                  name: 'Done',
+                  color: '#00c875',
+                },
+              ],
+            },
           ],
         },
         {
@@ -135,14 +156,12 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           order: 1,
           color: '#0073ea',
           items: [
-            { id: uuidv4(), name: `${newBoardType} 3`, order: 3 },
-            { id: uuidv4(), name: `${newBoardType} 4`, order: 4 },
+            { id: uuidv4(), name: `${newBoardType} 3`, order: 3, columnValuesVal: ["", ""] },
+            { id: uuidv4(), name: `${newBoardType} 4`, order: 4, columnValuesVal: ["", ""] },
           ],
         },
       ],
     }
-    console.log('file: WorkspaceNav.tsx:91 -> newBoard:', newBoard)
-
     addBoardMutate(newBoard)
   }
 

@@ -57,7 +57,6 @@ export const useUpdateGroups = (boardId: string) => {
         if (key === 'sorting') {
           queryClient.cancelQueries({ queryKey: ['board', boardId] })
           const previousBoard = queryClient.getQueryData<Board>(['board', boardId])!
-          console.log('file: useQuery.ts:58 -> previousBoard:', previousBoard)
           const sortedGroupsBoard = previousBoard.groups.map((group: Group) => {
             return {
               ...group,
@@ -66,7 +65,6 @@ export const useUpdateGroups = (boardId: string) => {
           })
 
           previousBoard.groups = sortedGroupsBoard as Group[]
-          console.log('sortedGroupsBoard', sortedGroupsBoard)
           queryClient.setQueryData(['board', boardId], previousBoard)
           return { previousBoard }
         }
@@ -75,7 +73,6 @@ export const useUpdateGroups = (boardId: string) => {
         console.log('file: useQuery.ts:56 -> err:', err)
       },
       onSuccess: () => {
-        // console.log('group.boardId', group.boardId)
         queryClient.invalidateQueries(['board', boardId])
       },
     }
@@ -97,15 +94,10 @@ export const useUpdateItem = () => {
       //   return { updatedWorkspace }
       // },
       onError: (err) => {
-        console.log('err222', err)
+        console.log('file: useQuery.ts:97 -> err:', err)
       },
       onSuccess: ({ data: item }) => {
-        // const previousWorkspace: Workspace | undefined = queryClient.getQueryData(['item', item.id])
-        // console.log('file: useQuery.ts:66 -> previousWorkspace:', previousWorkspace)
-        // console.log('file: useQuery.ts:66 -> previousWorkspace:', previousWorkspace)
-        console.log('item.boardId', item.boardId)
         queryClient.invalidateQueries(['board', item.boardId])
-        // queryClient.refetchQueries(['item', item.id])
       },
     }
   )
@@ -119,10 +111,8 @@ export const useUpdateColumnValue = () => {
     },
     {
       onMutate: async ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item, groupId: string; boardId: string; value: string; key: string }) => {
-        console.log('file: useQuery.ts:122 -> columnValueId, item, groupId, boardId, value, key:', columnValueId, item, groupId, boardId, value, key)
         await queryClient.cancelQueries({ queryKey: ['board', boardId] })
         const previousBoard: Board | undefined = queryClient.getQueryData(['board', boardId])
-        console.log('file: useQuery.ts:124 -> previousBoard:', previousBoard)
         const groupIdx = previousBoard?.groups.findIndex((group: Group) => group.id === groupId)!
         const itemIdx = previousBoard?.groups[groupIdx].items.findIndex((currItem: Item) => currItem.id === item.id)!
         const columnValue = previousBoard?.groups[groupIdx].items[itemIdx].columnValues?.find(columnValue => columnValue.id === columnValueId)
@@ -134,7 +124,6 @@ export const useUpdateColumnValue = () => {
         return updatedBoard
       },
       onSuccess: (data, variables, context: Board | any) => {
-        console.log('file: useQuery.ts:136 -> context:', context)
         queryClient.invalidateQueries(['board', context.id!])
       },
     }
@@ -232,16 +221,12 @@ export const useDeleteItem = (currentBoardId: string) => {
   const queryClient = useQueryClient()
   return useMutation(
     (itemsId: (string | undefined)[]) => {
-      console.log('file: useQuery.ts:186 -> itemsId:', itemsId)
-
       return axios.delete(`${BASE_URL}/api/items`, { data: itemsId })
     },
 
     {
       onMutate: async (itemsId: (string | undefined)[]) => {
         const prevBoard = queryClient.getQueryData<Board>(['board', currentBoardId])
-        console.log('file: useQuery.ts:188 -> prevBoard:', prevBoard)
-
         const filteredBoard = {
           ...prevBoard,
           groups: prevBoard!.groups.map((group) => ({
@@ -250,12 +235,10 @@ export const useDeleteItem = (currentBoardId: string) => {
           })),
         }
         queryClient.setQueryData(['board', currentBoardId], filteredBoard)
-        console.log('file: useQuery.ts:210 -> filteredBoard:', filteredBoard)
 
         return { filteredBoard }
       },
       onSuccess: (data, variables, context) => {
-        console.log('context', context)
         const { filteredBoard } = context as { filteredBoard: Board }
         queryClient.setQueryData(['board', currentBoardId], filteredBoard)
       },

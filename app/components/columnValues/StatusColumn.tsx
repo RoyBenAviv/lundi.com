@@ -9,7 +9,6 @@ interface StatusOption {
 }
 
 export default function StatusColumn({ column, columnValue, updateColumnValue, item, boardId, groupId }: { column: Column; columnValue: any; updateColumnValue: Function, item: Item, boardId: string, groupId: string }) {
-  console.log('file: StatusColumn.tsx:12 -> columnValue:', columnValue)
   const [isOpenStatusOptions, setIsOpenStatusOptions] = useState<boolean>(false)
 
   

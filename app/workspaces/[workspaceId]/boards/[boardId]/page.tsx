@@ -19,11 +19,8 @@ export default async function Boards(url: URL) {
   const queryClient = getQueryClient()
   await queryClient.prefetchQuery(['workspace', workspaceId], async () => await getWorkspace(workspaceId))
   const dehydratedState: DehydratedState = dehydrate(queryClient)
-  console.log('file: page.tsx:24 -> dehydratedState:', dehydratedState)
-
 
     const workspace = dehydratedState.queries[0].state.data as Workspace
-    console.log('file: page.tsx:27 -> workspace:', workspace)
 
     const currentBoard = workspace.boards!.find((board: Board) => board.id === boardId)
 

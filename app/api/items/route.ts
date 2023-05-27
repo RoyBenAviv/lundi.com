@@ -5,8 +5,6 @@ export async function POST(request: Request) {
   try {
     const { newItem, isMany } = await request.json()
     if (isMany) {
-      console.log('newItem',newItem);
-
       const columnValues = newItem.flatMap((item: any) => {
             return item.columnValues.map((columnValue: any) => {
               return {
@@ -16,9 +14,6 @@ export async function POST(request: Request) {
               }
             })
       })
-
-      console.log('columnValues',columnValues);
-
       newItem.forEach((item: any) => delete item.columnValues)
 
       const items = await prisma.item.createMany({

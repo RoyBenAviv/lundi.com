@@ -44,13 +44,10 @@ export default function BoardHome({ board }: { board: Board }) {
 
 
   const onOpenItemsAction = (itemsId: (string | undefined)[]) => {
-    console.log('file: BoardHome.tsx:40 -> itemsId:', itemsId)
     setItemsToAction(itemsId)
   }
 
   const toggleItemsToEdit = (groupId: string, itemId: string | null) => {
-    console.log('file: BoardHome.tsx:48 -> groupId:', groupId)
-
     if (!itemId) {
       const groupIdx = currentBoard.groups.findIndex((group) => group.id === groupId)
       const itemIdsToToggle = currentBoard.groups[groupIdx].items.map((item) => item.id)
@@ -109,12 +106,10 @@ export default function BoardHome({ board }: { board: Board }) {
       })
     })
 
-    console.log('itemsToDuplicate',itemsToDuplicate);
     addManyItems(itemsToDuplicate)
   }
 
   const onSetWidth = async(dWidth: number) => {
-    console.log('file: BoardHome.tsx:120 -> dWidth:', dWidth)
     await updateGroups({value:  width + dWidth, key: 'width' })
     setWidth((width) => width + dWidth)
   }

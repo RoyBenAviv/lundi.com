@@ -17,7 +17,6 @@ const s3 = new S3({
 
 export default function WorkspaceHome({ workspace }: { workspace: Workspace }) {
   const { data: currentWorkspace } = useGetWorkspace(workspace)
-  console.log('file: WorkspaceHome.tsx:20 -> currentWorkspace:', currentWorkspace)
   const { mutate: updateMutate } = useUpdateWorkspace()
   const { mutate: updateMutateBoard } = useUpdateBoard()
   const editWorkspaceIconRef = useRef(null)

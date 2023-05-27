@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation'
 const recentBoardImg = require('../../assets/images/recent-board.svg')
 
 export default function RecentlyVisitedBoards({boards}: {boards: Board[]}) {
-    console.log('file: RecentlyVisitedBoards.tsx:10 -> boards:', boards)
     const {mutate: updateMutate} = useUpdateBoard()
     const router = useRouter()
 

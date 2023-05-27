@@ -25,7 +25,6 @@ export async function GET(request: Request, { params }: { params: Params }) {
       }
     }
   })
-  console.log('file: route.ts:28 -> workspace:', workspace)
   return NextResponse.json(workspace)
 }
 
