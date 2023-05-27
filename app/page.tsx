@@ -13,7 +13,6 @@ export default async function Home() {
 
 
   const boards = await getRecentlyVisitedBoards()
-  console.log('file: page.tsx:27 -> boards:', boards)
 
   const getCurrentTime = () => {
     const currentTime = new Date().getHours();
