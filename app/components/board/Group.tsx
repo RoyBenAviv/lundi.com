@@ -37,7 +37,7 @@ export default function Group({
   const [newItemName, setNewItemName] = useState<string>('')
   const [isGroupOpen, setIsGroupOpen] = useState<boolean>(true)
 
-  const items: Item[] = group.items.sort((item1: Item, item2: Item) => item1.order - item2.order)
+  const items: Item[] = group?.items?.sort((item1: Item, item2: Item) => item1.order - item2.order)
   const { mutate: addItem } = useAddItem('bottom')
 
   const onAddNewItem = () => {
@@ -96,7 +96,7 @@ export default function Group({
           </div>
         </div>
         <div className="table-body">
-          {items.map((item: Item) => (
+          {!!items.length && items.map((item: Item) => (
             <div key={item.id} className="table-row">
               <div className="check-item">
                 <div className="check-left-color" style={{ backgroundColor: group.color }}></div>

@@ -177,6 +177,33 @@ export const useAddBoard = () => {
   )
 }
 
+export const useAddGroup = () => {
+  const queryClient = useQueryClient()
+  return useMutation(
+    (newGroup: any) => {
+      return axios.post(`${BASE_URL}/api/groups`, { newGroup })
+    },
+
+    {
+      onMutate: async (newGroup: any) => {
+        await queryClient.cancelQueries({ queryKey: ['board', newGroup.boardId] })
+        const previousBoard = queryClient.getQueryData<Board>(['board', newGroup.boardsId])!
+        console.log('file: useQuery.ts:191 -> previousBoard:', previousBoard)
+        newGroup.items = []
+
+        previousBoard.groups.push(newGroup)
+        queryClient.setQueryData(['board', newGroup.boardsId], previousBoard)
+        return previousBoard 
+      },
+      onSuccess: ({data: newGroup}) => {
+        console.log('file: useQuery.ts:197 -> newGroup:', newGroup)
+        console.log('success')
+        queryClient.invalidateQueries(['board', newGroup.boardsId])
+      },
+    }
+  )
+}
+
 export const useAddItem = (itemPosition: string) => {
   const queryClient = useQueryClient()
   return useMutation(

@@ -6,7 +6,7 @@ import Group from './Group'
 const { Home, Add, Search, Filter } = require('monday-ui-react-core/icons')
 import { v4 as uuidv4 } from 'uuid'
 import EditableHeading from 'monday-ui-react-core/dist/EditableHeading'
-import { useAddItem, useAddManyItems, useUpdateGroups } from '@/app/hooks/useQuery'
+import { useAddGroup, useAddItem, useAddManyItems, useUpdateGroups } from '@/app/hooks/useQuery'
 import ItemsToAction from './ItemsToAction'
 import { CSVDownload } from 'react-csv'
 import { ReactSortable } from 'react-sortablejs'
@@ -14,7 +14,8 @@ const { Button, SplitButton, TabList, TabPanel, TabPanels, TabsContext, Tab } = 
 export default function BoardHome({ board }: { board: Board }) {
   const queryClient = useQueryClient()
   const { mutate: addItem } = useAddItem('top')
-  const { mutate: addManyItems} = useAddManyItems()
+  const { mutate: addNewGroup } = useAddGroup()
+  const { mutate: addManyItems } = useAddManyItems()
   const { data: currentBoard, isLoading } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient })
   const { mutateAsync: updateGroups } = useUpdateGroups(currentBoard.id)
   const [width, setWidth] = useState<number>(currentBoard.groups[0].width)
@@ -41,10 +42,20 @@ export default function BoardHome({ board }: { board: Board }) {
     addItem(newItem)
   }
 
-
-
-  const onOpenItemsAction = (itemsId: (string | undefined)[]) => {
+  const onOpenItemsAction = (itemsId: (string | undefined)[]): void => {
     setItemsToAction(itemsId)
+  }
+
+  const onAddNewGroup = () => {
+    const newGroup = {
+      id: uuidv4(),
+      name: "New Group",
+      boardsId: currentBoard.id,
+      order: boardGroups[boardGroups.length - 1]?.order + 1 || 0,
+      color: '#e2445c'
+    }
+
+    addNewGroup(newGroup)
   }
 
   const toggleItemsToEdit = (groupId: string, itemId: string | null) => {
@@ -91,51 +102,49 @@ export default function BoardHome({ board }: { board: Board }) {
     }
     currentBoard.groups.forEach((group, idx) => {
       group.items.forEach((item) => {
-          if (itemsToAction.includes(item.id)) {
-            const newItem = {
-              id: uuidv4(),
-              name: `Duplicate of ${item.name}`,
-              groupId: currentBoard.groups[idx].id,
-              boardId: currentBoard.id,
-              order: currentBoard.groups[idx]?.items[0]?.order - 1 || 0,
-              columnValues,
-            }
-
-            itemsToDuplicate.push(newItem) // todo : add col values
+        if (itemsToAction.includes(item.id)) {
+          const newItem = {
+            id: uuidv4(),
+            name: `Duplicate of ${item.name}`,
+            groupId: currentBoard.groups[idx].id,
+            boardId: currentBoard.id,
+            order: currentBoard.groups[idx]?.items[0]?.order - 1 || 0,
+            columnValues,
           }
+
+          itemsToDuplicate.push(newItem) // todo : add col values
+        }
       })
     })
 
     addManyItems(itemsToDuplicate)
   }
 
-  const onSetWidth = async(dWidth: number) => {
-    await updateGroups({value:  width + dWidth, key: 'width' })
+  const onSetWidth = async (dWidth: number) => {
+    await updateGroups({ value: width + dWidth, key: 'width' })
     setWidth((width) => width + dWidth)
   }
 
-  const onSetGroupsOrder = async(boardGroups: Group[]) => {
+  const onSetGroupsOrder = async (boardGroups: Group[]) => {
     setIsAllGroupsOpen(true)
     const sortedGroups = boardGroups.map((group: Group, idx: number) => {
       return {
         id: group.id,
-        order: idx
+        order: idx,
       }
     })
-    
+
     setDisableSorting(true)
     await updateGroups({ value: sortedGroups, key: 'sorting' })
     setDisableSorting(false)
   }
 
-  const [timeoutId, setTimeoutId] = useState<null |  NodeJS.Timeout>(null)
-
   useEffect(() => {
-
-  boardGroups && onSetGroupsOrder(boardGroups)
-
+    boardGroups && onSetGroupsOrder(boardGroups)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardGroups])
+
+
 
   if (isLoading) return <h1>IS LOADING</h1>
   return (
@@ -161,27 +170,29 @@ export default function BoardHome({ board }: { board: Board }) {
         </Button>
       </nav>
       <section>
-        <ReactSortable disabled={disableSorting} handle='.handle' list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups} >
-        {currentBoard.groups.sort((group1: Group, group2: Group) => group1.order - group2.order).map((group: Group) => (
-
-          <Group
-            key={group.id}
-            group={group}
-            columns={currentBoard.columns}
-            boardItemsType={currentBoard.boardItemsType}
-            workspaceId={currentBoard.workspaceId}
-            boardId={currentBoard.id}
-            width={width}
-            onSetWidth={onSetWidth}
-            onOpenItemsAction={onOpenItemsAction}
-            toggleItemsToEdit={toggleItemsToEdit}
-            itemsToAction={itemsToAction}
-            isAllGroupsOpen={isAllGroupsOpen}
-            // setBoardGroups={setBoardGroups}
-            />
+        <ReactSortable disabled={disableSorting} handle=".handle" list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
+          {currentBoard.groups
+            .sort((group1: Group, group2: Group) => group1.order - group2.order)
+            .map((group: Group) => (
+              <Group
+                key={group.id}
+                group={group}
+                columns={currentBoard.columns}
+                boardItemsType={currentBoard.boardItemsType}
+                workspaceId={currentBoard.workspaceId}
+                boardId={currentBoard.id}
+                width={width}
+                onSetWidth={onSetWidth}
+                onOpenItemsAction={onOpenItemsAction}
+                toggleItemsToEdit={toggleItemsToEdit}
+                itemsToAction={itemsToAction}
+                isAllGroupsOpen={isAllGroupsOpen}
+                // setBoardGroups={setBoardGroups}
+              />
             ))}
-            </ReactSortable>
+        </ReactSortable>
       </section>
+      <Button onClick={() => onAddNewGroup()} size={Button.sizes?.SMALL} leftIcon={Add} kind={Button.kinds?.SECONDARY}>Add new group</Button>
       {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
