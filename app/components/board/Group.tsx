@@ -67,7 +67,7 @@ export default function Group({
             <NavigationChevronDown onClick={() => setIsGroupOpen(false)} /> {group.name}
           </h4>
           <p className="mini-paragraph">
-            {group.items.length} {boardItemsType}
+          {`${group.items.length} ${boardItemsType}${group.items.length !== 1 ? 's' : ''}`}
           </p>
         </div>
       </header>
@@ -133,8 +133,7 @@ export default function Group({
           <NavigationChevronRight onClick={() => setIsGroupOpen(true)} /> {group.name}
         </h4>
         <p className="mini-paragraph">
-          {group.items.length} {boardItemsType}
-          {group.items.length !== 1 && 's'}{' '}
+        {`${group.items.length} ${boardItemsType}${group.items.length !== 1 ? 's' : ''}`}
         </p>
       </header>
     </section>
