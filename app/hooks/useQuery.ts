@@ -142,14 +142,15 @@ export const useAddWorkspace = () => {
     {
       onMutate: async (newWorkspace: Workspace) => {
         await queryClient.cancelQueries({ queryKey: ['workspaces'] })
-        const previousWorkspaces: Workspace[] | undefined = queryClient.getQueryData<Workspace[]>(['workspaces'])
+        const previousWorkspaces: Workspace[] = queryClient.getQueryData<Workspace[]>(['workspaces'])!
         const updatedWorkspaces = [...previousWorkspaces!, newWorkspace]
         queryClient.setQueryData(['workspaces'], updatedWorkspaces)
-        router.push(`/workspaces/${newWorkspace.id}`)
-        return { updatedWorkspaces }
+        return updatedWorkspaces
       },
-      onSuccess: () => {
+      onSuccess: ({data: workspace}: {data: Workspace}) => {
         queryClient.invalidateQueries(['workspaces'])
+        router.push(`/workspaces/${workspace.id}`)
+
       },
     }
   )
