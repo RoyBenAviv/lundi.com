@@ -46,6 +46,41 @@ export const useUpdateWorkspace = () => {
   )
 }
 
+
+export const useUpdateColumn = (column: Column) => {
+        const columnId = column.id
+        const boardId = column.boardsId
+        const queryClient = useQueryClient()
+  return useMutation(
+    ({ value, key }: { value: number; key: string }) => {
+      return axios.put(`${BASE_URL}/api/columns/${columnId}`, { value, key })
+    },
+    {
+      onMutate: ({ value, key }: { value: number; key: string }) => {
+        console.log('file: useQuery.ts:74 ->  value, key:',  value, key)
+
+
+        queryClient.cancelQueries({ queryKey: ['board', boardId] })
+        const previousBoard = queryClient.getQueryData<Board>(['board', boardId])!
+        const currentColumnIdx = previousBoard.columns.findIndex((column: Column) => column.id === columnId)
+        console.log('previousBoard.columns[currentColumnIdx]',previousBoard.columns[currentColumnIdx]);
+        if(currentColumnIdx === -1) return
+        const currentColumn: Column | any = previousBoard.columns[currentColumnIdx]
+        currentColumn[key as keyof Column] = value
+        console.log('file: useQuery.ts:68 -> previousBoard:', previousBoard)
+        queryClient.setQueryData(['board', boardId], previousBoard)
+      },
+      onError: (err) => {
+        console.log('file: useQuery.ts:56 -> err:', err)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(['board', boardId])
+        console.log('success!!')
+      },
+    }
+  )
+}
+
 export const useUpdateGroups = (boardId: string) => {
   const queryClient = useQueryClient()
   return useMutation(
@@ -86,13 +121,6 @@ export const useUpdateItem = () => {
       return axios.put(`${BASE_URL}/api/items/${itemId}`, { value, key })
     },
     {
-      // onMutate: async ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
-      //   await queryClient.cancelQueries({ queryKey: ['workspace', itemId] })
-      //   const previousWorkspace: Workspace | undefined = queryClient.getQueryData(['workspace', itemId])
-      //   const updatedWorkspace = { ...previousWorkspace, [key]: value }
-      //   queryClient.setQueryData(['workspace', workspaceId], updatedWorkspace)
-      //   return { updatedWorkspace }
-      // },
       onError: (err) => {
         console.log('file: useQuery.ts:97 -> err:', err)
       },
@@ -106,19 +134,18 @@ export const useUpdateItem = () => {
 export const useUpdateColumnValue = () => {
   const queryClient = useQueryClient()
   return useMutation(
-    ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item, groupId: string, boardId: string; value: string; key: string }) => {
+    ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item; groupId: string; boardId: string; value: string; key: string }) => {
       return axios.put(`${BASE_URL}/api/columnValues/${columnValueId}`, { value, key })
     },
     {
-      onMutate: async ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item, groupId: string; boardId: string; value: string; key: string }) => {
+      onMutate: async ({ columnValueId, item, groupId, boardId, value, key }: { columnValueId: string; item: Item; groupId: string; boardId: string; value: string; key: string }) => {
         await queryClient.cancelQueries({ queryKey: ['board', boardId] })
         const previousBoard: Board | undefined = queryClient.getQueryData(['board', boardId])
         const groupIdx = previousBoard?.groups.findIndex((group: Group) => group.id === groupId)!
         const itemIdx = previousBoard?.groups[groupIdx].items.findIndex((currItem: Item) => currItem.id === item.id)!
-        const columnValue = previousBoard?.groups[groupIdx].items[itemIdx].columnValues?.find(columnValue => columnValue.id === columnValueId)
+        const columnValue = previousBoard?.groups[groupIdx].items[itemIdx].columnValues?.find((columnValue) => columnValue.id === columnValueId)
         columnValue[key] = value
         const updatedBoard = JSON.parse(JSON.stringify(previousBoard))
-
 
         queryClient.setQueryData(['board', item.boardId], updatedBoard)
         return updatedBoard
@@ -147,10 +174,9 @@ export const useAddWorkspace = () => {
         queryClient.setQueryData(['workspaces'], updatedWorkspaces)
         return updatedWorkspaces
       },
-      onSuccess: ({data: workspace}: {data: Workspace}) => {
+      onSuccess: ({ data: workspace }: { data: Workspace }) => {
         queryClient.invalidateQueries(['workspaces'])
         router.push(`/workspaces/${workspace.id}`)
-
       },
     }
   )
@@ -194,9 +220,9 @@ export const useAddGroup = () => {
 
         previousBoard.groups.push(newGroup)
         queryClient.setQueryData(['board', newGroup.boardsId], previousBoard)
-        return previousBoard 
+        return previousBoard
       },
-      onSuccess: ({data: newGroup}) => {
+      onSuccess: ({ data: newGroup }) => {
         console.log('file: useQuery.ts:197 -> newGroup:', newGroup)
         console.log('success')
         queryClient.invalidateQueries(['board', newGroup.boardsId])

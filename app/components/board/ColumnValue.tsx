@@ -18,7 +18,7 @@ export default function ColumnValue({ column, columnValue, item, boardId, groupI
   }
 
   return (
-    <div className={`cell ${column.columnType}`}>
+    <div style={{width: column.width}} className={`cell ${column.columnType}`}>
       <DynamicColumnValue columnValue={columnValue} column={column} />
     </div>
   )

@@ -70,8 +70,8 @@ interface Column {
   boardsId: string
   item: Item[]
   itemId: string
+  width: number
   options: Json?
-  
 }
 
 interface DropDownOption {

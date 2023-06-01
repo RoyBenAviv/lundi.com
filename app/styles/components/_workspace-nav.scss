@@ -260,19 +260,3 @@
   }
 }
 
-.drag-ghost {
-  background: white !important;
-  border-radius: 10px;
-}
-
-.custom-placeholder {
-  border: 1px dashed $basic_blue;
-  background-color: lightgray;
-  opacity: 0.8;
-  color: transparent;
-}
-
-.custom-dragged-element {
-  background-color: #f0f0f0;
-  box-shadow: 0 0 10px #ccc;
-}

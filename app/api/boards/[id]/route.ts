@@ -15,10 +15,8 @@ export async function GET(request: Request, { params }: { params: Params }) {
       }
     },
   })
-
   return NextResponse.json(board)
 }
-
 
 export async function PUT(request: Request, { params }: { params: Params }) {
   const {value, key} = await request.json()

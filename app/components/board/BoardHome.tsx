@@ -18,7 +18,8 @@ export default function BoardHome({ board }: { board: Board }) {
   const { mutate: addManyItems } = useAddManyItems()
   const { data: currentBoard, isLoading } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient })
   const { mutateAsync: updateGroups } = useUpdateGroups(currentBoard.id)
-  const [width, setWidth] = useState<number>(currentBoard.groups[0].width)
+  const [groupWidth, setGroupWidth] = useState<number>(currentBoard.groups[0].width)
+
   const [itemsToAction, setItemsToAction] = useState<(string | undefined)[]>([])
   const [csvData, setCsvData] = useState<Item[] | null>(null)
   const [isAllGroupsOpen, setIsAllGroupsOpen] = useState<boolean>(true)
@@ -120,9 +121,9 @@ export default function BoardHome({ board }: { board: Board }) {
     addManyItems(itemsToDuplicate)
   }
 
-  const onSetWidth = async (dWidth: number) => {
-    await updateGroups({ value: width + dWidth, key: 'width' })
-    setWidth((width) => width + dWidth)
+  const onSetGroupWidth = async (dWidth: number) => {
+    await updateGroups({ value: groupWidth + dWidth, key: 'width' })
+    setGroupWidth((width) => width + dWidth)
   }
 
   const onSetGroupsOrder = async (boardGroups: Group[]) => {
@@ -146,7 +147,7 @@ export default function BoardHome({ board }: { board: Board }) {
 
 
 
-  if (isLoading) return <h1>IS LOADING</h1>
+  if (isLoading) return <></>
   return (
     <main className="board-home">
       <header>
@@ -169,8 +170,7 @@ export default function BoardHome({ board }: { board: Board }) {
           Filter
         </Button>
       </nav>
-      <section>
-        <ReactSortable disabled={disableSorting} handle=".handle" list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
+        <ReactSortable handle='.handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
           {currentBoard.groups
             .sort((group1: Group, group2: Group) => group1.order - group2.order)
             .map((group: Group) => (
@@ -181,8 +181,8 @@ export default function BoardHome({ board }: { board: Board }) {
                 boardItemsType={currentBoard.boardItemsType}
                 workspaceId={currentBoard.workspaceId}
                 boardId={currentBoard.id}
-                width={width}
-                onSetWidth={onSetWidth}
+                groupWidth={groupWidth}
+                onSetGroupWidth={onSetGroupWidth}
                 onOpenItemsAction={onOpenItemsAction}
                 toggleItemsToEdit={toggleItemsToEdit}
                 itemsToAction={itemsToAction}
@@ -191,11 +191,11 @@ export default function BoardHome({ board }: { board: Board }) {
               />
             ))}
         </ReactSortable>
-      </section>
       <Button onClick={() => onAddNewGroup()} size={Button.sizes?.SMALL} leftIcon={Add} kind={Button.kinds?.SECONDARY}>Add new group</Button>
       {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
+      {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>}
     </main>
   )
 }
