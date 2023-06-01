@@ -195,7 +195,7 @@ export default function BoardHome({ board }: { board: Board }) {
       {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
-      {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>}
+      {/* {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>} */}
     </main>
   )
 }
