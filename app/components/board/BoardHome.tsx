@@ -146,6 +146,13 @@ export default function BoardHome({ board }: { board: Board }) {
   }, [boardGroups])
 
 
+  const [columnsWidth, setColumnsWidth] = useState(currentBoard.columns.map(column => {
+    return {
+      id: column.id,
+      width: column.width
+    }
+  }))
+
 
   if (isLoading) return <></>
   return (
@@ -170,7 +177,7 @@ export default function BoardHome({ board }: { board: Board }) {
           Filter
         </Button>
       </nav>
-        <ReactSortable handle='.handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
+        <ReactSortable handle='.group-handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
           {currentBoard.groups
             .sort((group1: Group, group2: Group) => group1.order - group2.order)
             .map((group: Group) => (
@@ -187,7 +194,8 @@ export default function BoardHome({ board }: { board: Board }) {
                 toggleItemsToEdit={toggleItemsToEdit}
                 itemsToAction={itemsToAction}
                 isAllGroupsOpen={isAllGroupsOpen}
-                // setBoardGroups={setBoardGroups}
+                columnsWidth={columnsWidth}
+                setColumnsWidth={setColumnsWidth}
               />
             ))}
         </ReactSortable>
@@ -195,7 +203,7 @@ export default function BoardHome({ board }: { board: Board }) {
       {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
-      {/* {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>} */}
+      {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>}
     </main>
   )
 }

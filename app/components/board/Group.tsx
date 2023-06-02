@@ -8,6 +8,7 @@ const { NavigationChevronDown, Add, NavigationChevronRight } = require('monday-u
 import { Resizable } from 're-resizable'
 import Checkbox from 'monday-ui-react-core/dist/Checkbox'
 import Column from './Column'
+import { ReactSortable } from 'react-sortablejs'
 export default function Group({
   group,
   columns,
@@ -20,6 +21,8 @@ export default function Group({
   toggleItemsToEdit,
   itemsToAction,
   isAllGroupsOpen,
+  columnsWidth,
+  setColumnsWidth
 }: // setBoardGroups
 {
   group: Group
@@ -33,7 +36,8 @@ export default function Group({
   toggleItemsToEdit: Function
   itemsToAction: (string | undefined)[]
   isAllGroupsOpen: boolean
-  // setBoardGroups: React.Dispatch<SetStateAction<Group[]>>
+  columnsWidth: any
+  setColumnsWidth: React.Dispatch<SetStateAction<any>>
 }) {
   const [newItemName, setNewItemName] = useState<string>('')
   const [isGroupOpen, setIsGroupOpen] = useState<boolean>(true)
@@ -61,10 +65,28 @@ export default function Group({
     setNewItemName('')
   }
 
+  const [boardColumns, setBoardColumns] = useState<Column[]>(columns.sort((column1: Column, column2: Column) => column2.order - column1.order))
+
+
+  const onSetColumnsOrder = async (boardColumns: Column[]) => {
+    const sortedGroups = boardColumns.map((column: Column, idx: number) => {
+      // return {
+      //   id: group.id,
+      //   order: idx,
+      // }
+    })
+
+  }
+
+  useEffect(() => {
+    boardColumns && onSetColumnsOrder(boardColumns)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardColumns])
+
   return isGroupOpen && isAllGroupsOpen ? (
     <section className="group-container open">
       <header>
-        <div className="header-title handle">
+        <div className="header-title group-handle">
           <h4 style={{ color: group.color }}>
             <NavigationChevronDown onClick={() => setIsGroupOpen(false)} /> {group.name}
           </h4>
@@ -85,11 +107,16 @@ export default function Group({
                 <span>{boardItemsType}</span>
               </div>
             </Resizable>
+            {/* <ReactSortable dragoverBubble forceFallback removeCloneOnHide={false} emptyInsertThreshold={100} fallbackOnBody={true} fallbackClass='test2' style={{display: 'flex'}} onClone={(e: any) => { */}
+              {/* e.item.style.backgroundColor = 'white' */}
+              {/* e.item.style.opacity = 1 */}
+            {/* }} animation={300} list={boardColumns} setList={setBoardColumns}> */}
             {columns
             .sort((column1: Column, column2: Column) => column1.order - column2.order)
             .map((column: Column) => (
-              <Column key={column.id} column={column}/>
+              <Column key={column.id} column={column} columnsWidth={columnsWidth} setColumnsWidth={setColumnsWidth}/>
             ))}
+            {/* </ReactSortable> */}
           </div>
           <div className="column add-column">
             <span>
@@ -104,7 +131,7 @@ export default function Group({
                 <div className="check-left-color" style={{ backgroundColor: group.color }}></div>
                 <Checkbox checked={itemsToAction.includes(item.id)} onChange={() => toggleItemsToEdit(group.id, item.id!)} />
               </div>
-              <Item isLoadingNewItem={isLoadingNewItem} item={item} columns={columns} groupWidth={groupWidth} boardId={boardId} groupId={group.id}/>
+              <Item isLoadingNewItem={isLoadingNewItem} item={item} columns={columns} columnsWidth={columnsWidth}  groupWidth={groupWidth} boardId={boardId} groupId={group.id}/>
             </div>
           ))}
           <div className="table-row add-item-row">

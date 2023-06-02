@@ -60,17 +60,17 @@ export const useUpdateColumn = (column: Column) => {
         console.log('file: useQuery.ts:74 ->  value, key:',  value, key)
 
 
-        queryClient.cancelQueries({ queryKey: ['board', boardId] })
-        const previousBoard = queryClient.getQueryData<Board>(['board', boardId])!
-        const currentColumnIdx = previousBoard.columns.findIndex((column: Column) => column.id === columnId)
-        console.log('previousBoard.columns[currentColumnIdx]',previousBoard.columns[currentColumnIdx]);
-        if(currentColumnIdx === -1) return
-        const currentColumn: Column | any = previousBoard.columns[currentColumnIdx]
-        currentColumn[key as keyof Column] = value
-        console.log('file: useQuery.ts:68 -> previousBoard:', previousBoard)
-        queryClient.setQueryData(['board', boardId], previousBoard)
+        // queryClient.cancelQueries({ queryKey: ['board', boardId] })
+        // const previousBoard = queryClient.getQueryData<Board>(['board', boardId])!
+        // const currentColumnIdx = previousBoard.columns.findIndex((column: Column) => column.id === columnId)
+        // console.log('previousBoard.columns[currentColumnIdx]',previousBoard.columns[currentColumnIdx]);
+        // if(currentColumnIdx === -1) return
+        // const currentColumn: Column | any = previousBoard.columns[currentColumnIdx]
+        // currentColumn[key as keyof Column] = value
+        // console.log('file: useQuery.ts:68 -> previousBoard:', previousBoard)
+        // queryClient.setQueryData(['board', boardId], previousBoard)
 
-        return {...previousBoard}
+        // return {...previousBoard}
       },
       onError: (err) => {
         console.log('file: useQuery.ts:56 -> err:', err)
