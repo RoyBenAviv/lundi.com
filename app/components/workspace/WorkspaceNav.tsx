@@ -93,7 +93,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
       boardItemsType: newBoardType,
       workspaceId: currentWorkspace.id!,
       columns: [
-        { id: uuidv4(), name: 'Text', columnType: 'text' },
+        { id: uuidv4(), name: 'Text', columnType: 'text', order: 1 },
         {
           id: uuidv4(),
           name: 'Status',
@@ -117,6 +117,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
               color: '#00c875',
             },
           ],
+          order: 2
         },
       ],
       groups: [

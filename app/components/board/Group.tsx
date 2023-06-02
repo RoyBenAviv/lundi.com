@@ -40,7 +40,7 @@ export default function Group({
 
 
   const items: Item[] = group?.items?.sort((item1: Item, item2: Item) => item1.order - item2.order)
-  const { mutate: addItem } = useAddItem('bottom')
+  const { mutate: addItem, isLoading: isLoadingNewItem } = useAddItem('bottom')
 
   const onAddNewItem = () => {
     const columnValues = []
@@ -85,7 +85,9 @@ export default function Group({
                 <span>{boardItemsType}</span>
               </div>
             </Resizable>
-            {columns.map((column: Column) => (
+            {columns
+            .sort((column1: Column, column2: Column) => column1.order - column2.order)
+            .map((column: Column) => (
               <Column key={column.id} column={column}/>
             ))}
           </div>
@@ -102,7 +104,7 @@ export default function Group({
                 <div className="check-left-color" style={{ backgroundColor: group.color }}></div>
                 <Checkbox checked={itemsToAction.includes(item.id)} onChange={() => toggleItemsToEdit(group.id, item.id!)} />
               </div>
-              <Item item={item} columns={columns} groupWidth={groupWidth} boardId={boardId} groupId={group.id}/>
+              <Item isLoadingNewItem={isLoadingNewItem} item={item} columns={columns} groupWidth={groupWidth} boardId={boardId} groupId={group.id}/>
             </div>
           ))}
           <div className="table-row add-item-row">

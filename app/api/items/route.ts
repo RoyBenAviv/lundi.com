@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     } else {
       const item = await prisma.item.create({
         data: {
+          id: newItem.id,
           name: newItem.name,
           groupId: newItem.groupId,
           boardId: newItem.boardId,

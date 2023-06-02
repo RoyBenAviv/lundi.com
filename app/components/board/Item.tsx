@@ -8,7 +8,7 @@ import ColumnValue from './ColumnValue'
 
 const { Open } = require('monday-ui-react-core/icons')
 
-export default function Item({ item, columns, groupWidth, boardId, groupId }: { item: Item; columns: Column[]; groupWidth: number; boardId: string; groupId: string}) {
+export default function Item({ isLoadingNewItem, item, columns, groupWidth, boardId, groupId }: { isLoadingNewItem: boolean; item: Item; columns: Column[]; groupWidth: number; boardId: string; groupId: string}) {
   const { mutate: updateItem } = useUpdateItem()
   const [itemName, setItemName] = useState<string>(item.name)
   const editNameRef = useRef<any>()
@@ -32,6 +32,7 @@ export default function Item({ item, columns, groupWidth, boardId, groupId }: { 
           value={itemName}
           onChange={(e) => setItemName(e.target.value)}
           onBlur={() => onEditItemName()}
+          disabled={isLoadingNewItem}
         />
         <span className="open">
           <Open />

@@ -71,6 +71,7 @@ interface Column {
   item: Item[]
   itemId: string
   width: number
+  order: number
   options: Json?
 }
 
@@ -87,6 +88,6 @@ interface NewBoard {
   name: string
   boardItemsType: string
   workspaceId: string
-  columns: { name: string; columnType: string; id: string, options?: any}[]
+  columns: { name: string; columnType: string; id: string, options?: any[], order: number}[]
   groups: any[]
 }

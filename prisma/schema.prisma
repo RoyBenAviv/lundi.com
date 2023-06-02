@@ -73,6 +73,7 @@ model Column {
   options    Json?
   ColumnValue ColumnValue[]
   width Int? @default(120)
+  order Int        @default(0) 
 }
 
 model ColumnValue {

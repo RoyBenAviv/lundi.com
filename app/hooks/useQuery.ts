@@ -69,6 +69,8 @@ export const useUpdateColumn = (column: Column) => {
         currentColumn[key as keyof Column] = value
         console.log('file: useQuery.ts:68 -> previousBoard:', previousBoard)
         queryClient.setQueryData(['board', boardId], previousBoard)
+
+        return {...previousBoard}
       },
       onError: (err) => {
         console.log('file: useQuery.ts:56 -> err:', err)
@@ -118,6 +120,7 @@ export const useUpdateItem = () => {
   const queryClient = useQueryClient()
   return useMutation(
     ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
+      console.log('file: useQuery.ts:123 -> itemId, value, key:', itemId, value, key)
       return axios.put(`${BASE_URL}/api/items/${itemId}`, { value, key })
     },
     {
@@ -125,6 +128,7 @@ export const useUpdateItem = () => {
         console.log('file: useQuery.ts:97 -> err:', err)
       },
       onSuccess: ({ data: item }) => {
+        console.log('file: useQuery.ts:131 -> item:', item)
         queryClient.invalidateQueries(['board', item.boardId])
       },
     }
@@ -250,7 +254,6 @@ export const useAddItem = (itemPosition: string) => {
         return { previousBoard }
       },
       onSuccess: ({ data: newItem }) => {
-        console.log('success')
         queryClient.invalidateQueries(['board', newItem.boardId])
         queryClient.invalidateQueries(['workspace', newItem.workspaceId])
       },
