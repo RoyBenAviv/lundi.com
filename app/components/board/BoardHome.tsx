@@ -238,6 +238,7 @@ export default function BoardHome({ board }: { board: Board }) {
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
       {/* {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>} */}
+      {''}
     </main>
   )
 }
