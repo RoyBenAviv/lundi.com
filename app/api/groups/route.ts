@@ -27,7 +27,6 @@ export async function PUT(request: Request) {
 
 export async function POST(request: Request) {
   const { newGroup } = await request.json()
-  console.log('file: route.ts:31 -> newGroup:', newGroup)
   newGroup.items = {
     create: []
   }
@@ -36,7 +35,6 @@ export async function POST(request: Request) {
     const createdGroup = await prisma.groups.create({
       data: newGroup,
     })
-    console.log('file: route.ts:35 -> createdGroup:', createdGroup)
 
     return NextResponse.json(createdGroup)
   } catch (err) {

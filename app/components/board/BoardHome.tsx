@@ -1,7 +1,7 @@
 'use client'
 
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Group from './Group'
 const { Home, Add, Search, Filter } = require('monday-ui-react-core/icons')
 import { v4 as uuidv4 } from 'uuid'
@@ -10,13 +10,32 @@ import { useAddGroup, useAddItem, useAddManyItems, useUpdateGroups } from '@/app
 import ItemsToAction from './ItemsToAction'
 import { CSVDownload } from 'react-csv'
 import { ReactSortable } from 'react-sortablejs'
+import { TextField } from 'monday-ui-react-core'
+import useOnClickOutside from '@/app/hooks/useOnClickOutside'
 const { Button, SplitButton, TabList, TabPanel, TabPanels, TabsContext, Tab } = require('monday-ui-react-core')
 export default function BoardHome({ board }: { board: Board }) {
   const queryClient = useQueryClient()
   const { mutate: addItem } = useAddItem('top')
   const { mutate: addNewGroup } = useAddGroup()
   const { mutate: addManyItems } = useAddManyItems()
-  const { data: currentBoard, isLoading } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient })
+  const [searchItem, setSearchItem] = useState<string>('')
+
+  const { data: currentBoard, isLoading } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient, select: (data) => {
+    console.log('data', data)
+    // return data
+    if(!searchItem) return data
+    const filteredGroups = data.groups.map((group: any) => ({
+      ...group,
+      items: group.items.filter((item: any) => item.name.toLowerCase().includes(searchItem.toLowerCase()))
+    }));
+    
+    const filteredBoard: Board = {
+      ...data,
+      groups: filteredGroups
+    };
+    return filteredBoard
+
+  } })
   const { mutateAsync: updateGroups } = useUpdateGroups(currentBoard.id)
   const [groupWidth, setGroupWidth] = useState<number>(currentBoard.groups[0].width)
 
@@ -25,7 +44,22 @@ export default function BoardHome({ board }: { board: Board }) {
   const [isAllGroupsOpen, setIsAllGroupsOpen] = useState<boolean>(true)
   const [boardGroups, setBoardGroups] = useState<Group[]>(currentBoard.groups.sort((group1: Group, group2: Group) => group1.order - group2.order))
   const [disableSorting, setDisableSorting] = useState<boolean>(false)
-  const onAddNewItem = () => {
+  const [allItems, setAllItems] = useState(currentBoard.groups.flatMap(group => group.items))
+
+
+
+  useEffect(() => {
+
+    // queryClient.setQueryData(['board', currentBoard.id], filteredBoard)
+    queryClient.refetchQueries(['board', currentBoard.id]);
+  }, [searchItem])
+
+
+  const [isSearchInputOpen,setIsSearchInputOpen] = useState<boolean>(false)
+  const searchBoardRef = useRef<HTMLInputElement>(null)
+  useOnClickOutside(searchBoardRef, () => setIsSearchInputOpen(false))
+
+  const onAddNewItem = (): void => {
     const columnValues = []
     for (let i = 0; i < currentBoard.columns.length; i++) {
       const id = uuidv4()
@@ -47,7 +81,7 @@ export default function BoardHome({ board }: { board: Board }) {
     setItemsToAction(itemsId)
   }
 
-  const onAddNewGroup = () => {
+  const onAddNewGroup = (): void => {
     const newGroup = {
       id: uuidv4(),
       name: "New Group",
@@ -59,7 +93,7 @@ export default function BoardHome({ board }: { board: Board }) {
     addNewGroup(newGroup)
   }
 
-  const toggleItemsToEdit = (groupId: string, itemId: string | null) => {
+  const toggleItemsToEdit = (groupId: string, itemId: string | null): void => {
     if (!itemId) {
       const groupIdx = currentBoard.groups.findIndex((group) => group.id === groupId)
       const itemIdsToToggle = currentBoard.groups[groupIdx].items.map((item) => item.id)
@@ -135,9 +169,9 @@ export default function BoardHome({ board }: { board: Board }) {
       }
     })
 
-    setDisableSorting(true)
+    // setDisableSorting(true)
     await updateGroups({ value: sortedGroups, key: 'sorting' })
-    setDisableSorting(false)
+    // setDisableSorting(false)
   }
 
   useEffect(() => {
@@ -146,7 +180,7 @@ export default function BoardHome({ board }: { board: Board }) {
   }, [boardGroups])
 
 
-  const [columnsWidth, setColumnsWidth] = useState(currentBoard.columns.map(column => {
+  const [columnsWidth, setColumnsWidth] = useState<{id: string; width: number}[]>(currentBoard.columns.map(column => {
     return {
       id: column.id,
       width: column.width
@@ -167,17 +201,17 @@ export default function BoardHome({ board }: { board: Board }) {
         </TabList>
       </header>
       <nav>
-        <SplitButton size={SplitButton.sizes?.SMALL} onClick={() => onAddNewItem()} onSecondaryDialogDidHide={function noRefCheck() {}} onSecondaryDialogDidShow={function noRefCheck() {}}>
+        <SplitButton size={SplitButton.sizes?.SMALL} onClick={() => onAddNewItem()}>
           New Item
         </SplitButton>
-        <Button className="secondary-btn" size={Button.sizes?.SMALL} kind={Button.kinds?.TERTIARY} leftIcon={Search}>
+{      !isSearchInputOpen ?  <Button ref={searchBoardRef} onClick={() => setIsSearchInputOpen(true)} size={Button.sizes?.SMALL} kind={Button.kinds?.TERTIARY} leftIcon={Search}>
           Search
-        </Button>
-        <Button className="secondary-btn" size={Button.sizes?.SMALL} kind={Button.kinds?.TERTIARY} leftIcon={Filter}>
-          Filter
-        </Button>
+        </Button> :
+        <TextField  autoFocus value={searchItem} onChange={(e) => setSearchItem(e)} className='search-item-input' placeholder='Search'/>
+        }
+
       </nav>
-        <ReactSortable handle='.group-handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
+        <ReactSortable fallbackClass='group-ghost' forceFallback handle='.group-handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
           {currentBoard.groups
             .sort((group1: Group, group2: Group) => group1.order - group2.order)
             .map((group: Group) => (
@@ -203,7 +237,7 @@ export default function BoardHome({ board }: { board: Board }) {
       {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
-      {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>}
+      {/* {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>} */}
     </main>
   )
 }

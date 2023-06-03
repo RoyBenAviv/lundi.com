@@ -241,7 +241,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           <hr />
           <div className="boards-list-container">
             {!!workspaceBoards.length ? (
-              <ReactSortable list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" swapClass="custom-dragged-element" animation={300} className="boards-list">
+              <ReactSortable list={workspaceBoards} setList={setWorkspaceBoards} dragClass="drag-ghost" ghostClass="custom-placeholder" fallbackClass='board-ghost' forceFallback animation={300} className="boards-list">
                 {workspaceBoards.map((board: Board) => (
                   <div className={boardId === board.id ? 'active' : ''} key={board.id}>
                     <div className="board-navigator" onClick={() => onNavigateBoard(board)}>

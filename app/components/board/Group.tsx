@@ -22,7 +22,7 @@ export default function Group({
   itemsToAction,
   isAllGroupsOpen,
   columnsWidth,
-  setColumnsWidth
+  setColumnsWidth,
 }: // setBoardGroups
 {
   group: Group
@@ -43,7 +43,8 @@ export default function Group({
   const [isGroupOpen, setIsGroupOpen] = useState<boolean>(true)
 
 
-  const items: Item[] = group?.items?.sort((item1: Item, item2: Item) => item1.order - item2.order)
+
+  const items: Item[] = group!.items.sort((item1: Item, item2: Item) => item1.order - item2.order)
   const { mutate: addItem, isLoading: isLoadingNewItem } = useAddItem('bottom')
 
   const onAddNewItem = () => {
@@ -107,10 +108,7 @@ export default function Group({
                 <span>{boardItemsType}</span>
               </div>
             </Resizable>
-            {/* <ReactSortable dragoverBubble forceFallback removeCloneOnHide={false} emptyInsertThreshold={100} fallbackOnBody={true} fallbackClass='test2' style={{display: 'flex'}} onClone={(e: any) => { */}
-              {/* e.item.style.backgroundColor = 'white' */}
-              {/* e.item.style.opacity = 1 */}
-            {/* }} animation={300} list={boardColumns} setList={setBoardColumns}> */}
+            {/* <ReactSortable animation={300} list={boardColumns} setList={setBoardColumns} dragoverBubble forceFallback removeCloneOnHide={false} emptyInsertThreshold={100} fallbackOnBody={true} fallbackClass='test2' style={{display: 'flex'}}> */}
             {columns
             .sort((column1: Column, column2: Column) => column1.order - column2.order)
             .map((column: Column) => (

@@ -120,7 +120,6 @@ export const useUpdateItem = () => {
   const queryClient = useQueryClient()
   return useMutation(
     ({ itemId, value, key }: { itemId: string; value: string; key: string }) => {
-      console.log('file: useQuery.ts:123 -> itemId, value, key:', itemId, value, key)
       return axios.put(`${BASE_URL}/api/items/${itemId}`, { value, key })
     },
     {
@@ -219,7 +218,6 @@ export const useAddGroup = () => {
       onMutate: async (newGroup: any) => {
         await queryClient.cancelQueries({ queryKey: ['board', newGroup.boardId] })
         const previousBoard = queryClient.getQueryData<Board>(['board', newGroup.boardsId])!
-        console.log('file: useQuery.ts:191 -> previousBoard:', previousBoard)
         newGroup.items = []
 
         previousBoard.groups.push(newGroup)
@@ -227,7 +225,6 @@ export const useAddGroup = () => {
         return previousBoard
       },
       onSuccess: ({ data: newGroup }) => {
-        console.log('file: useQuery.ts:197 -> newGroup:', newGroup)
         console.log('success')
         queryClient.invalidateQueries(['board', newGroup.boardsId])
       },

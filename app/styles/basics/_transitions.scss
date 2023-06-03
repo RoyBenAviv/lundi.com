@@ -56,10 +56,17 @@
       opacity: 0.8;
       color: transparent;
     }
-    
-//  .test2 {
-//   background-color: red !important;
-//   opacity: 1 !important;
-//   border-radius: 50% !important;
 
-//  }
+    .group-ghost {
+      background-color: $primary-background-color;
+      opacity: 1 !important;
+      width: max-content !important;
+      border: 1px dashed $basic_blue !important; 
+    }
+
+    .board-ghost {
+      background-color: $primary-background-color;
+      opacity: 1 !important;
+      border-radius: 5px !important;
+      box-shadow: $box-shadow-xs !important;
+    }
