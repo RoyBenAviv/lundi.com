@@ -22,6 +22,10 @@ export async function GET(request: Request) {
   }
 }
 
+interface NewItem extends Item {
+  columnValuesVal: any[]
+}
+
 export async function PUT(request: Request) {
   const sortedBoards = await request.json()
   await prisma.$transaction(
@@ -54,7 +58,7 @@ export async function POST(request: Request) {
               color: newBoard.groups[0].color,
               order: newBoard.groups[0].order,
               items: {
-                create: newBoard.groups[0].items.map((item: any) => ({
+                create: newBoard.groups[0].items.map((item: NewItem) => ({
                   id: item.id,
                   name: item.name,
                   order: item.order,
@@ -78,7 +82,7 @@ export async function POST(request: Request) {
               color: newBoard.groups[1].color,
               order: newBoard.groups[1].order,
               items: {
-                create: newBoard.groups[1].items.map((item: any) => ({
+                create: newBoard.groups[1].items.map((item: NewItem) => ({
                   id: item.id,
                   name: item.name,
                   order: item.order,

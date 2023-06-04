@@ -119,6 +119,12 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           ],
           order: 2
         },
+        {
+            id: uuidv4(),
+            name: 'Date',
+            columnType: 'date',
+            order: 3
+        },
       ],
       groups: [
         {
@@ -157,8 +163,8 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           order: 1,
           color: '#0073ea',
           items: [
-            { id: uuidv4(), name: `${newBoardType} 3`, order: 3, columnValuesVal: ["", ""] },
-            { id: uuidv4(), name: `${newBoardType} 4`, order: 4, columnValuesVal: ["", ""] },
+            { id: uuidv4(), name: `${newBoardType} 3`, order: 3, columnValuesVal: ["", "", new Date()] },
+            { id: uuidv4(), name: `${newBoardType} 4`, order: 4, columnValuesVal: ["", "", ""] },
           ],
         },
       ],

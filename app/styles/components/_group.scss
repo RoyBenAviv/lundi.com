@@ -267,7 +267,22 @@
               align-items: center;
               justify-content: center;
               color: $text-color-on-primary;
+              &:hover {
+                > .add-status-note {
+                  border-width: 0 10px 10px 0;
+                }
+              }
+              .add-status-note {
+                border-width: 0;
+                transition: border-width .3s .2s ease;
+                position: absolute;
+                top: 0;
+                right: 0px;
+                border-style: solid;
+                border-color: rgba(0,0,0,.2) var(--primary-background-color);
+              }
               .status-options {
+                border-radius: 10px;
                 z-index: 50;
                 cursor: initial;
                 position: absolute;
@@ -280,9 +295,25 @@
                 box-shadow: $box-shadow-medium;
                 padding: 20px;
                 min-width: 200px;
-                top: 40px;
-                span {
+                top: 42px;
+                &::before {
+                  content: "";
+                  position: absolute;
+                  top: -7px; 
+                  left: 50%; 
+                  transform: translateX(-50%);
+                  width: 0;
+                  height: 0;
+                  border-left: 7px solid transparent;
+                  border-right: 7px solid transparent;
+                  border-bottom: 7px solid $secondary-background-color; 
+                }
+                .status-option {
+                  &.chosen {
+                    border: 2px solid $primary-color;
+                  }
                   cursor: pointer;
+                  border-radius: 2px;
                   width: 138px;
                   height: 30px;
                   padding: 4px;

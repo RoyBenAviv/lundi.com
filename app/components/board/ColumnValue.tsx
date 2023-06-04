@@ -12,6 +12,8 @@ export default function ColumnValue({ column, columnsWidth, columnValue, item, b
         return <TextColumn column={column} columnValue={columnValue} updateColumnValue={updateColumnValue} item={item} boardId={boardId} groupId={groupId}/>
       case 'status':
         return <StatusColumn column={column} columnValue={columnValue} updateColumnValue={updateColumnValue} item={item} boardId={boardId} groupId={groupId}/>
+      case 'date':
+        return <div>-Date-</div>
       default:
         return <></>
     }

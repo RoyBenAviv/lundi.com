@@ -9,6 +9,7 @@ interface StatusOption {
 }
 
 export default function StatusColumn({ column, columnValue, updateColumnValue, item, boardId, groupId }: { column: Column; columnValue: any; updateColumnValue: Function, item: Item, boardId: string, groupId: string }) {
+  console.log('file: StatusColumn.tsx:12 -> columnValue:', columnValue)
   const [isOpenStatusOptions, setIsOpenStatusOptions] = useState<boolean>(false)
 
   
@@ -21,14 +22,15 @@ export default function StatusColumn({ column, columnValue, updateColumnValue, i
   }
 
   return (
-    <div onClick={() => setIsOpenStatusOptions((isOpenStatusOptions) => !isOpenStatusOptions)} style={!columnValue.value || columnValue.value.type === 'default' ? { backgroundColor: column.options[0].color } : { backgroundColor: columnValue.value.color }} className="cell-value">
+    <div ref={statusOptionsRef} onClick={() => setIsOpenStatusOptions((isOpenStatusOptions) => !isOpenStatusOptions)} style={!columnValue.value || columnValue.value.type === 'default' ? { backgroundColor: column.options[0].color } : { backgroundColor: columnValue.value.color }} className="cell-value">
         {columnValue.value?.name}
+        <div className='add-status-note'></div>
         <CSSTransition timeout={150} in={isOpenStatusOptions} classNames="container-inside-transition">
             <>
       {isOpenStatusOptions && (
-          <div ref={statusOptionsRef} onClick={(e) => e.stopPropagation()} className="status-options">
+          <div  onClick={(e) => e.stopPropagation()} className="status-options">
           {column.options.map((option: StatusOption) => (
-              <span onClick={() => onEditColumnValue(option)} style={{ backgroundColor: option.color }} key={option.name}>
+            <span className={option.name === columnValue.value.name ? 'status-option chosen' : 'status-option'}  onClick={() => onEditColumnValue(option)} style={{ backgroundColor: option.color }} key={option.name}>
               {option.name}
             </span>
           ))}

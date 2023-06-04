@@ -41,6 +41,11 @@
     gap: 5px;
     button {
       font-size: 14px;
+      &.search-btn {
+        svg {
+          margin-right: 5px;
+        }
+      }
       &.secondary-btn {
         padding: 0;
         width: 90px !important;

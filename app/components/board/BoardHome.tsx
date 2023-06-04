@@ -12,7 +12,7 @@ import { CSVDownload } from 'react-csv'
 import { ReactSortable } from 'react-sortablejs'
 import { TextField } from 'monday-ui-react-core'
 import useOnClickOutside from '@/app/hooks/useOnClickOutside'
-const { Button, SplitButton, TabList, TabPanel, TabPanels, TabsContext, Tab } = require('monday-ui-react-core')
+const { Button, SplitButton, TabList, Tab } = require('monday-ui-react-core')
 export default function BoardHome({ board }: { board: Board }) {
   const queryClient = useQueryClient()
   const { mutate: addItem } = useAddItem('top')
@@ -20,13 +20,11 @@ export default function BoardHome({ board }: { board: Board }) {
   const { mutate: addManyItems } = useAddManyItems()
   const [searchItem, setSearchItem] = useState<string>('')
 
-  const { data: currentBoard, isLoading } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient, select: (data) => {
-    console.log('data', data)
-    // return data
+  const { data: currentBoard, isLoading: isLoadingBoards } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient, select: (data) => {
     if(!searchItem) return data
-    const filteredGroups = data.groups.map((group: any) => ({
+    const filteredGroups: Group[] = data.groups.map((group: Group) => ({
       ...group,
-      items: group.items.filter((item: any) => item.name.toLowerCase().includes(searchItem.toLowerCase()))
+      items: group.items.filter((item: Item) => item.name.toLowerCase().includes(searchItem.toLowerCase()))
     }));
     
     const filteredBoard: Board = {
@@ -43,16 +41,11 @@ export default function BoardHome({ board }: { board: Board }) {
   const [csvData, setCsvData] = useState<Item[] | null>(null)
   const [isAllGroupsOpen, setIsAllGroupsOpen] = useState<boolean>(true)
   const [boardGroups, setBoardGroups] = useState<Group[]>(currentBoard.groups.sort((group1: Group, group2: Group) => group1.order - group2.order))
-  const [disableSorting, setDisableSorting] = useState<boolean>(false)
-  const [allItems, setAllItems] = useState(currentBoard.groups.flatMap(group => group.items))
-
-
 
   useEffect(() => {
-
-    // queryClient.setQueryData(['board', currentBoard.id], filteredBoard)
     queryClient.refetchQueries(['board', currentBoard.id]);
   }, [searchItem])
+
 
 
   const [isSearchInputOpen,setIsSearchInputOpen] = useState<boolean>(false)
@@ -188,7 +181,7 @@ export default function BoardHome({ board }: { board: Board }) {
   }))
 
 
-  if (isLoading) return <></>
+  if (isLoadingBoards) return <></>
   return (
     <main className="board-home">
       <header>
@@ -204,10 +197,10 @@ export default function BoardHome({ board }: { board: Board }) {
         <SplitButton size={SplitButton.sizes?.SMALL} onClick={() => onAddNewItem()}>
           New Item
         </SplitButton>
-{      !isSearchInputOpen ?  <Button ref={searchBoardRef} onClick={() => setIsSearchInputOpen(true)} size={Button.sizes?.SMALL} kind={Button.kinds?.TERTIARY} leftIcon={Search}>
+{      !isSearchInputOpen ? <Button  className="search-btn" onClick={() => setIsSearchInputOpen(true)} size={Button.sizes?.SMALL} kind={Button.kinds?.TERTIARY} leftIcon={Search}>
           Search
         </Button> :
-        <TextField  autoFocus value={searchItem} onChange={(e) => setSearchItem(e)} className='search-item-input' placeholder='Search'/>
+        <TextField  autoFocus ref={searchBoardRef} value={searchItem} onChange={(e) => setSearchItem(e)} className='search-item-input' placeholder='Search'/>
         }
 
       </nav>
