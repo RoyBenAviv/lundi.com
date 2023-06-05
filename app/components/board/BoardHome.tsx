@@ -16,9 +16,11 @@ const { Button, SplitButton, TabList, Tab } = require('monday-ui-react-core')
 export default function BoardHome({ board }: { board: Board }) {
   const queryClient = useQueryClient()
   const { mutate: addItem } = useAddItem('top')
-  const { mutate: addNewGroup } = useAddGroup()
+  const { mutateAsync: addNewGroup, isLoading: isLoadingNewGroup, isSuccess, isError } = useAddGroup()
   const { mutate: addManyItems } = useAddManyItems()
   const [searchItem, setSearchItem] = useState<string>('')
+
+
 
   const { data: currentBoard, isLoading: isLoadingBoards } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient, select: (data) => {
     if(!searchItem) return data
@@ -47,7 +49,6 @@ export default function BoardHome({ board }: { board: Board }) {
   }, [searchItem])
 
 
-
   const [isSearchInputOpen,setIsSearchInputOpen] = useState<boolean>(false)
   const searchBoardRef = useRef<HTMLInputElement>(null)
   useOnClickOutside(searchBoardRef, () => setIsSearchInputOpen(false))
@@ -74,7 +75,7 @@ export default function BoardHome({ board }: { board: Board }) {
     setItemsToAction(itemsId)
   }
 
-  const onAddNewGroup = (): void => {
+  const onAddNewGroup = async(): Promise<void> => {
     const newGroup = {
       id: uuidv4(),
       name: "New Group",
@@ -83,7 +84,9 @@ export default function BoardHome({ board }: { board: Board }) {
       color: '#e2445c'
     }
 
-    addNewGroup(newGroup)
+   const newGroupDb = await addNewGroup(newGroup).data
+    console.log('file: BoardHome.tsx:88 -> newGroupDb:', newGroupDb)
+    setBoardGroups((groups: any[]) => [...groups, newGroup])
   }
 
   const toggleItemsToEdit = (groupId: string, itemId: string | null): void => {
@@ -162,9 +165,7 @@ export default function BoardHome({ board }: { board: Board }) {
       }
     })
 
-    // setDisableSorting(true)
     await updateGroups({ value: sortedGroups, key: 'sorting' })
-    // setDisableSorting(false)
   }
 
   useEffect(() => {
@@ -204,7 +205,7 @@ export default function BoardHome({ board }: { board: Board }) {
         }
 
       </nav>
-        <ReactSortable fallbackClass='group-ghost' forceFallback handle='.group-handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
+        <ReactSortable disabled={isLoadingNewGroup} fallbackClass='group-ghost' forceFallback handle='.group-handle' animation={300} list={boardGroups} onStart={() => setIsAllGroupsOpen(false)} setList={setBoardGroups}>
           {currentBoard.groups
             .sort((group1: Group, group2: Group) => group1.order - group2.order)
             .map((group: Group) => (

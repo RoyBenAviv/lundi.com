@@ -207,7 +207,7 @@ export const useAddBoard = () => {
   )
 }
 
-export const useAddGroup = () => {
+export const useAddGroup = (): any => {
   const queryClient = useQueryClient()
   return useMutation(
     (newGroup: any) => {
@@ -225,7 +225,7 @@ export const useAddGroup = () => {
         return previousBoard
       },
       onSuccess: ({ data: newGroup }) => {
-        console.log('success')
+        console.log('success', newGroup)
         queryClient.invalidateQueries(['board', newGroup.boardsId])
       },
     }
@@ -272,6 +272,7 @@ export const useAddManyItems = () => {
 }
 
 export const useDeleteItem = (currentBoardId: string) => {
+  console.log('file: useQuery.ts:275 -> currentBoardId:', currentBoardId)
   const queryClient = useQueryClient()
   return useMutation(
     (itemsId: (string | undefined)[]) => {
@@ -280,6 +281,7 @@ export const useDeleteItem = (currentBoardId: string) => {
 
     {
       onMutate: async (itemsId: (string | undefined)[]) => {
+        await queryClient.cancelQueries({ queryKey: ['board', currentBoardId] })
         const prevBoard = queryClient.getQueryData<Board>(['board', currentBoardId])
         const filteredBoard = {
           ...prevBoard,
@@ -288,13 +290,13 @@ export const useDeleteItem = (currentBoardId: string) => {
             items: group.items.filter((item) => !itemsId.includes(item.id)),
           })),
         }
-        queryClient.setQueryData(['board', currentBoardId], filteredBoard)
+        queryClient.setQueryData(['board', currentBoardId], JSON.parse(JSON.stringify(filteredBoard)))
 
-        return { filteredBoard }
+        // return { filteredBoard }
       },
-      onSuccess: (data, variables, context) => {
-        const { filteredBoard } = context as { filteredBoard: Board }
-        queryClient.setQueryData(['board', currentBoardId], filteredBoard)
+      onSuccess: () => {
+        console.log('item deleted!')
+        queryClient.invalidateQueries(['board', currentBoardId])
       },
     }
   )
