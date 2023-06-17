@@ -72,6 +72,10 @@ export async function POST(request: Request) {
                         value: item.columnValuesVal[1],
                         column: { connect: { id: newBoard.columns[1].id } },
                       },
+                      {
+                        value: item.columnValuesVal[2],
+                        column: { connect: { id: newBoard.columns[2].id } },
+                      },
                     ],
                   },
                 })),
@@ -87,8 +91,6 @@ export async function POST(request: Request) {
                   name: item.name,
                   order: item.order,
                   columnValues: {
-
-
                     create: [
                       {
                         value: item.columnValuesVal[0],
@@ -97,6 +99,10 @@ export async function POST(request: Request) {
                       {
                         value: item.columnValuesVal[1], 
                         column: { connect: { id: newBoard.columns[1].id } },
+                      },
+                      {
+                        value: item.columnValuesVal[2], 
+                        column: { connect: { id: newBoard.columns[2].id } },
                       },
                     ],
                   },

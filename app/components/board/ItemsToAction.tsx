@@ -2,15 +2,8 @@ const { Close, Delete, Doc, Duplicate } = require('monday-ui-react-core/icons')
 import { useDeleteItem } from '@/app/hooks/useQuery'
 import { Dispatch, SetStateAction } from 'react'
 
-export default function ItemsToAction({ currentBoardId, itemsToAction, setItemsToAction, boardItemsType, onExportItems, onDuplicateItems }: { currentBoardId: string; itemsToAction: (string | undefined)[]; setItemsToAction: Dispatch<SetStateAction<(string | undefined)[]>>; boardItemsType: string; onExportItems: Function; onDuplicateItems: Function }) {
-  const { mutate: deleteItems } = useDeleteItem(currentBoardId)
-
-  const onDeleteItems = () => {
-    deleteItems(itemsToAction)
-    setItemsToAction([])
-  }
-
-
+export default function ItemsToAction({ onDeleteItems, itemsToAction, setItemsToAction, boardItemsType, onExportItems, onDuplicateItems }: { onDeleteItems: Function; itemsToAction: (string | undefined)[]; setItemsToAction: Dispatch<SetStateAction<(string | undefined)[]>>; boardItemsType: string; onExportItems: Function; onDuplicateItems: Function }) {
+  
   return (
     <section className="items-action">
       <div className="number-of-items">{itemsToAction.length}</div>

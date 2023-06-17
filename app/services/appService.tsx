@@ -32,6 +32,7 @@ export const getWorkspaces = async () => {
 export const getBoard = async (boardId: string) => {
   try {
     const currentBoard = await axios.get(`${BASE_URL}/api/boards/${boardId}`)
+    console.log('getting board')
     return currentBoard.data
   } catch (err) {
     console.log('file: page.tsx:16 -> err:', err)

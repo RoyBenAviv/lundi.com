@@ -6,7 +6,7 @@ import Group from './Group'
 const { Home, Add, Search, Filter } = require('monday-ui-react-core/icons')
 import { v4 as uuidv4 } from 'uuid'
 import EditableHeading from 'monday-ui-react-core/dist/EditableHeading'
-import { useAddGroup, useAddItem, useAddManyItems, useUpdateGroups } from '@/app/hooks/useQuery'
+import { useAddGroup, useAddItem, useAddManyItems, useDeleteItem, useUpdateGroups } from '@/app/hooks/useQuery'
 import ItemsToAction from './ItemsToAction'
 import { CSVDownload } from 'react-csv'
 import { ReactSortable } from 'react-sortablejs'
@@ -16,10 +16,9 @@ const { Button, SplitButton, TabList, Tab } = require('monday-ui-react-core')
 export default function BoardHome({ board }: { board: Board }) {
   const queryClient = useQueryClient()
   const { mutate: addItem } = useAddItem('top')
-  const { mutateAsync: addNewGroup, isLoading: isLoadingNewGroup, isSuccess, isError } = useAddGroup()
+  const { mutateAsync: addNewGroup, isLoading: isLoadingNewGroup } = useAddGroup()
   const { mutate: addManyItems } = useAddManyItems()
   const [searchItem, setSearchItem] = useState<string>('')
-
 
 
   const { data: currentBoard, isLoading: isLoadingBoards } = useQuery(['board', board.id], () => board, { initialData: board, enabled: !!queryClient, select: (data) => {
@@ -28,6 +27,8 @@ export default function BoardHome({ board }: { board: Board }) {
       ...group,
       items: group.items.filter((item: Item) => item.name.toLowerCase().includes(searchItem.toLowerCase()))
     }));
+
+    
     
     const filteredBoard: Board = {
       ...data,
@@ -37,6 +38,7 @@ export default function BoardHome({ board }: { board: Board }) {
 
   } })
   const { mutateAsync: updateGroups } = useUpdateGroups(currentBoard.id)
+  const { mutate: deleteItems } = useDeleteItem(currentBoard.id)
   const [groupWidth, setGroupWidth] = useState<number>(currentBoard.groups[0].width)
 
   const [itemsToAction, setItemsToAction] = useState<(string | undefined)[]>([])
@@ -45,8 +47,10 @@ export default function BoardHome({ board }: { board: Board }) {
   const [boardGroups, setBoardGroups] = useState<Group[]>(currentBoard.groups.sort((group1: Group, group2: Group) => group1.order - group2.order))
 
   useEffect(() => {
-    queryClient.refetchQueries(['board', currentBoard.id]);
-  }, [searchItem])
+    searchItem && queryClient.refetchQueries(['board', currentBoard.id]);
+  }, [searchItem, queryClient, currentBoard.id])
+
+
 
 
   const [isSearchInputOpen,setIsSearchInputOpen] = useState<boolean>(false)
@@ -84,8 +88,7 @@ export default function BoardHome({ board }: { board: Board }) {
       color: '#e2445c'
     }
 
-   const newGroupDb = await addNewGroup(newGroup).data
-    console.log('file: BoardHome.tsx:88 -> newGroupDb:', newGroupDb)
+   await addNewGroup(newGroup).data
     setBoardGroups((groups: any[]) => [...groups, newGroup])
   }
 
@@ -181,6 +184,10 @@ export default function BoardHome({ board }: { board: Board }) {
     }
   }))
 
+  const onDeleteItems = () => {
+      deleteItems(itemsToAction)
+      setItemsToAction([])
+  }
 
   if (isLoadingBoards) return <></>
   return (
@@ -228,7 +235,7 @@ export default function BoardHome({ board }: { board: Board }) {
             ))}
         </ReactSortable>
       <Button onClick={() => onAddNewGroup()} size={Button.sizes?.SMALL} leftIcon={Add} kind={Button.kinds?.SECONDARY}>Add new group</Button>
-      {!!itemsToAction.length && <ItemsToAction currentBoardId={currentBoard.id} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
+      {!!itemsToAction.length && <ItemsToAction onDeleteItems={onDeleteItems} itemsToAction={itemsToAction} setItemsToAction={setItemsToAction} boardItemsType={currentBoard.boardItemsType} onExportItems={onExportItems} onDuplicateItems={onDuplicateItems} />}
 
       {csvData && <CSVDownload data={csvData} target="_blank" />}
       {/* {<pre>{JSON.stringify(currentBoard, null, 2)}</pre>} */}

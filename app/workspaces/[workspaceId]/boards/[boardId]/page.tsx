@@ -23,6 +23,7 @@ export default async function Boards(url: URL) {
     const workspace = dehydratedState.queries[0].state.data as Workspace
 
     const currentBoard = workspace.boards!.find((board: Board) => board.id === boardId)
+    console.log('file: page.tsx:26 -> currentBoard:', currentBoard)
 
 
   return (

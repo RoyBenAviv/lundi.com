@@ -84,8 +84,18 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
     updateMutateBoard({ boardId: board.id!, value: new Date(), key: 'recentlyVisited' })
   }
 
+
+  
   const onAddNewBoard = () => {
     const id = uuidv4()
+
+
+    let day: any | Date = new Date().getDate();
+    let month: any | Date = new Date().getMonth() + 1;
+    const year: any | Date= new Date().getFullYear();
+    day = day < 10 ? "0" + day : day;
+    month = month < 10 ? "0" + month : month;
+    let todayDateFormatted = `${year}-${month}-${day}`;
 
     const newBoard: NewBoard = {
       id,
@@ -142,6 +152,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
                   name: 'Working on it',
                   color: '#fdab3d',
                 },
+                ''
               ],
             },
             {
@@ -154,6 +165,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
                   name: 'Done',
                   color: '#00c875',
                 },
+                ''
               ],
             },
           ],
@@ -163,7 +175,7 @@ export default function WorkspaceNav({ workspace, boardId }: { workspace: Worksp
           order: 1,
           color: '#0073ea',
           items: [
-            { id: uuidv4(), name: `${newBoardType} 3`, order: 3, columnValuesVal: ["", "", new Date()] },
+            { id: uuidv4(), name: `${newBoardType} 3`, order: 3, columnValuesVal: ["", "", todayDateFormatted] },
             { id: uuidv4(), name: `${newBoardType} 4`, order: 4, columnValuesVal: ["", "", ""] },
           ],
         },

@@ -57,7 +57,7 @@ export async function DELETE(request: Request, response: Response) {
     await prisma.columnValue.deleteMany({
       where: {
         itemId: {
-          in: itemsId, // Filter items where ID is in the array of IDs
+          in: itemsId,
         },
       },
     })
@@ -65,7 +65,7 @@ export async function DELETE(request: Request, response: Response) {
     await prisma.item.deleteMany({
       where: {
         id: {
-          in: itemsId, // Filter items where ID is in the array of IDs
+          in: itemsId,
         },
       },
     })

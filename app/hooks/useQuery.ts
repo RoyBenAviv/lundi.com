@@ -127,7 +127,7 @@ export const useUpdateItem = () => {
         console.log('file: useQuery.ts:97 -> err:', err)
       },
       onSuccess: ({ data: item }) => {
-        console.log('file: useQuery.ts:131 -> item:', item)
+        console.log('item updated successfully')
         queryClient.invalidateQueries(['board', item.boardId])
       },
     }
@@ -154,6 +154,7 @@ export const useUpdateColumnValue = () => {
         return updatedBoard
       },
       onSuccess: (data, variables, context: Board | any) => {
+        console.log('column updated successfully')
         queryClient.invalidateQueries(['board', context.id!])
       },
     }
@@ -178,6 +179,8 @@ export const useAddWorkspace = () => {
         return updatedWorkspaces
       },
       onSuccess: ({ data: workspace }: { data: Workspace }) => {
+        console.log('workspace added successfully')
+        
         queryClient.invalidateQueries(['workspaces'])
         router.push(`/workspaces/${workspace.id}`)
       },
@@ -197,6 +200,7 @@ export const useAddBoard = () => {
 
     {
       onSuccess: ({ data }) => {
+        console.log('board added successfully')
         queryClient.invalidateQueries(['board', data.id])
         router.push(`/workspaces/${data.workspaceId}/boards/${data.id}`)
       },
@@ -225,7 +229,7 @@ export const useAddGroup = (): any => {
         return previousBoard
       },
       onSuccess: ({ data: newGroup }) => {
-        console.log('success', newGroup)
+        console.log('group added successfully', newGroup)
         queryClient.invalidateQueries(['board', newGroup.boardsId])
       },
     }
@@ -251,6 +255,7 @@ export const useAddItem = (itemPosition: string) => {
         return { previousBoard }
       },
       onSuccess: ({ data: newItem }) => {
+        console.log('item added!')
         queryClient.invalidateQueries(['board', newItem.boardId])
         queryClient.invalidateQueries(['workspace', newItem.workspaceId])
       },
@@ -266,13 +271,14 @@ export const useAddManyItems = () => {
     },
 
     {
-      onSuccess: (data, variables, context) => {},
+      onSuccess: (data, variables, context) => {
+        console.log('many items added!')
+      },
     }
   )
 }
 
 export const useDeleteItem = (currentBoardId: string) => {
-  console.log('file: useQuery.ts:275 -> currentBoardId:', currentBoardId)
   const queryClient = useQueryClient()
   return useMutation(
     (itemsId: (string | undefined)[]) => {
@@ -281,8 +287,9 @@ export const useDeleteItem = (currentBoardId: string) => {
 
     {
       onMutate: async (itemsId: (string | undefined)[]) => {
-        await queryClient.cancelQueries({ queryKey: ['board', currentBoardId] })
+       await queryClient.cancelQueries({ queryKey: ['board', currentBoardId] })
         const prevBoard = queryClient.getQueryData<Board>(['board', currentBoardId])
+        console.log('file: useQuery.ts:285 -> prevBoard:', prevBoard)
         const filteredBoard = {
           ...prevBoard,
           groups: prevBoard!.groups.map((group) => ({
@@ -290,13 +297,18 @@ export const useDeleteItem = (currentBoardId: string) => {
             items: group.items.filter((item) => !itemsId.includes(item.id)),
           })),
         }
-        queryClient.setQueryData(['board', currentBoardId], JSON.parse(JSON.stringify(filteredBoard)))
+        console.log('file: useQuery.ts:286 -> filteredBoard:', filteredBoard)
+        queryClient.setQueryData(['board', currentBoardId], structuredClone(filteredBoard))
 
-        // return { filteredBoard }
+        return  filteredBoard 
       },
-      onSuccess: () => {
-        console.log('item deleted!')
-        queryClient.invalidateQueries(['board', currentBoardId])
+      onError: (err) => {
+        console.log('file: useQuery.ts:308 -> err:', err)
+        
+      },
+      onSuccess: (data, variables, context) => {
+        console.log('item deleted!', data, variables, context)
+        queryClient.invalidateQueries(['board', context!.id])
       },
     }
   )
